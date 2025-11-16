@@ -5,12 +5,12 @@
 #include "UImg.h"
 
 #include <iostream>
+#include "Comportement.h"
 
 using namespace std;
 
 
 class Milieu;
-
 
 class Bestiole
 {
@@ -19,7 +19,7 @@ private :
    static const double     AFF_SIZE;
    static const double     MAX_VITESSE;
    static const double     LIMITE_VUE;
-
+   static const int        MAX_AGE;
    static int              next;
 
 private :
@@ -28,8 +28,14 @@ private :
    double            cumulX, cumulY;
    double            orientation;
    double            vitesse;
-
+   int               age;
+   int               age_Lim;
+   double deathProb;
    T               * couleur;
+   bool Killed;
+
+
+   Comportement* comportement;
 
 private :
    void bouge( int xLim, int yLim );
@@ -45,6 +51,12 @@ public :                                           // Forme canonique :
    bool jeTeVois( const Bestiole & b ) const;
 
    void initCoords( int xLim, int yLim );
+   void setComportement(   Comportement* comportement);
+   bool idDed() const;
+
+   bool isInCollisionWith( const Bestiole & b ) const;
+   void CollisionEffect();
+   double getDeathProb() const;
 
    friend bool operator==( const Bestiole & b1, const Bestiole & b2 );
 

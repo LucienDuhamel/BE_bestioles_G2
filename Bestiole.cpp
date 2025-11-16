@@ -4,12 +4,12 @@
 
 #include <cstdlib>
 #include <cmath>
-
+#define M_PI 3.14
 
 const double      Bestiole::AFF_SIZE = 8.;
 const double      Bestiole::MAX_VITESSE = 10.;
 const double      Bestiole::LIMITE_VUE = 30.;
-
+const int         Bestiole::MAX_AGE = 20;
 int               Bestiole::next = 0;
 
 
@@ -20,6 +20,10 @@ Bestiole::Bestiole( void )
 
    cout << "const Bestiole (" << identite << ") par defaut" << endl;
 
+   age_Lim = static_cast<double>( rand() )/RAND_MAX*MAX_AGE;
+   age = 0;
+   Killed = false;
+   deathProb = static_cast<double>( rand() )/RAND_MAX;
    x = y = 0;
    cumulX = cumulY = 0.;
    orientation = static_cast<double>( rand() )/RAND_MAX*2.*M_PI;
@@ -40,6 +44,10 @@ Bestiole::Bestiole( const Bestiole & b )
 
    cout << "const Bestiole (" << identite << ") par copie" << endl;
 
+   age_Lim = b.age_Lim;
+   age = 0;
+   Killed = b.Killed;
+   deathProb = b.deathProb;
    x = b.x;
    y = b.y;
    cumulX = cumulY = 0.;
@@ -66,6 +74,13 @@ void Bestiole::initCoords( int xLim, int yLim )
 
    x = rand() % xLim;
    y = rand() % yLim;
+
+}
+
+void Bestiole::setComportement(   Comportement* Lecomportement)
+{
+
+   comportement = Lecomportement;
 
 }
 
@@ -104,10 +119,50 @@ void Bestiole::bouge( int xLim, int yLim )
    }
 
 }
+double Bestiole::getDeathProb() const
+{
+   return deathProb;
+}
+bool Bestiole::isInCollisionWith( const Bestiole & b ) const
+{
+   // TO do
+    double dx = x - b.x;
+    double dy = y - b.y;
+    double dist2 = dx*dx + dy*dy;
 
+    double minDist = 2*AFF_SIZE; // à adapter selon ton attribut réel
+
+    return dist2 < (minDist * minDist);
+}
+
+void Bestiole::CollisionEffect()
+{
+   // TO Do
+
+   // Sinon elle rebondit = demi-tour
+    orientation += M_PI;
+    double r = (double)rand() / RAND_MAX;
+
+    if (r < getDeathProb())
+    {
+        Killed = true ;      // marque la bestiole comme morte
+        return;
+    }
+
+    
+}
 
 void Bestiole::action( Milieu & monMilieu )
 {
+   if(idDed())
+   {
+      couleur[ 0 ] = 0;
+      couleur[ 1 ] = 0;
+      couleur[ 2 ] = 0;
+      return;
+   }
+   age++;
+   comportement->bouge(*this, monMilieu.getListeBestioles() );
 
    bouge( monMilieu.getWidth(), monMilieu.getHeight() );
 
@@ -126,6 +181,10 @@ void Bestiole::draw( UImg & support )
 
 }
 
+bool Bestiole::idDed() const
+{
+   return age>=age_Lim || Killed ;
+}
 
 bool operator==( const Bestiole & b1, const Bestiole & b2 )
 {

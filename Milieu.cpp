@@ -54,3 +54,27 @@ int Milieu::nbVoisins( const Bestiole & b )
    return nb;
 
 }
+void Milieu::removeMember( const Bestiole & b )
+{
+   for ( std::vector<Bestiole>::iterator it = listeBestioles.begin() ; it != listeBestioles.end() ; ++it )
+   {
+      if(b==*it)
+      {
+         listeBestioles.erase(it);
+         return;
+      }
+
+   }
+   std::cout<<" SUPPRESSION IMPOSSIBLE : Bestiole n'est pas dans la list "<<std::endl;
+}
+void Milieu::removeDeds()
+{
+   for ( std::vector<Bestiole>::iterator it = listeBestioles.begin() ; it != listeBestioles.end() ; ++it )
+   {
+      if(it->idDed())
+      {
+         listeBestioles.erase(it--);
+      }
+
+   }
+}
