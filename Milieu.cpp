@@ -19,7 +19,9 @@ Milieu::Milieu( int _width, int _height ) : UImg( _width, _height, 1, 3 ),
    ListComportements.push_back(ComportementKamikaze::getInstance());
    ListComportements.push_back(ComportementPeureux::getInstance());
    ListComportements.push_back(ComportementPrevoyant::getInstance());
+
    ListComportements.push_back(ComportementPersoMultiples::getInstance(ListComportements));
+   
    std::vector<double> proportions = {0.2, 0.1, 0.1, 0.3, 0.3};
    bestioleFactory = new BestioleFactory(ListComportements, proportions);
    cout << "const Milieu" << endl;
@@ -115,17 +117,11 @@ void Milieu::removeDeds()
 
 void Milieu::detecteCollisions()
 {
-   for ( std::vector<EspeceBestiole*>::iterator it = listeEspeceBestioles.begin() ; it != listeEspeceBestioles.end() ; ++it )
-   {
-      std::vector<EspeceBestiole*>::iterator itt = it;
-      for ( itt++ ; itt != listeEspeceBestioles.end() ; ++itt )
-      {
-         if((*it)->isInCollisionWith( *(*itt) ))
+   for ( std::vector<EspeceBestiole*>::iterator it = listeEspeceBestioles.begin() ; it != listeEspeceBestioles.end() ; ++it)
+      for ( std::vector<EspeceBestiole*>::iterator itt = listeEspeceBestioles.begin() ; itt != listeEspeceBestioles.end() ; ++itt )
+         if(it!=itt && (*it)->isInCollisionWith( *(*itt) ))
          {
             (*it)->CollisionEffect();
-            (*itt)->CollisionEffect();
+            break;
          }
-
-      }
-   }
 }
