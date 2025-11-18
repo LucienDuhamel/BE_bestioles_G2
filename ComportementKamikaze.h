@@ -20,10 +20,10 @@ private:
     static ComportementKamikaze* singletonKamikaze;
 
 public:
-    static ComportementKamikaze& getInstance();
+    static ComportementKamikaze* getInstance();
 
 
-    void bouge(Bestiole bestiole, std::vector<Bestiole>   listeBestioles ) const override;
+    void bouge(Bestiole bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const override;
 
 };
 

@@ -9,16 +9,16 @@
 ComportementPersoMultiples::ComportementPersoMultiples(std::vector<Comportement*> ListComportement) : ListComportements(ListComportement) 
 {}
 
-ComportementPersoMultiples&  ComportementPersoMultiples::getInstance(std::vector<Comportement*> ListComportement)
+ComportementPersoMultiples*   ComportementPersoMultiples::getInstance(std::vector<Comportement*> ListComportement)
 {
     if (singletonPersoMultiples == nullptr)
         singletonPersoMultiples = new ComportementPersoMultiples(ListComportement);
 
-    return *singletonPersoMultiples;
+    return  singletonPersoMultiples;
 }
 
-void ComportementPersoMultiples::bouge(Bestiole bestiole, std::vector<Bestiole>   listeBestioles ) const 
+void ComportementPersoMultiples::bouge(Bestiole bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const 
 {
-    ListComportements[rand() % 4]->bouge(bestiole, listeBestioles);
+    ListComportements[rand() % (ListComportements.size()-1)+1]->bouge(bestiole, listeBestioles);
 
 }

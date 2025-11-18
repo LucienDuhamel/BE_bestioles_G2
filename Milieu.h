@@ -3,8 +3,9 @@
 
 
 #include "UImg.h"
-#include "Bestiole.h"
-
+#include "EspeceBestiole.h"
+#include "EspeceBestioleFactory.h"
+#include "Comportement.h"
 #include <iostream>
 #include <vector>
 
@@ -18,21 +19,24 @@ private :
    static const T          white[];
 
    int                     width, height;
-   std::vector<Bestiole>   listeBestioles;
+   std::vector<EspeceBestiole*>   listeEspeceBestioles;
+   std::vector<Comportement*> ListComportements;
+   EspeceBestioleFactory* bestioleFactory;
 
 public :
    Milieu( int _width, int _height );
    ~Milieu( void );
-
+   void initConfig(int nbEspeces);
    int getWidth( void ) const { return width; };
    int getHeight( void ) const { return height; };
 
    void step( void );
-   std::vector<Bestiole> getListeBestioles() const {return listeBestioles;};
-   void addMember( const Bestiole & b ) { listeBestioles.push_back(b); listeBestioles.back().initCoords(width, height); }
-   int nbVoisins( const Bestiole & b );
-   void removeMember( const Bestiole & b );
+   std::vector<EspeceBestiole*> getListeEspeceBestioles() const {return listeEspeceBestioles;};
+   void addMember( EspeceBestiole* b ) { listeEspeceBestioles.push_back(b); listeEspeceBestioles.back()->initCoords(width, height); }
+   int nbVoisins( const EspeceBestiole& b );
+   void removeMember( EspeceBestiole* b );
    void removeDeds();
+   void detecteCollisions();
 
 };
 

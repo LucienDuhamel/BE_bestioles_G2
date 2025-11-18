@@ -5,16 +5,16 @@
 
 
 
-ComportementKamikaze&  ComportementKamikaze::getInstance()
+ComportementKamikaze*   ComportementKamikaze::getInstance()
 {
     if (singletonKamikaze == nullptr)
         singletonKamikaze = new ComportementKamikaze();
 
-    return *singletonKamikaze;
+    return  singletonKamikaze;
 }
 
 
-void ComportementKamikaze::bouge(Bestiole bestiole, std::vector<Bestiole>   listeBestioles ) const 
+void ComportementKamikaze::bouge(Bestiole bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const 
 {
     
 }

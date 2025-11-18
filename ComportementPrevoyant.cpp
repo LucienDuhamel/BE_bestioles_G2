@@ -6,16 +6,16 @@
 
 
 
-ComportementPrevoyant&  ComportementPrevoyant::getInstance()
+ComportementPrevoyant*   ComportementPrevoyant::getInstance()
 {
     if (singletonPrevoyant == nullptr)
         singletonPrevoyant = new ComportementPrevoyant();
 
-    return *singletonPrevoyant;
+    return  singletonPrevoyant;
 }
 
 
-void ComportementPrevoyant::bouge(Bestiole bestiole, std::vector<Bestiole>   listeBestioles ) const 
+void ComportementPrevoyant::bouge(Bestiole bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const 
 {
     
 }

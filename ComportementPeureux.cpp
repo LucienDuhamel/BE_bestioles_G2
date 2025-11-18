@@ -5,16 +5,16 @@
 
 
 
-ComportementPeureux&  ComportementPeureux::getInstance()
+ComportementPeureux*   ComportementPeureux::getInstance()
 {
     if (singletonPeureux == nullptr)
         singletonPeureux = new ComportementPeureux();
 
-    return *singletonPeureux;
+    return  singletonPeureux;
 }
 
 
-void ComportementPeureux::bouge(Bestiole bestiole, std::vector<Bestiole>   listeBestioles ) const 
+void ComportementPeureux::bouge(Bestiole bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const 
 {
     
 }

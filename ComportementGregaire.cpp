@@ -5,15 +5,15 @@
 
 ComportementGregaire* ComportementGregaire::singletonGregaire = nullptr;
 
-ComportementGregaire&  ComportementGregaire::getInstance()
+ComportementGregaire*  ComportementGregaire::getInstance()
 {
     if (singletonGregaire == nullptr)
         singletonGregaire = new ComportementGregaire();
 
-    return *singletonGregaire;
+    return  singletonGregaire;
 }
 
-void ComportementGregaire::bouge(Bestiole bestiole, std::vector<Bestiole>   listeBestioles ) const 
+void ComportementGregaire::bouge(Bestiole bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const 
 {
 
 }

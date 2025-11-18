@@ -6,11 +6,10 @@
 #include <cmath>
 #define M_PI 3.14
 
-const double      Bestiole::AFF_SIZE = 8.;
+
 const double      Bestiole::MAX_VITESSE = 10.;
-const double      Bestiole::LIMITE_VUE = 30.;
+
 const int         Bestiole::MAX_AGE = 20;
-int               Bestiole::next = 0;
 
 
 Bestiole::Bestiole( void )
@@ -59,23 +58,6 @@ Bestiole::Bestiole( const Bestiole & b )
 }
 
 
-Bestiole::~Bestiole( void )
-{
-
-   delete[] couleur;
-
-   cout << "dest Bestiole" << endl;
-
-}
-
-
-void Bestiole::initCoords( int xLim, int yLim )
-{
-
-   x = rand() % xLim;
-   y = rand() % yLim;
-
-}
 
 void Bestiole::setComportement(   Comportement* Lecomportement)
 {
@@ -119,21 +101,12 @@ void Bestiole::bouge( int xLim, int yLim )
    }
 
 }
+
 double Bestiole::getDeathProb() const
 {
    return deathProb;
 }
-bool Bestiole::isInCollisionWith( const Bestiole & b ) const
-{
-   // TO do
-    double dx = x - b.x;
-    double dy = y - b.y;
-    double dist2 = dx*dx + dy*dy;
 
-    double minDist = 2*AFF_SIZE; // à adapter selon ton attribut réel
-
-    return dist2 < (minDist * minDist);
-}
 
 void Bestiole::CollisionEffect()
 {
@@ -162,7 +135,7 @@ void Bestiole::action( Milieu & monMilieu )
       return;
    }
    age++;
-   comportement->bouge(*this, monMilieu.getListeBestioles() );
+   comportement->bouge(*this, monMilieu.getListeEspeceBestioles() );
 
    bouge( monMilieu.getWidth(), monMilieu.getHeight() );
 
@@ -186,21 +159,6 @@ bool Bestiole::idDed() const
    return age>=age_Lim || Killed ;
 }
 
-bool operator==( const Bestiole & b1, const Bestiole & b2 )
-{
-
-   return ( b1.identite == b2.identite );
-
-}
 
 
-bool Bestiole::jeTeVois( const Bestiole & b ) const
-{
 
-   double         dist;
-
-
-   dist = std::sqrt( (x-b.x)*(x-b.x) + (y-b.y)*(y-b.y) );
-   return ( dist <= LIMITE_VUE );
-
-}

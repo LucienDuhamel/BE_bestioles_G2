@@ -20,10 +20,10 @@ private:
     static ComportementPrevoyant* singletonPrevoyant;
 
 public:
-    static ComportementPrevoyant& getInstance();
+    static ComportementPrevoyant* getInstance();
 
 
-    void bouge(Bestiole bestiole, std::vector<Bestiole>   listeBestioles ) const override;
+    void bouge(Bestiole bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const override;
 
 };
 

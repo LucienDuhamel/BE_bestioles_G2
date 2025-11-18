@@ -1,32 +1,24 @@
-main.o : main.cpp Aquarium.o Bestiole.o Milieu.o ComportementGregaire.o ComportementKamikaze.o ComportementPersoMultiples.o ComportementPeureux.o ComportementPrevoyant.o
-	g++ -Wall -std=c++11 -o main main.cpp Aquarium.o Bestiole.o Milieu.o ComportementGregaire.o  ComportementKamikaze.o ComportementPersoMultiples.o ComportementPeureux.o ComportementPrevoyant.o -I . -lX11 -lpthread
+# Compilateur et options
+CXX = g++
+CXXFLAGS = -Wall -std=c++11 -I .
 
-Aquarium.o : Aquarium.h Aquarium.cpp
-	g++ -Wall -std=c++11  -c Aquarium.cpp -I .
+# Détection automatique des fichiers
+SRC = $(wildcard *.cpp)
+OBJ = $(SRC:.cpp=.o)
+TARGET = main.exe
 
-Bestiole.o : Bestiole.h Bestiole.cpp
-	g++ -Wall -std=c++11  -c Bestiole.cpp -I .
+# Règle principale
+all: $(TARGET)
 
-Milieu.o : Milieu.h Milieu.cpp
-	g++ -Wall -std=c++11  -c Milieu.cpp -I .
+# Link final
+$(TARGET): $(OBJ)
+	$(CXX) $(OBJ) -o $(TARGET) -lX11 -lpthread
 
-ComportementGregaire.o : ComportementGregaire.h ComportementGregaire.cpp
-	g++ -Wall -std=c++11  -c ComportementGregaire.cpp -I .
-ComportementKamikaze.o : ComportementKamikaze.h ComportementKamikaze.cpp
-	g++ -Wall -std=c++11  -c ComportementKamikaze.cpp -I .
-ComportementPersoMultiples.o : ComportementPersoMultiples.h ComportementPersoMultiples.cpp
-	g++ -Wall -std=c++11  -c ComportementPersoMultiples.cpp -I .
-ComportementPeureux.o : ComportementPeureux.h ComportementPeureux.cpp
-	g++ -Wall -std=c++11  -c ComportementPeureux.cpp -I .
-ComportementPrevoyant.o : ComportementPrevoyant.h ComportementPrevoyant.cpp
-	g++ -Wall -std=c++11  -c ComportementPrevoyant.cpp -I .
+# Compilation générique de tous les .cpp
+%.o: %.cpp %.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-
-
+# Nettoyage Windows
 clean:
-	
-	
-	del /Q *.o
-	del /Q *.exe
-
-
+	del /Q *.o 2>nul
+	del /Q *.exe 2>nul

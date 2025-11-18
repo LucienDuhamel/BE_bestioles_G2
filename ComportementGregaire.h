@@ -16,9 +16,9 @@ private:
     static ComportementGregaire* singletonGregaire;
 
 public:
-    static ComportementGregaire& getInstance();
+    static ComportementGregaire* getInstance();
 
-    void bouge(Bestiole bestiole, std::vector<Bestiole>   listeBestioles ) const override;
+    void bouge(Bestiole bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const override;
 };
 
 #endif
