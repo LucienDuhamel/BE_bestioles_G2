@@ -39,7 +39,8 @@ private :
 public :                                           // Forme canonique :
    Bestiole( void );                               // Constructeur par defaut
    Bestiole( const Bestiole & b );                 // Constructeur de copies
-                                                   // Operateur d'affectation binaire par defaut
+   ~Bestiole( void );
+                                                    // Operateur d'affectation binaire par defaut
    void action( Milieu & monMilieu ) override;
    void draw( UImg & support ) override;
 

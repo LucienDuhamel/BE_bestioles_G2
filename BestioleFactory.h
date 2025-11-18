@@ -13,7 +13,7 @@ private:
     std::vector<Comportement*> ListComportements;
     std::vector<double> proportionsAccumilatives;
 public :
-
+    ~BestioleFactory();
     BestioleFactory(std::vector<Comportement*> Comportements, std::vector<double> Proportions);
     Bestiole* creerEspeceBestiole() const override;
 

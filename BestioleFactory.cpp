@@ -7,6 +7,12 @@
 #include "BestioleFactory.h"
 #include <cassert>
 
+BestioleFactory::~BestioleFactory()
+{
+    ListComportements.clear();
+    proportionsAccumilatives.clear();
+}
+
 BestioleFactory::BestioleFactory(std::vector<Comportement*> Comportements, std::vector<double> Proportions)
 {
     assert(!Comportements.empty());
@@ -15,8 +21,10 @@ BestioleFactory::BestioleFactory(std::vector<Comportement*> Comportements, std::
     double accum=0.0;
     for (double x : Proportions ) accum+=x;
     assert( accum==1.0);
-    
-    ListComportements = Comportements;
+
+    ListComportements.clear();
+    for (auto& c : Comportements)
+        ListComportements.push_back(std::move(c));
 
     proportionsAccumilatives.clear();
     proportionsAccumilatives.push_back(Proportions[0]);

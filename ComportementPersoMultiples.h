@@ -24,6 +24,8 @@ private:
     static ComportementPersoMultiples* singletonPersoMultiples;
 
 public:
+
+    ~ComportementPersoMultiples();
     static ComportementPersoMultiples* getInstance(std::vector<Comportement*> ListComportement);
 
 

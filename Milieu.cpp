@@ -19,7 +19,8 @@ Milieu::Milieu( int _width, int _height ) : UImg( _width, _height, 1, 3 ),
    ListComportements.push_back(ComportementKamikaze::getInstance());
    ListComportements.push_back(ComportementPeureux::getInstance());
    ListComportements.push_back(ComportementPrevoyant::getInstance());
-   std::vector<double> proportions = {0.2, 0.1, 0.4, 0.3};
+   ListComportements.push_back(ComportementPersoMultiples::getInstance(ListComportements));
+   std::vector<double> proportions = {0.2, 0.1, 0.1, 0.3, 0.3};
    bestioleFactory = new BestioleFactory(ListComportements, proportions);
    cout << "const Milieu" << endl;
 
@@ -30,7 +31,20 @@ Milieu::Milieu( int _width, int _height ) : UImg( _width, _height, 1, 3 ),
 
 Milieu::~Milieu( void )
 {
+   // Supprime toutes les bestioles
+    for (auto* b : listeEspeceBestioles) {
+        delete b;
+    }
+    listeEspeceBestioles.clear();
 
+    // Supprime tous les comportements
+    for (auto* c : ListComportements) {
+        delete c;
+    }
+    ListComportements.clear();
+
+    // Supprime la factory si elle a été créée dynamiquement
+    delete bestioleFactory;
    cout << "dest Milieu" << endl;
 
 }
@@ -78,6 +92,7 @@ void Milieu::removeMember(  EspeceBestiole*  b )
    {
       if((*b)==*(*it))
       {
+         delete *it;
          listeEspeceBestioles.erase(it);
          return;
       }
@@ -91,6 +106,7 @@ void Milieu::removeDeds()
    {
       if((*it)->idDed())
       {
+         delete *it;
          listeEspeceBestioles.erase(it--);
       }
 

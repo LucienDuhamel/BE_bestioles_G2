@@ -13,7 +13,7 @@ EspeceBestiole::~EspeceBestiole( void )
 
    delete[] couleur;
 
-   cout << "dest Bestiole" << endl;
+   cout << "dest EspeceBestiole" << endl;
 
 }
 

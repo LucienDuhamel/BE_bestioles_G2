@@ -6,8 +6,16 @@
 
 
 
-ComportementPersoMultiples::ComportementPersoMultiples(std::vector<Comportement*> ListComportement) : ListComportements(ListComportement) 
-{}
+ComportementPersoMultiples::ComportementPersoMultiples(std::vector<Comportement*> ListComportement)
+{
+    for (auto& c : ListComportement)
+        ListComportements.push_back(std::move(c));
+}
+
+ComportementPersoMultiples::~ComportementPersoMultiples()
+{
+    ListComportements.clear();
+}
 
 ComportementPersoMultiples*   ComportementPersoMultiples::getInstance(std::vector<Comportement*> ListComportement)
 {
