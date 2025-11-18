@@ -61,7 +61,6 @@ Bestiole::Bestiole( const Bestiole & b )
 Bestiole::~Bestiole( void )
 {
 
-   delete comportement;
 
    cout << "dest Bestiole" << endl;
 
