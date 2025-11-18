@@ -62,7 +62,7 @@ Bestiole::~Bestiole( void )
 {
 
 
-   cout << "dest Bestiole" << endl;
+   cout << "dest Bestiole -> " ;
 
 }
 
