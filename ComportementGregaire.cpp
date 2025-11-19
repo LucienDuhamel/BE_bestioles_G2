@@ -13,7 +13,7 @@ ComportementGregaire*  ComportementGregaire::getInstance()
     return  singletonGregaire;
 }
 
-void ComportementGregaire::bouge(Bestiole bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const 
+void ComportementGregaire::bouge(Bestiole& bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const 
 {
 
 }

@@ -5,6 +5,9 @@
 #include <vector>
 
 
+ComportementPersoMultiples* ComportementPersoMultiples::singletonPersoMultiples = nullptr;
+
+
 
 ComportementPersoMultiples::ComportementPersoMultiples(std::vector<Comportement*> ListComportement)
 {
@@ -25,8 +28,8 @@ ComportementPersoMultiples*   ComportementPersoMultiples::getInstance(std::vecto
     return  singletonPersoMultiples;
 }
 
-void ComportementPersoMultiples::bouge(Bestiole bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const 
+void ComportementPersoMultiples::bouge(Bestiole& bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const 
 {
-    ListComportements[rand() % (ListComportements.size()-1)+1]->bouge(bestiole, listeBestioles);
+    ListComportements[rand() % ListComportements.size()]->bouge(bestiole, listeBestioles);
 
 }

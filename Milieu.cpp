@@ -7,10 +7,11 @@
 #include "BestioleFactory.h"
 #include <cstdlib>
 #include <ctime>
+#include <cmath>
 #include <vector>
 #include <iostream>
 const T    Milieu::white[] = { (T)255, (T)255, (T)255 };
-
+const double  Milieu::TAUX_DE_NAISSANCES_SPONTANE = 0.4;//static_cast<double>( rand() ) / RAND_MAX;
 
 Milieu::Milieu( int _width, int _height ) : UImg( _width, _height, 1, 3 ),
                                             width(_width), height(_height)
@@ -54,7 +55,7 @@ Milieu::~Milieu( void )
 void Milieu::initConfig(int nbEspeces)
 {
    for ( int i = 1; i <= nbEspeces; ++i )
-      addMember( bestioleFactory->creerEspeceBestiole() );
+      addMember();
 }
 
 
@@ -64,6 +65,8 @@ void Milieu::step( void )
    cimg_forXY( *this, x, y ) fillC( x, y, 0, white[0], white[1], white[2] );
    detecteCollisions();
    removeDeds();
+   if((double)std::rand() / RAND_MAX >= TAUX_DE_NAISSANCES_SPONTANE)
+      addMember();
    for ( std::vector<EspeceBestiole*>::iterator it = listeEspeceBestioles.begin() ; it != listeEspeceBestioles.end() ; ++it )
    {
 

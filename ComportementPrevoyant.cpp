@@ -4,7 +4,7 @@
 #include <vector>
 
 
-
+ComportementPrevoyant* ComportementPrevoyant::singletonPrevoyant = nullptr;
 
 ComportementPrevoyant*   ComportementPrevoyant::getInstance()
 {
@@ -15,7 +15,7 @@ ComportementPrevoyant*   ComportementPrevoyant::getInstance()
 }
 
 
-void ComportementPrevoyant::bouge(Bestiole bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const 
+void ComportementPrevoyant::bouge(Bestiole& bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const 
 {
     
 }

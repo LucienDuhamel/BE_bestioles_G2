@@ -4,12 +4,11 @@
 
 #include <cstdlib>
 #include <cmath>
-#define M_PI 3.14
 
 
 const double      Bestiole::MAX_VITESSE = 10.;
 
-const int         Bestiole::MAX_AGE = 20;
+const int         Bestiole::MAX_AGE = 100;
 
 
 Bestiole::Bestiole( void )
@@ -143,7 +142,6 @@ void Bestiole::action( Milieu & monMilieu )
    }
    age++;
    comportement->bouge(*this, monMilieu.getListeEspeceBestioles() );
-
    bouge( monMilieu.getWidth(), monMilieu.getHeight() );
 
 }
@@ -163,6 +161,15 @@ void Bestiole::draw( UImg & support )
 
 bool Bestiole::idDed() const
 {
+   if(age>=age_Lim)
+   {
+      cout<< "(" << identite << ") age limit reached " ;
+   }
+   
+   if (Killed)
+   {
+      cout<< "(" << identite << ")  killed           " ;
+   }
    return age>=age_Lim || Killed ;
 }
 

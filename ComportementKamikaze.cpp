@@ -4,6 +4,8 @@
 #include <vector>
 
 
+ComportementKamikaze* ComportementKamikaze::singletonKamikaze = nullptr;
+
 
 ComportementKamikaze*   ComportementKamikaze::getInstance()
 {
@@ -14,7 +16,7 @@ ComportementKamikaze*   ComportementKamikaze::getInstance()
 }
 
 
-void ComportementKamikaze::bouge(Bestiole bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const 
+void ComportementKamikaze::bouge(Bestiole& bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const 
 {
     
 }

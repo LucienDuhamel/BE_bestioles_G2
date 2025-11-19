@@ -5,7 +5,7 @@ CXXFLAGS = -Wall -std=c++11 -I .
 # Détection automatique des fichiers
 SRC = $(wildcard *.cpp)
 OBJ = $(SRC:.cpp=.o)
-TARGET = main.exe
+TARGET = main
 
 # Règle principale
 all: $(TARGET)
@@ -20,5 +20,7 @@ $(TARGET): $(OBJ)
 
 # Nettoyage Windows
 clean:
-	del /Q *.o 2>nul
-	del /Q *.exe 2>nul
+
+	rm -rf *.o main
+
+

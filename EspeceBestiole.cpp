@@ -26,7 +26,7 @@ bool EspeceBestiole::isInCollisionWith( const EspeceBestiole & b ) const
 
     double minDist = 2*AFF_SIZE; // à adapter selon ton attribut réel
 
-    return dist2 < (minDist * minDist);
+    return false;//dist2 < (minDist * minDist);
 }
 
 

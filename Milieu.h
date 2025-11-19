@@ -17,7 +17,7 @@ class Milieu : public UImg
 
 private :
    static const T          white[];
-
+   static const double     TAUX_DE_NAISSANCES_SPONTANE;
    int                     width, height;
    std::vector<EspeceBestiole*>   listeEspeceBestioles;
    std::vector<Comportement*> ListComportements;
@@ -33,6 +33,7 @@ public :
    void step( void );
    std::vector<EspeceBestiole*> getListeEspeceBestioles() const {return listeEspeceBestioles;};
    void addMember( EspeceBestiole* b ) { listeEspeceBestioles.push_back(b); listeEspeceBestioles.back()->initCoords(width, height); }
+   void addMember() {addMember(bestioleFactory->creerEspeceBestiole()); }
    int nbVoisins( const EspeceBestiole& b );
    void removeMember( EspeceBestiole* b );
    void removeDeds();
