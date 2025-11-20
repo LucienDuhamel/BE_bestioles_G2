@@ -17,6 +17,7 @@ class EspeceBestiole
 protected :
    static const double     AFF_SIZE;
    static const double     LIMITE_VUE;
+   
    static int              next;
 
 protected :
@@ -25,18 +26,21 @@ protected :
    int               x, y;
    T               * couleur;
 
-
-public :                                        
+public:
+static const double     CLONAGE_PROP;
+public :        
+   EspeceBestiole();                                
+   EspeceBestiole(const EspeceBestiole& other);
    virtual ~EspeceBestiole( void ) ;
    virtual void action( Milieu & monMilieu ) = 0;
    virtual void draw( UImg & support ) = 0;
-
    virtual bool jeTeVois( const EspeceBestiole & b ) const ;
    void initCoords( int xLim, int yLim );
    virtual bool idDed() const  = 0;
 
    virtual bool isInCollisionWith( const EspeceBestiole & b ) const ;
    virtual void CollisionEffect()  = 0;
+   virtual EspeceBestiole* clone() const = 0;
 
    friend bool operator==( const EspeceBestiole & b1, const EspeceBestiole & b2 );
 

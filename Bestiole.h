@@ -51,6 +51,9 @@ public :                                           // Forme canonique :
    void CollisionEffect() override;
    double getDeathProb() const;
 
+   EspeceBestiole* clone() const override;
+
+
 
 };
 

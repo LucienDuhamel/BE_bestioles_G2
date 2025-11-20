@@ -63,10 +63,24 @@ void Milieu::step( void )
 {
 
    cimg_forXY( *this, x, y ) fillC( x, y, 0, white[0], white[1], white[2] );
+
+   // Collisions
    detecteCollisions();
+   // Mort des bestioles
    removeDeds();
-   if((double)std::rand() / RAND_MAX >= TAUX_DE_NAISSANCES_SPONTANE)
+   
+
+   // clonage spontanement
+   /*for ( std::vector<EspeceBestiole*>::iterator it = listeEspeceBestioles.end() ; it != listeEspeceBestioles.begin() ;  )
+      if((double)std::rand() / RAND_MAX <= (*(--it))->CLONAGE_PROP)
+         listeEspeceBestioles.push_back((*it)->clone());
+         //addMember((*it)->clone());
+   */
+
+   // Naissance spontanement
+   if((double)std::rand() / RAND_MAX <= TAUX_DE_NAISSANCES_SPONTANE)
       addMember();
+   
    for ( std::vector<EspeceBestiole*>::iterator it = listeEspeceBestioles.begin() ; it != listeEspeceBestioles.end() ; ++it )
    {
 

@@ -26,8 +26,8 @@ private:
 public:
 
     ~ComportementPersoMultiples();
-    static ComportementPersoMultiples* getInstance(std::vector<Comportement*> ListComportement);
-
+    static ComportementPersoMultiples* getInstance(std::vector<Comportement*> ListComportement) ;
+    static ComportementPersoMultiples* getInstance() ;
 
 
     void bouge(Bestiole& bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const override;

@@ -18,10 +18,12 @@ class Milieu : public UImg
 private :
    static const T          white[];
    static const double     TAUX_DE_NAISSANCES_SPONTANE;
+   
    int                     width, height;
    std::vector<EspeceBestiole*>   listeEspeceBestioles;
    std::vector<Comportement*> ListComportements;
    EspeceBestioleFactory* bestioleFactory;
+
 
 public :
    Milieu( int _width, int _height );

@@ -3,7 +3,7 @@
 #include "ComportementPersoMultiples.h"
 #include <iostream>
 #include <vector>
-
+#include <errno.h>
 
 ComportementPersoMultiples* ComportementPersoMultiples::singletonPersoMultiples = nullptr;
 
@@ -24,6 +24,14 @@ ComportementPersoMultiples*   ComportementPersoMultiples::getInstance(std::vecto
 {
     if (singletonPersoMultiples == nullptr)
         singletonPersoMultiples = new ComportementPersoMultiples(ListComportement);
+
+    return  singletonPersoMultiples;
+}
+
+ComportementPersoMultiples*   ComportementPersoMultiples::getInstance()
+{
+    if (singletonPersoMultiples == nullptr)
+        std::cerr <<"ComportementPersoMultiples instance not initialized with ListComportement!" << std::endl;
 
     return  singletonPersoMultiples;
 }
