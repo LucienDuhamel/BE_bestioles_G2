@@ -29,6 +29,8 @@ public:
     static ComportementPersoMultiples* getInstance(std::vector<Comportement*> ListComportement) ;
     static ComportementPersoMultiples* getInstance() ;
 
+    T * couleur;
+    T * getCouleur()  const override;
 
     void bouge(Bestiole& bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const override;
 

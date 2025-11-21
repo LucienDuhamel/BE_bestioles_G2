@@ -39,6 +39,7 @@ Bestiole* BestioleFactory::creerEspeceBestiole() const
     int i=0;
     while( i<(int)proportionsAccumilatives.size()-1 && typeProb>=proportionsAccumilatives[i] ) i++ ;
     bestiole->setComportement(ListComportements[i]);
+    bestiole->setCouleur(ListComportements[i]->getCouleur());
     
     return bestiole;
 

@@ -17,7 +17,8 @@ private:
 
 public:
     static ComportementGregaire* getInstance();
-
+    T * couleur;
+    T * getCouleur() const override;
     void bouge(Bestiole& bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const override;
 };
 

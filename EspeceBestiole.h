@@ -32,9 +32,11 @@ public :
    EspeceBestiole();                                
    EspeceBestiole(const EspeceBestiole& other);
    virtual ~EspeceBestiole( void ) ;
+   int getX() const {return x;}
+   int getY() const {return y;}
    virtual void action( Milieu & monMilieu ) = 0;
    virtual void draw( UImg & support ) = 0;
-   virtual bool jeTeVois( const EspeceBestiole & b ) const ;
+   virtual bool jeTeVois( const EspeceBestiole & b ) const = 0 ;
    void initCoords( int xLim, int yLim );
    virtual bool idDed() const  = 0;
 

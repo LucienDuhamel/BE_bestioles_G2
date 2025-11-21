@@ -64,7 +64,10 @@ void Bestiole::setComportement(   Comportement* Lecomportement)
 
 }
 
-
+void Bestiole::setCouleur(T   * coul)
+{
+   memcpy(couleur, coul, 3 * sizeof(T));
+}
 void Bestiole::bouge( int xLim, int yLim )
 {
 
@@ -123,6 +126,16 @@ void Bestiole::CollisionEffect()
     
 }
 
+bool Bestiole::jeTeVois( const EspeceBestiole & b ) const
+{
+
+   double         dist;
+
+
+   dist = std::sqrt( (x-b.getX())*(x-b.getX()) + (y-b.getY())*(y-b.getY()) );
+   return ( dist <= LIMITE_VUE );
+
+}
 void Bestiole::action( Milieu & monMilieu )
 {
    if(idDed())

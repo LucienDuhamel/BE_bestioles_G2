@@ -43,8 +43,8 @@ public :                                           // Forme canonique :
                                                     // Operateur d'affectation binaire par defaut
    void action( Milieu & monMilieu ) override;
    void draw( UImg & support ) override;
-
-
+   void setCouleur(T   * couleur);
+   bool jeTeVois( const EspeceBestiole & b ) const override;
    void setComportement(   Comportement* comportement);
    bool idDed() const override;
 

@@ -3,6 +3,7 @@
 
 
 #include "EspeceBestiole.h"
+#include "UImg.h"
 
 #include <iostream>
 #include <vector>
@@ -13,8 +14,9 @@ class Comportement
 {
 
 public :
+   
    virtual ~Comportement( void )= default;
-
+   virtual T * getCouleur() const = 0;
    virtual void bouge(Bestiole& bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const = 0;
 
 };
