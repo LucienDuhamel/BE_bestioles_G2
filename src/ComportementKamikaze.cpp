@@ -11,14 +11,25 @@ ComportementKamikaze* ComportementKamikaze::singletonKamikaze = nullptr;
 
 ComportementKamikaze*   ComportementKamikaze::getInstance()
 {
-    if (singletonKamikaze == nullptr)
+    if (singletonKamikaze == nullptr){
         singletonKamikaze = new ComportementKamikaze();
+        singletonKamikaze->couleur = new T[ 3 ];
+
+        // Couleur rouge foncé
+        singletonKamikaze->couleur[ 0 ] = 200;
+        singletonKamikaze->couleur[ 1 ] = 0;
+        singletonKamikaze->couleur[ 2 ] = 0;
+
+    }
 
     return  singletonKamikaze;
 }
 
+T * ComportementKamikaze::getCouleur()  const {
+    return couleur;
+}
 
-void ComportementKamikaze::bouge( Bestiole& bestiole, const std::vector<EspeceBestiole*>& listeBestioles) const
+void ComportementKamikaze::reagit( Bestiole& bestiole, const std::vector<EspeceBestiole*>& listeBestioles) const
 {
     const auto& bestiolesVisibles = bestiole.detecteBestioles(listeBestioles);
 
@@ -26,11 +37,11 @@ void ComportementKamikaze::bouge( Bestiole& bestiole, const std::vector<EspeceBe
         return; 
 
     // Initialisation : on suppose la première bestiole comme cible
-    Bestiole* cible = bestiolesVisibles.front();
+    EspeceBestiole* cible = bestiolesVisibles.front();
     double distanceMin = calcDistance(bestiole, *cible);
 
     // Recherche de la bestiole la plus proche
-    for (Bestiole* autre : bestiolesVisibles)
+    for (EspeceBestiole* autre : bestiolesVisibles)
     {
         double d = calcDistance(bestiole, *autre);
         if (d < distanceMin)
@@ -42,5 +53,4 @@ void ComportementKamikaze::bouge( Bestiole& bestiole, const std::vector<EspeceBe
 
     // Ajuster l'orientation vers la cible
     bestiole.setOrientation(calcOrientation(bestiole, *cible));
-
 }

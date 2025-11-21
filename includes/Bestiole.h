@@ -34,7 +34,7 @@ private :
    Comportement* comportement;
 
 private :
-   void bouge( int xLim, int yLim, Milieu & monMilieu );
+   void bouge( int xLim, int yLim );
 
 public :                                           // Forme canonique :
    Bestiole( void );                               // Constructeur par defaut
@@ -45,25 +45,17 @@ public :                                           // Forme canonique :
    void draw( UImg & support ) override;
 
 
+   void setCouleur(T   * couleur);
    void setComportement(   Comportement* comportement);
    bool idDed() const override;
 
    void CollisionEffect() override;
    double getDeathProb() const;
 
-   bool jeTeVois( const EspeceBestiole & b  ) const ;
-   const std::vector<EspeceBestiole*>& detecteBestioles(const std::vector<EspeceBestiole*>& listeBestioles);
+   bool jeTeVois( const EspeceBestiole & b ) const override;
+   const std::vector<EspeceBestiole*> detecteBestioles(const std::vector<EspeceBestiole*>& listeBestioles);
 
    EspeceBestiole* clone() const override;
-
-   double getVitesse() const { return vitesse; };
-   void setVitesse(double newVitesse) { vitesse = newVitesse; }
-
-   double getX() const { return x; };
-   double getY() const { return y; };  
-
-   double getOrientation() const { return orientation; };
-   void setOrientation(double newOrientation) { orientation = newOrientation; }
 
 };
 

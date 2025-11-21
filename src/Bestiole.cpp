@@ -65,18 +65,18 @@ void Bestiole::setComportement(   Comportement* leComportement)
 
 }
 
+void Bestiole::setCouleur(T   * coul)
+{
+   memcpy(couleur, coul, 3 * sizeof(T));
+}
 
-void Bestiole::bouge( int xLim, int yLim, Milieu& monMilieu )
+void Bestiole::bouge( int xLim, int yLim )
 {
 
    double         nx, ny;
    double         dx = cos( orientation )*vitesse;
    double         dy = -sin( orientation )*vitesse;
    int            cx, cy;
-
-
-
-   (*comportement).bouge(*this, monMilieu.getListeEspeceBestioles()); 
 
    cx = static_cast<int>( cumulX ); cumulX -= cx;
    cy = static_cast<int>( cumulY ); cumulY -= cy;
@@ -127,6 +127,17 @@ void Bestiole::CollisionEffect()
     
 }
 
+bool Bestiole::jeTeVois( const EspeceBestiole & b ) const
+{
+
+   double         dist;
+
+
+   dist = std::sqrt( (x-b.getX())*(x-b.getX()) + (y-b.getY())*(y-b.getY()) );
+   return ( dist <= LIMITE_VUE );
+
+}
+
 void Bestiole::action( Milieu & monMilieu )
 {
    if(idDed())
@@ -137,8 +148,8 @@ void Bestiole::action( Milieu & monMilieu )
       return;
    }
    age++;
-   comportement->bouge(*this, monMilieu.getListeEspeceBestioles() );
-   bouge( monMilieu.getWidth(), monMilieu.getHeight() );
+   comportement->reagit(*this, monMilieu.getListeEspeceBestioles() );
+   bouge( monMilieu.getWidth(), monMilieu.getHeight());
 
 }
 
@@ -177,17 +188,7 @@ EspeceBestiole* Bestiole::clone() const
 }
 
 
-bool Bestiole::jeTeVois( const EspeceBestiole & b ) const
-{
-   const Bestiole* pb = dynamic_cast<const Bestiole*>(&b);
-   if (!pb) return false;
-
-   double dist = calcDistance(*this, *pb);
-   return ( dist <= LIMITE_VUE );
-}
-
-
-const std::vector<EspeceBestiole*>& Bestiole::detecteBestioles( const std::vector<EspeceBestiole*>& listeBestioles)
+const std::vector<EspeceBestiole*> Bestiole::detecteBestioles( const std::vector<EspeceBestiole*>& listeBestioles)
 {  
    std::vector<EspeceBestiole*> listeBestiolesDetectees;
 

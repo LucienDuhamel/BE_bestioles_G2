@@ -23,6 +23,8 @@ protected :
 protected :
    int               identite;
 
+   double            vitesse;
+   double            orientation;
    int               x, y;
    T               * couleur;
 
@@ -34,7 +36,7 @@ public :
    virtual ~EspeceBestiole( void ) ;
    virtual void action( Milieu & monMilieu ) = 0;
    virtual void draw( UImg & support ) = 0;
-   virtual bool jeTeVois( const EspeceBestiole & b ) const ;
+   virtual bool jeTeVois( const EspeceBestiole & b ) const = 0 ;
    void initCoords( int xLim, int yLim );
    virtual bool idDed() const  = 0;
 
@@ -43,6 +45,15 @@ public :
    virtual EspeceBestiole* clone() const = 0;
 
    friend bool operator==( const EspeceBestiole & b1, const EspeceBestiole & b2 );
+
+   int getX() const { return x; };
+   int getY() const { return y; };
+
+   double getVitesse() const { return vitesse; };
+   void setVitesse(double newVitesse) { vitesse = newVitesse; }
+
+   double getOrientation() const { return orientation; };
+   void setOrientation(double newOrientation) { orientation = newOrientation; }
 
 };
 

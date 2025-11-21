@@ -11,7 +11,6 @@
 
 class ComportementPeureux : public Comportement
 {
-
 private : 
     static const int BESTIOLE_SCARED_NUMBER = 3; // Nombre de bestioles détectées pour être effrayé
     static const int REMAINING_SCARED_STEPS = 2; // Nombre d'étapes restantes à être effrayé
@@ -27,13 +26,14 @@ private:
     ComportementPeureux(const ComportementPeureux&) = delete;
     ComportementPeureux& operator=(const ComportementPeureux&) = delete;
 
+    T * couleur;
     static ComportementPeureux* singletonPeureux;
 
 public:
     static ComportementPeureux* getInstance();
 
-
-    void bouge(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) const override;
+    T * getCouleur()  const override;
+    void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) const override;
 
 };
 

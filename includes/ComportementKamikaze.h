@@ -17,13 +17,14 @@ private:
     ComportementKamikaze(const ComportementKamikaze&) = delete;
     ComportementKamikaze& operator=(const ComportementKamikaze&) = delete;
 
+    T * couleur;
     static ComportementKamikaze* singletonKamikaze;
 
 public:
     static ComportementKamikaze* getInstance();
+    T * getCouleur()  const  override;
 
-
-    void bouge(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) const override;
+    void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) const override;
 
 };
 

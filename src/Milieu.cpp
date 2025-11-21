@@ -16,15 +16,16 @@ const double  Milieu::TAUX_DE_NAISSANCES_SPONTANE = 0.4;//static_cast<double>( r
 Milieu::Milieu( int _width, int _height ) : UImg( _width, _height, 1, 3 ),
                                             width(_width), height(_height)
 {
-   ListComportements.push_back(ComportementGregaire::getInstance());
-   ListComportements.push_back(ComportementKamikaze::getInstance());
-   ListComportements.push_back(ComportementPeureux::getInstance());
-   ListComportements.push_back(ComportementPrevoyant::getInstance());
+   listeComportements.push_back(ComportementGregaire::getInstance());
+   listeComportements.push_back(ComportementKamikaze::getInstance());
+   listeComportements.push_back(ComportementPeureux::getInstance());
+   listeComportements.push_back(ComportementPrevoyant::getInstance());
 
-   ListComportements.push_back(ComportementPersoMultiples::getInstance(ListComportements));
+   listeComportements.push_back(ComportementPersoMultiples::getInstance(listeComportements));
+   std::cout << "Milieu::Milieu - Comportements initialises." << listeComportements.size() << std::endl;
    
    std::vector<double> proportions = {0.2, 0.1, 0.1, 0.3, 0.3};
-   bestioleFactory = new BestioleFactory(ListComportements, proportions);
+   bestioleFactory = new BestioleFactory(listeComportements, proportions);
    cout << "const Milieu" << endl;
 
    std::srand( time(NULL) );
@@ -41,10 +42,10 @@ Milieu::~Milieu( void )
     listeEspeceBestioles.clear();
 
     // Supprime tous les comportements
-    for (auto* c : ListComportements) {
+    for (auto* c : listeComportements) {
         delete c;
     }
-    ListComportements.clear();
+    listeComportements.clear();
 
     // Supprime la factory si elle a été créée dynamiquement
     delete bestioleFactory;
@@ -71,6 +72,7 @@ void Milieu::step( void )
    
 
    // clonage spontanement
+
    /*for ( std::vector<EspeceBestiole*>::iterator it = listeEspeceBestioles.end() ; it != listeEspeceBestioles.begin() ;  )
       if((double)std::rand() / RAND_MAX <= (*(--it))->CLONAGE_PROP)
          listeEspeceBestioles.push_back((*it)->clone());
@@ -142,4 +144,3 @@ void Milieu::detecteCollisions()
             break;
          }
 }
-

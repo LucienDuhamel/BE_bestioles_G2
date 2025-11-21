@@ -2,24 +2,32 @@
 #include "ComportementPrevoyant.h"
 #include <iostream>
 #include <vector>
-
+#include <cmath>
 
 ComportementPrevoyant* ComportementPrevoyant::singletonPrevoyant = nullptr;
 
 ComportementPrevoyant*   ComportementPrevoyant::getInstance()
 {
-    if (singletonPrevoyant == nullptr)
+    if (singletonPrevoyant == nullptr){
         singletonPrevoyant = new ComportementPrevoyant();
+        singletonPrevoyant->couleur = new T[ 3 ];
+
+        // Couleur bleu clair
+        singletonPrevoyant->couleur[ 0 ] = 30;
+        singletonPrevoyant->couleur[ 1 ] = 144;
+        singletonPrevoyant->couleur[ 2 ] = 255;
+
+    }
 
     return  singletonPrevoyant;
 }
 
+T * ComportementPrevoyant::getCouleur()  const {
+    return couleur;
+}
 
-#include "ComportementPrevoyant.h"
-#include "Bestiole.h"
-#include <cmath>
 
-void ComportementPrevoyant::bouge(
+void ComportementPrevoyant::reagit(
     Bestiole& bestiole,
     const std::vector<EspeceBestiole*>& listeBestioles
 ) const
@@ -43,7 +51,7 @@ void ComportementPrevoyant::bouge(
     double avoidX = 0.0;
     double avoidY = 0.0;
 
-    for (Bestiole* other : visibles)
+    for (EspeceBestiole* other : visibles)
     {
         if (other == nullptr)
             continue;

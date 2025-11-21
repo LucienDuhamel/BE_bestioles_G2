@@ -17,10 +17,10 @@ double calcDistance(T x1, T y1, T x2, T y2)
     return std::sqrt(dx*dx + dy*dy);
 }
 
-template <typename B>
-double calcDistance(const B& a, const B& b)
+template <typename B, typename C>
+double calcDistance(const B& b, const C& c)
 {
-    return calcDistance(a.getX(), a.getY(), b.getX(), b.getY());
+    return calcDistance(b.getX(), b.getY(), c.getX(), c.getY());
 }
 
 
@@ -32,10 +32,10 @@ double calcOrientation(T x1 , T y1, T x2, T y2 ){
     return std::atan(dy/dx);
 }
 
-template <typename B>
-double calcOrientation(const B& a, const B& b)
+template <typename B, typename C>
+double calcOrientation(const B& b, const C& c)
 {
-    return calcOrientation(a.getX(), a.getY(), b.getX(), b.getY());
+    return calcOrientation(b.getX(), b.getY(), c.getX(), c.getY());
 }
 
 template <typename T>

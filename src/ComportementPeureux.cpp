@@ -12,14 +12,26 @@ ComportementPeureux* ComportementPeureux::singletonPeureux = nullptr;
 
 ComportementPeureux*   ComportementPeureux::getInstance()
 {
-    if (singletonPeureux == nullptr)
+    if (singletonPeureux == nullptr){
         singletonPeureux = new ComportementPeureux();
+        singletonPeureux->couleur = new T[ 3 ];
+
+        // Couleur vert clair
+        singletonPeureux->couleur[ 0 ] = 34;
+        singletonPeureux->couleur[ 1 ] = 177;
+        singletonPeureux->couleur[ 2 ] = 76;
+
+    }
 
     return  singletonPeureux;
 }
 
+T * ComportementPeureux::getCouleur()  const  {
+    return couleur;
+}
 
-void ComportementPeureux::bouge(
+
+void ComportementPeureux::reagit(
     Bestiole& bestiole,
     const std::vector<EspeceBestiole*>& listeBestioles
 ) const
@@ -31,8 +43,8 @@ void ComportementPeureux::bouge(
     if (bestiolesVisibles.size() > BESTIOLE_SCARED_NUMBER)
     {
         // Calcul du barycentre des positions
-        double bx = 0.0, by = 0.0;
-        for (Bestiole* b : bestiolesVisibles)
+        int bx = 0.0, by = 0.0;
+        for (EspeceBestiole* b : bestiolesVisibles)
         {
             bx += b->getX();
             by += b->getY();

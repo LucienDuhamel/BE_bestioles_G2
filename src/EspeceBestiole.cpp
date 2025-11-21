@@ -66,16 +66,7 @@ void EspeceBestiole::initCoords( int xLim, int yLim )
 
 }
 
-bool EspeceBestiole::jeTeVois( const EspeceBestiole & b ) const
-{
 
-   double         dist;
-
-
-   dist = std::sqrt( (x-b.x)*(x-b.x) + (y-b.y)*(y-b.y) );
-   return ( dist <= LIMITE_VUE );
-
-}
 
 bool operator==( const EspeceBestiole & b1, const EspeceBestiole & b2 )
 {
