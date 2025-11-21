@@ -21,7 +21,7 @@ private :
    
    int                     width, height;
    std::vector<EspeceBestiole*>   listeEspeceBestioles;
-   std::vector<Comportement*> ListComportements;
+   std::vector<Comportement*> ListeComportements;
    EspeceBestioleFactory* bestioleFactory;
 
 
