@@ -16,7 +16,7 @@ private:
    std::vector<Comportement*> ListComportements;
 
 
-    ComportementPersoMultiples() {}
+    ComportementPersoMultiples()= delete;
     ComportementPersoMultiples(std::vector<Comportement*> ListComportement);
     ComportementPersoMultiples(const ComportementPersoMultiples&) = delete;
     ComportementPersoMultiples& operator=(const ComportementPersoMultiples&) = delete;
