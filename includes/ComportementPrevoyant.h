@@ -1,25 +1,34 @@
-#ifndef _COMPORTEMENT_PREVOYANT_H_
-#define _COMPORTEMENT_PREVOYANT_H_
+#ifndef _ComportementPrevoyant_
+#define _ComportementPrevoyant_
 
-#include "Milieu.h"
+#include "Comportement.h"
 #include "Bestiole.h"
 
 #include <iostream>
+#include <vector>
 
-using namespace std;
 
-class Bestiole;
 
-// Classe pour le comportement grégaire des bestioles
-class ComportementPrevoyant : public ComportementBestiole {
+class ComportementPrevoyant : public Comportement
+{
 
-private :
-    void bouge(Bestiole& b, std::vector< unique_ptr<Bestiole> > listeBestioles) const override final;
-    string getNameComportement() const override final;
+private:
+    static const double T_PREDICT = 15.0;
+    static const double DIST_MIN_COLLISION = 30.0;
+    static const double AVOID_STRENGTH = 1.5;
 
-public :
-    ComportementPrevoyant( void );
-    ~ComportementPrevoyant( void );
+private:
+    ComportementPrevoyant() {}
+    ComportementPrevoyant(const ComportementPrevoyant&) = delete;
+    ComportementPrevoyant& operator=(const ComportementPrevoyant&) = delete;
+
+    static ComportementPrevoyant* singletonPrevoyant;
+
+public:
+    static ComportementPrevoyant* getInstance();
+
+
+    void bouge(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) const override;
 
 };
 

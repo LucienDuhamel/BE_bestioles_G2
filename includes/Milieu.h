@@ -3,12 +3,11 @@
 
 
 #include "UImg.h"
-#include "Bestiole.h"
-
-
+#include "EspeceBestiole.h"
+#include "EspeceBestioleFactory.h"
+#include "Comportement.h"
 #include <iostream>
 #include <vector>
-#include <memory>
 
 using namespace std;
 
@@ -18,28 +17,29 @@ class Milieu : public UImg
 
 private :
    static const T          white[];
-
+   static const double     TAUX_DE_NAISSANCES_SPONTANE;
+   
    int                     width, height;
-   std::vector<std::unique_ptr<Bestiole>>   listeBestioles;
+   std::vector<EspeceBestiole*>   listeEspeceBestioles;
+   std::vector<Comportement*> ListComportements;
+   EspeceBestioleFactory* bestioleFactory;
 
 
 public :
    Milieu( int _width, int _height );
    ~Milieu( void );
-
+   void initConfig(int nbEspeces);
    int getWidth( void ) const { return width; };
    int getHeight( void ) const { return height; };
 
    void step( void );
-
-   const auto& getListeBestioles() const { return listeBestioles; }
-
-   void addMember(std::unique_ptr<Bestiole> b) {
-    b->initCoords(width, height);
-    listeBestioles.push_back(std::move(b));
-   }
-
-   int nbVoisins( const Bestiole & b );
+   const std::vector<EspeceBestiole*>& getListeEspeceBestioles() const {return listeEspeceBestioles;};
+   void addMember( EspeceBestiole* b ) { listeEspeceBestioles.push_back(b); listeEspeceBestioles.back()->initCoords(width, height); }
+   void addMember() {addMember(bestioleFactory->creerEspeceBestiole()); }
+   int nbVoisins( const EspeceBestiole& b );
+   void removeMember( EspeceBestiole* b );
+   void removeDeds();
+   void detecteCollisions();
 
 };
 

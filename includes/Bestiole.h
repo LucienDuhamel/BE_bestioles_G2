@@ -3,56 +3,58 @@
 
 
 #include "UImg.h"
-#include "utils.h"
-#include "ComportementBestiole.h"
 
 #include <iostream>
+#include "Comportement.h"
+#include "Milieu.h"
+#include "EspeceBestiole.h"
 
 using namespace std;
 
 
-class Milieu;
 
-
-class Bestiole
+class Bestiole : public EspeceBestiole
 {
 
 private :
-   static const double     AFF_SIZE;
+   
    static const double     MAX_VITESSE;
-   static const double     LIMITE_VUE;
-
-   static int              next;
+   static const int        MAX_AGE;
 
 private :
-   int               identite;
-   int               x, y;
    double            cumulX, cumulY;
    double            orientation;
    double            vitesse;
+   int               age;
+   int               age_Lim;
+   double deathProb;
+   bool Killed;
 
-   T               * couleur;
 
-   const ComportementBestiole& comportement;
+   Comportement* comportement;
 
 private :
-   void bouge( int xLim, int yLim, auto& listeBestioles );
+   void bouge( int xLim, int yLim, Milieu & monMilieu );
 
 public :                                           // Forme canonique :
-   Bestiole( const ComportementBestiole& comportement );  // Constructeur par defaut (ajout comportement)
+   Bestiole( void );                               // Constructeur par defaut
    Bestiole( const Bestiole & b );                 // Constructeur de copies
-   ~Bestiole( void );                              // Destructeur
-                                                   // Operateur d'affectation binaire par defaut
-   void action( Milieu & monMilieu );
-   void draw( UImg & support );
+   ~Bestiole( void );
+                                                    // Operateur d'affectation binaire par defaut
+   void action( Milieu & monMilieu ) override;
+   void draw( UImg & support ) override;
 
-   bool jeTeVois( const Bestiole& b ) const;
 
-   void initCoords( int xLim, int yLim );
+   void setComportement(   Comportement* comportement);
+   bool idDed() const override;
 
-   friend bool operator==( const Bestiole & b1, const Bestiole & b2 );
+   void CollisionEffect() override;
+   double getDeathProb() const;
 
-   const std::vector<std::unique_ptr<Bestiole>> detecteBestioles(std::vector<std::unique_ptr<Bestiole>> listeBestioles);
+   bool jeTeVois( const EspeceBestiole & b  ) const ;
+   const std::vector<EspeceBestiole*>& detecteBestioles(const std::vector<EspeceBestiole*>& listeBestioles);
+
+   EspeceBestiole* clone() const override;
 
    double getVitesse() const { return vitesse; };
    void setVitesse(double newVitesse) { vitesse = newVitesse; }

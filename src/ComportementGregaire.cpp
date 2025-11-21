@@ -1,24 +1,30 @@
 #include "Bestiole.h"
 #include "ComportementGregaire.h"
+#include <iostream>
+#include <vector>
 
-#include <memory>
+ComportementGregaire* ComportementGregaire::singletonGregaire = nullptr;
 
-
-void ComportementGregaire::bouge(Bestiole& b, std::vector< unique_ptr<Bestiole> > listeBestioles) const
+ComportementGregaire*  ComportementGregaire::getInstance()
 {
-    double mOrientation = 0.0;
-    const auto& liste = b.detecteBestioles(listeBestioles);
+    if (singletonGregaire == nullptr)
+        singletonGregaire = new ComportementGregaire();
 
-    for (Bestiole* bDetectee : liste)
-    {
-        mOrientation += bDetectee->getOrientation();
+    return  singletonGregaire;
+}
+
+void ComportementGregaire::bouge( Bestiole& bestiole, const std::vector<EspeceBestiole*>& listeBestioles) const
+{
+    const auto& liste = bestiole.detecteBestioles(listeBestioles);
+
+    if (liste.empty()) return;   // éviter division par zéro
+
+    double mOrientation = 0.0;
+
+    for (Bestiole* b : liste) {
+        mOrientation += b->getOrientation();
     }
 
     mOrientation /= liste.size();
-    b.setOrientation(mOrientation);
-}
-
-string ComportementGregaire::getNameComportement() const
-{
-    return "gregaire";
+    bestiole.setOrientation(mOrientation);
 }

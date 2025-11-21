@@ -1,65 +1,74 @@
 #include "Bestiole.h"
 #include "ComportementPeureux.h"
+#include "utils.h"
+
+#include <iostream>
+#include <vector>
 
 
-void ComportementPeureux::bouge(Bestiole& b) const
-{   
+ComportementPeureux* ComportementPeureux::singletonPeureux = nullptr;
 
-    bool simJustStarted = false;
-    bool isScared = false;
-    const auto& liste = b.getListeBestiolesDetectees();
-    int nbStep = 0; // Nombre d'étapes restantes à être effrayé.
-    double vIni = 0.0;
 
-    if (simJustStarted){
-        vIni = b.getVitesse();
-        simJustStarted = false;
-    } // end if
 
-    if (liste.size()>BESTIOLE_SCARED_NUMBER){
-        double mX = 0.0; double mY = 0.0;
-        for (Bestiole* other : liste){
-            mX += other->getX();;
-            mY += other->getY();
-        } // end for
+ComportementPeureux*   ComportementPeureux::getInstance()
+{
+    if (singletonPeureux == nullptr)
+        singletonPeureux = new ComportementPeureux();
 
-        mX /= liste.size();
-        mY /= liste.size();
- 
-        // On fuit le barycentre des positions des bestioles détectées.
-        b.setOrientation(calcOrientation(b.getX(), b.getY(), mX, mY) + M_PI);
-
-        if (!isScared){
-            isScared = true;
-            b.setVitesse(vIni * SPEED_COEF);
-
-        } //end if
-
-        nbStep = REMAINING_SCARED_STEPS; // Nombre d'étapes restantes à être effrayé.
-
-    } //end if
-
-    else {
-        if (nbStep > 0) {
-            if (isScared){
-                isScared = false;
-            } //end if 
-
-        nbStep -= 1;
-
-        } // end if
-
-        else {
-            // On revient à la vitesse normale.
-            b.setVitesse(vIni);
-        }// end else
-
-    }// end else
-
+    return  singletonPeureux;
 }
 
 
-string ComportementPeureux::getNameComportement() const
+void ComportementPeureux::bouge(
+    Bestiole& bestiole,
+    const std::vector<EspeceBestiole*>& listeBestioles
+) const
 {
-    return "peureux";
+    // Liste des bestioles visibles
+    const auto& bestiolesVisibles = bestiole.detecteBestioles(listeBestioles);
+
+    // Si assez d'individus pour être effrayé
+    if (bestiolesVisibles.size() > BESTIOLE_SCARED_NUMBER)
+    {
+        // Calcul du barycentre des positions
+        double bx = 0.0, by = 0.0;
+        for (Bestiole* b : bestiolesVisibles)
+        {
+            bx += b->getX();
+            by += b->getY();
+        }
+
+        bx /= bestiolesVisibles.size();
+        by /= bestiolesVisibles.size();
+
+        // Fuite : orientation opposée au barycentre
+        bestiole.setOrientation(
+            calcOrientation(bestiole.getX(), bestiole.getY(), bx, by) + M_PI
+        );
+
+        // Activation du mode "effrayé"
+        if (!isScared)
+        {
+            isScared = true;
+            vIni = bestiole.getVitesse();   // Sauvegarde de la vitesse d'origine
+            bestiole.setVitesse(vIni * SPEED_COEF);
+        }
+
+        nbStep = REMAINING_SCARED_STEPS;
+    }
+    else
+    {
+        // Encore effrayé ?
+        if (nbStep > 0)
+        {
+            nbStep--;
+
+            if (nbStep == 0)
+            {
+                // Retour vitesse normale
+                bestiole.setVitesse(vIni);
+                isScared = false;
+            }
+        }
+    }
 }

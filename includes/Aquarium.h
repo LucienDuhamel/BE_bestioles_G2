@@ -9,7 +9,8 @@ using namespace std;
 using namespace cimg_library;
 
 
-class Milieu;
+//class Milieu;
+#include "Milieu.h"
 
 
 class Aquarium : public CImgDisplay

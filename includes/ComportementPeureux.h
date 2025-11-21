@@ -1,27 +1,39 @@
-#ifndef _COMPORTEMENT_PEUREUX_H_
-#define _COMPORTEMENT_PEUREUX_H_
+#ifndef _ComportementPeureux_
+#define _ComportementPeureux_
 
-#include "Milieu.h"
+#include "Comportement.h"
 #include "Bestiole.h"
 
 #include <iostream>
+#include <vector>
 
-using namespace std;
 
-class Bestiole;
 
-// Classe pour le comportement grégaire des bestioles
-class ComportementPeureux : public ComportementBestiole {
+class ComportementPeureux : public Comportement
+{
 
-private :
-    static const int BESTIOLE_SCARED_NUMBER = 3;
-    static const int REMAINING_SCARED_STEPS = 2;
-    static const int SPEED_COEF = 5;
-    void bouge(Bestiole& bestiole, std::vector< unique_ptr<Bestiole> > listeBestioles) const override final;
-    string getNameComportement() const override final;
-public :
-    ComportementPeureux( void );
-    ~ComportementPeureux( void );
+private : 
+    static const int BESTIOLE_SCARED_NUMBER = 3; // Nombre de bestioles détectées pour être effrayé
+    static const int REMAINING_SCARED_STEPS = 2; // Nombre d'étapes restantes à être effrayé
+    static const int SPEED_COEF = 5;             // Coefficient de vitesse quand effrayé
+
+    // États modifiés lors de l'exécution (valeurs par défaut)
+    mutable bool isScared = false;
+    mutable int nbStep = 0;
+    mutable double vIni = 0.0;
+
+private:
+    ComportementPeureux() {}
+    ComportementPeureux(const ComportementPeureux&) = delete;
+    ComportementPeureux& operator=(const ComportementPeureux&) = delete;
+
+    static ComportementPeureux* singletonPeureux;
+
+public:
+    static ComportementPeureux* getInstance();
+
+
+    void bouge(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) const override;
 
 };
 

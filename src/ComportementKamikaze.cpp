@@ -2,34 +2,45 @@
 #include "ComportementKamikaze.h"
 #include "utils.h"
 
-void ComportementKamikaze::bouge(Bestiole& b) const
+#include <iostream>
+#include <vector>
+
+
+ComportementKamikaze* ComportementKamikaze::singletonKamikaze = nullptr;
+
+
+ComportementKamikaze*   ComportementKamikaze::getInstance()
 {
-    const auto& liste = b.getListeBestiolesDetectees();
+    if (singletonKamikaze == nullptr)
+        singletonKamikaze = new ComportementKamikaze();
 
-    if (liste.empty())
-        return; // rien à poursuivre
+    return  singletonKamikaze;
+}
 
-    // Bestiole la plus proche au début
-    Bestiole* targeted = liste[0];
-    double minDistance = calcDistance(b, *targeted);
 
-    // Trouver la bestiole la plus proche
-    for (Bestiole* other : liste)
+void ComportementKamikaze::bouge( Bestiole& bestiole, const std::vector<EspeceBestiole*>& listeBestioles) const
+{
+    const auto& bestiolesVisibles = bestiole.detecteBestioles(listeBestioles);
+
+    if (bestiolesVisibles.empty())
+        return; 
+
+    // Initialisation : on suppose la première bestiole comme cible
+    Bestiole* cible = bestiolesVisibles.front();
+    double distanceMin = calcDistance(bestiole, *cible);
+
+    // Recherche de la bestiole la plus proche
+    for (Bestiole* autre : bestiolesVisibles)
     {
-        double d = calcDistance(b, *other);
-        if (d < minDistance)
+        double d = calcDistance(bestiole, *autre);
+        if (d < distanceMin)
         {
-            minDistance = d;
-            targeted = other;
+            distanceMin = d;
+            cible = autre;
         }
     }
 
     // Ajuster l'orientation vers la cible
-    b.setOrientation( calcOrientation(b, *targeted) );
-}
+    bestiole.setOrientation(calcOrientation(bestiole, *cible));
 
-
-string ComportementKamikaze::getNameComportement() const
-{
-    return "kamikaze";
 }

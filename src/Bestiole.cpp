@@ -1,112 +1,72 @@
 #include "Bestiole.h"
 
 #include "Milieu.h"
+#include "utils.h"
 
 #include <cstdlib>
 #include <cmath>
 
 
-const double      Bestiole::AFF_SIZE = 8.;
 const double      Bestiole::MAX_VITESSE = 10.;
-const double      Bestiole::LIMITE_VUE = 30.;
 
-int               Bestiole::next = 0;
+const int         Bestiole::MAX_AGE = 100;
 
 
-Bestiole :: Bestiole(const ComportementBestiole& comportement) : comportement(comportement)
+Bestiole::Bestiole( void )
 {
 
-   identite = ++next;
+   //identite = ++next;
 
    cout << "const Bestiole (" << identite << ") par defaut" << endl;
 
-   x = y = 0;
+   age_Lim = static_cast<double>( rand() )/RAND_MAX*MAX_AGE;
+   age = 0;
+   Killed = false;
+   deathProb = static_cast<double>( rand() )/RAND_MAX;
    cumulX = cumulY = 0.;
    orientation = static_cast<double>( rand() )/RAND_MAX*2.*M_PI;
    vitesse = static_cast<double>( rand() )/RAND_MAX*MAX_VITESSE;
 
-   couleur = new T[ 3 ];
-
-   if (comportement.getTypeComportement() == "gregaire"){
-      // couleur bleue pour comportement gregaire
-      couleur[0] = 30;   // R
-      couleur[1] = 144;  // G
-      couleur[2] = 255;  // B
-   }
-
-   if (comportement.getTypeComportement() == "peureuse"){
-      // couleur verte pour comportement peureuse
-      couleur[0] = 34;
-      couleur[1] = 177;
-      couleur[2] = 76;
-
-   }
-
-   if (comportement.getTypeComportement() == "kamikaze"){
-      // couleur rouge pour comportement kamikaze
-      couleur[0] = 200;
-      couleur[1] = 0;
-      couleur[2] = 0;
-   }
-
-   if (comportement.getTypeComportement() == "prevoyant"){
-      // couleur orange pour comportement prevoyant
-      couleur[0] = 255;
-      couleur[1] = 128;
-      couleur[2] = 0;
-   }
-
-   if (comportement.getTypeComportement() == "multiple"){
-      // couleur violet pour comportement multiple
-      couleur[0] = 163;
-      couleur[1] = 73;
-      couleur[2] = 164;
-   }
-   // couleur[ 0 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
-   // couleur[ 1 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
-   // couleur[ 2 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
-
+   
 }
 
 
-Bestiole::Bestiole( const Bestiole & b ) : comportement(b.comportement)
+Bestiole::Bestiole( const Bestiole & b ) : EspeceBestiole(b)
 {
 
-   identite = ++next;
 
-   cout << "const Bestiole (" << identite << ") par copie" << endl;
+   cout << "const Bestiole (" << identite << ") par copie : from "<< b.identite << endl;
 
-   x = b.x;
-   y = b.y;
+   age_Lim = b.age_Lim;
+   age = b.age;
+   Killed = b.Killed;
+   deathProb = b.deathProb;
    cumulX = cumulY = 0.;
+   comportement = b.comportement;
    orientation = b.orientation;
    vitesse = b.vitesse;
-   couleur = new T[ 3 ];
-   memcpy( couleur, b.couleur, 3*sizeof(T) ); 
 
 }
+
 
 
 Bestiole::~Bestiole( void )
 {
 
-   delete[] couleur;
 
-   cout << "dest Bestiole" << endl;
+   cout << "dest Bestiole -> " ;
 
 }
 
-
-void Bestiole::initCoords( int xLim, int yLim )
+void Bestiole::setComportement(   Comportement* leComportement)
 {
 
-   x = rand() % xLim;
-   y = rand() % yLim;
+   comportement = leComportement;
 
 }
 
 
-void Bestiole::bouge( int xLim, int yLim , auto& listeBestioles)
+void Bestiole::bouge( int xLim, int yLim, Milieu& monMilieu )
 {
 
    double         nx, ny;
@@ -115,7 +75,8 @@ void Bestiole::bouge( int xLim, int yLim , auto& listeBestioles)
    int            cx, cy;
 
 
-   comportement.bouge( *this, listeBestioles );
+
+   (*comportement).bouge(*this, monMilieu.getListeEspeceBestioles()); 
 
    cx = static_cast<int>( cumulX ); cumulX -= cx;
    cy = static_cast<int>( cumulY ); cumulY -= cy;
@@ -143,11 +104,41 @@ void Bestiole::bouge( int xLim, int yLim , auto& listeBestioles)
 
 }
 
+double Bestiole::getDeathProb() const
+{
+   return deathProb;
+}
+
+
+void Bestiole::CollisionEffect()
+{
+   // TO Do
+
+   // Sinon elle rebondit = demi-tour
+    orientation += M_PI;
+    double r = (double)rand() / RAND_MAX;
+
+    if (r < getDeathProb())
+    {
+        Killed = true ;      // marque la bestiole comme morte
+        return;
+    }
+
+    
+}
 
 void Bestiole::action( Milieu & monMilieu )
 {
-
-   bouge( monMilieu.getWidth(), monMilieu.getHeight(), monMilieu.getListeBestioles() );
+   if(idDed())
+   {
+      couleur[ 0 ] = 0;
+      couleur[ 1 ] = 0;
+      couleur[ 2 ] = 0;
+      return;
+   }
+   age++;
+   comportement->bouge(*this, monMilieu.getListeEspeceBestioles() );
+   bouge( monMilieu.getWidth(), monMilieu.getHeight() );
 
 }
 
@@ -164,38 +155,49 @@ void Bestiole::draw( UImg & support )
 
 }
 
-
-bool operator==( const Bestiole & b1, const Bestiole & b2 )
+bool Bestiole::idDed() const
 {
-
-   return ( b1.identite == b2.identite );
-
+   if(age>=age_Lim)
+   {
+      cout<< "(" << identite << ") age limit reached " ;
+   }
+   
+   if (Killed)
+   {
+      cout<< "(" << identite << ")  killed           " ;
+   }
+   return age>=age_Lim || Killed ;
 }
 
 
-bool Bestiole::jeTeVois( const Bestiole & b ) const
+
+EspeceBestiole* Bestiole::clone() const
 {
+    return new Bestiole(*this);
+}
 
-   double         dist;
 
+bool Bestiole::jeTeVois( const EspeceBestiole & b ) const
+{
+   const Bestiole* pb = dynamic_cast<const Bestiole*>(&b);
+   if (!pb) return false;
 
-   dist = calcDistance(*this, b);
+   double dist = calcDistance(*this, *pb);
    return ( dist <= LIMITE_VUE );
-
 }
 
 
-const auto& Bestiole::detecteBestioles(auto& listeBestioles)
+const std::vector<EspeceBestiole*>& Bestiole::detecteBestioles( const std::vector<EspeceBestiole*>& listeBestioles)
 {  
-   std::vector<Bestiole*> listeBestiolesDetectees;
+   std::vector<EspeceBestiole*> listeBestiolesDetectees;
 
-    for (Bestiole* other : listeBestioles) 
-    {
-        if (other != this && jeTeVois(*other))
-        {
-            listeBestiolesDetectees.push_back(other);
-        }
-    }// end for$
+   for (EspeceBestiole* other : listeBestioles) 
+   {
+      if (other != nullptr && other != this && jeTeVois(*other))
+      {
+         listeBestiolesDetectees.push_back(other);
+      }
+   }
 
    return listeBestiolesDetectees;
 }

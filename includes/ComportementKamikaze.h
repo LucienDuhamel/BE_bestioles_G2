@@ -1,25 +1,29 @@
-#ifndef _COMPORTEMENT_KAMIKAZE_H_
-#define _COMPORTEMENT_KAMIKAZE_H_
+#ifndef _ComportementKamikaze_
+#define _ComportementKamikaze_
 
-#include "Milieu.h"
+#include "Comportement.h"
 #include "Bestiole.h"
 
 #include <iostream>
+#include <vector>
 
-using namespace std;
 
-class Bestiole;
 
-// Classe pour le comportement grégaire des bestioles
-class ComportementKamikaze : public ComportementBestiole {
+class ComportementKamikaze : public Comportement
+{
 
-private :
-    void bouge(Bestiole& bestiole, std::vector< unique_ptr<Bestiole> > listeBestioles) const override final;;
-    string getNameComportement() const override final;
+private:
+    ComportementKamikaze() {}
+    ComportementKamikaze(const ComportementKamikaze&) = delete;
+    ComportementKamikaze& operator=(const ComportementKamikaze&) = delete;
 
-public :
-    ComportementKamikaze( void );
-    ~ComportementKamikaze( void );
+    static ComportementKamikaze* singletonKamikaze;
+
+public:
+    static ComportementKamikaze* getInstance();
+
+
+    void bouge(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) const override;
 
 };
 

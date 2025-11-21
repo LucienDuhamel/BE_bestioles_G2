@@ -1,26 +1,24 @@
-#ifndef _COMPORTEMENT_GREGAIRE_H_
-#define _COMPORTEMENT_GREGAIRE_H_
+#ifndef _ComportementGregaire_
+#define _ComportementGregaire_
 
-#include "ComportementBestiole.h"
+#include "Comportement.h"
+#include "Bestiole.h"
 
-#include <iostream>
+#include <vector>
 
-using namespace std;
+class ComportementGregaire : public Comportement
+{
+private:
+    ComportementGregaire() {}
+    ComportementGregaire(const ComportementGregaire&) = delete;
+    ComportementGregaire& operator=(const ComportementGregaire&) = delete;
 
-class Bestiole;
+    static ComportementGregaire* singletonGregaire;
 
-// Classe pour le comportement grégaire des bestioles
-class ComportementGregaire : public ComportementBestiole {
+public:
+    static ComportementGregaire* getInstance();
 
-private :
-    string getNameComportement() const override final;
-    void bouge(Bestiole& bestiole, std::vector< unique_ptr<Bestiole> > listeBestioles) const override final;
-
-public :
-    ComportementGregaire( void );
-    ~ComportementGregaire( void );
-
+    void bouge(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) const override;
 };
-
 
 #endif
