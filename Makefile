@@ -1,15 +1,48 @@
-main : main.cpp Aquarium.o Bestiole.o Milieu.o
-	g++ -Wall -std=c++11 -o main main.cpp Aquarium.o Bestiole.o Milieu.o -I . -lX11 -lpthread
+# Compilateur
+CXX = g++
+INCLUDES = -Iincludes
+CXXFLAGS = -Wall -Wextra -std=c++17 $(INCLUDES)
 
-Aquarium.o : Aquarium.h Aquarium.cpp
-	g++ -Wall -std=c++11  -c Aquarium.cpp -I .
+# Trouve automatiquement tous les fichiers .cpp
+SRC = $(wildcard src/*.cpp)
+OBJ = $(SRC:.cpp=.o)
 
-Bestiole.o : Bestiole.h Bestiole.cpp
-	g++ -Wall -std=c++11  -c Bestiole.cpp -I .
+# Nom de l’exécutable
+EXEC = lauch_simulation
 
-Milieu.o : Milieu.h Milieu.cpp
-	g++ -Wall -std=c++11  -c Milieu.cpp -I .
+all: $(EXEC)
+
+$(EXEC): $(OBJ)
+	$(CXX) $(CXXFLAGS) -o $@ $^
+
+# Règle générique : comment transformer un .cpp en .o
+src/%.o: src/%.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -rf *.o main
+	rm -f src/*.o $(EXEC)
+
+.PHONY: all clean
+
+
+
+
+
+
+
+# main : main.cpp Aquarium.o Bestiole.o Milieu.o 
+
+# 	g++ -Wall -std=c++11 -o main main.cpp Aquarium.o Bestiole.o Milieu.o -I . -lX11 -lpthread
+
+# Aquarium.o : Aquarium.h Aquarium.cpp
+# 	g++ -Wall -std=c++11  -c Aquarium.cpp -I .
+
+# Bestiole.o : Bestiole.h Bestiole.cpp
+# 	g++ -Wall -std=c++11  -c Bestiole.cpp -I .
+
+# Milieu.o : Milieu.h Milieu.cpp
+# 	g++ -Wall -std=c++11  -c Milieu.cpp -I .
+
+# clean:
+# 	rm -rf *.o main
 

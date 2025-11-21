@@ -3,6 +3,8 @@
 
 
 #include "UImg.h"
+#include "utils.h"
+#include "ComportementBestiole.h"
 
 #include <iostream>
 
@@ -31,22 +33,35 @@ private :
 
    T               * couleur;
 
+   const ComportementBestiole& comportement;
+
 private :
-   void bouge( int xLim, int yLim );
+   void bouge( int xLim, int yLim, auto& listeBestioles );
 
 public :                                           // Forme canonique :
-   Bestiole( void );                               // Constructeur par defaut
+   Bestiole( const ComportementBestiole& comportement );  // Constructeur par defaut (ajout comportement)
    Bestiole( const Bestiole & b );                 // Constructeur de copies
    ~Bestiole( void );                              // Destructeur
                                                    // Operateur d'affectation binaire par defaut
    void action( Milieu & monMilieu );
    void draw( UImg & support );
 
-   bool jeTeVois( const Bestiole & b ) const;
+   bool jeTeVois( const Bestiole& b ) const;
 
    void initCoords( int xLim, int yLim );
 
    friend bool operator==( const Bestiole & b1, const Bestiole & b2 );
+
+   const std::vector<std::unique_ptr<Bestiole>> detecteBestioles(std::vector<std::unique_ptr<Bestiole>> listeBestioles);
+
+   double getVitesse() const { return vitesse; };
+   void setVitesse(double newVitesse) { vitesse = newVitesse; }
+
+   double getX() const { return x; };
+   double getY() const { return y; };  
+
+   double getOrientation() const { return orientation; };
+   void setOrientation(double newOrientation) { orientation = newOrientation; }
 
 };
 

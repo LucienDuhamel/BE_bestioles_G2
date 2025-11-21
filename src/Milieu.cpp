@@ -30,11 +30,11 @@ void Milieu::step( void )
 {
 
    cimg_forXY( *this, x, y ) fillC( x, y, 0, white[0], white[1], white[2] );
-   for ( std::vector<Bestiole>::iterator it = listeBestioles.begin() ; it != listeBestioles.end() ; ++it )
+   for ( auto& b : listeBestioles )
    {
-
-      it->action( *this );
-      it->draw( *this );
+      b.detecteBestioles(listeBestioles);
+      b.action( *this );
+      b.draw( *this );
 
    } // for
 
@@ -45,7 +45,7 @@ int Milieu::nbVoisins( const Bestiole & b )
 {
 
    int         nb = 0;
-
+      
 
    for ( std::vector<Bestiole>::iterator it = listeBestioles.begin() ; it != listeBestioles.end() ; ++it )
       if ( !(b == *it) && b.jeTeVois(*it) )

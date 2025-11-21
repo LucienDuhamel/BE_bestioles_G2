@@ -13,7 +13,7 @@ const double      Bestiole::LIMITE_VUE = 30.;
 int               Bestiole::next = 0;
 
 
-Bestiole::Bestiole( void )
+Bestiole :: Bestiole(const ComportementBestiole& comportement) : comportement(comportement)
 {
 
    identite = ++next;
@@ -26,14 +26,50 @@ Bestiole::Bestiole( void )
    vitesse = static_cast<double>( rand() )/RAND_MAX*MAX_VITESSE;
 
    couleur = new T[ 3 ];
-   couleur[ 0 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
-   couleur[ 1 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
-   couleur[ 2 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
+
+   if (comportement.getTypeComportement() == "gregaire"){
+      // couleur bleue pour comportement gregaire
+      couleur[0] = 30;   // R
+      couleur[1] = 144;  // G
+      couleur[2] = 255;  // B
+   }
+
+   if (comportement.getTypeComportement() == "peureuse"){
+      // couleur verte pour comportement peureuse
+      couleur[0] = 34;
+      couleur[1] = 177;
+      couleur[2] = 76;
+
+   }
+
+   if (comportement.getTypeComportement() == "kamikaze"){
+      // couleur rouge pour comportement kamikaze
+      couleur[0] = 200;
+      couleur[1] = 0;
+      couleur[2] = 0;
+   }
+
+   if (comportement.getTypeComportement() == "prevoyant"){
+      // couleur orange pour comportement prevoyant
+      couleur[0] = 255;
+      couleur[1] = 128;
+      couleur[2] = 0;
+   }
+
+   if (comportement.getTypeComportement() == "multiple"){
+      // couleur violet pour comportement multiple
+      couleur[0] = 163;
+      couleur[1] = 73;
+      couleur[2] = 164;
+   }
+   // couleur[ 0 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
+   // couleur[ 1 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
+   // couleur[ 2 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
 
 }
 
 
-Bestiole::Bestiole( const Bestiole & b )
+Bestiole::Bestiole( const Bestiole & b ) : comportement(b.comportement)
 {
 
    identite = ++next;
@@ -46,7 +82,7 @@ Bestiole::Bestiole( const Bestiole & b )
    orientation = b.orientation;
    vitesse = b.vitesse;
    couleur = new T[ 3 ];
-   memcpy( couleur, b.couleur, 3*sizeof(T) );
+   memcpy( couleur, b.couleur, 3*sizeof(T) ); 
 
 }
 
@@ -70,7 +106,7 @@ void Bestiole::initCoords( int xLim, int yLim )
 }
 
 
-void Bestiole::bouge( int xLim, int yLim )
+void Bestiole::bouge( int xLim, int yLim , auto& listeBestioles)
 {
 
    double         nx, ny;
@@ -78,6 +114,8 @@ void Bestiole::bouge( int xLim, int yLim )
    double         dy = -sin( orientation )*vitesse;
    int            cx, cy;
 
+
+   comportement.bouge( *this, listeBestioles );
 
    cx = static_cast<int>( cumulX ); cumulX -= cx;
    cy = static_cast<int>( cumulY ); cumulY -= cy;
@@ -109,7 +147,7 @@ void Bestiole::bouge( int xLim, int yLim )
 void Bestiole::action( Milieu & monMilieu )
 {
 
-   bouge( monMilieu.getWidth(), monMilieu.getHeight() );
+   bouge( monMilieu.getWidth(), monMilieu.getHeight(), monMilieu.getListeBestioles() );
 
 }
 
@@ -141,7 +179,23 @@ bool Bestiole::jeTeVois( const Bestiole & b ) const
    double         dist;
 
 
-   dist = std::sqrt( (x-b.x)*(x-b.x) + (y-b.y)*(y-b.y) );
+   dist = calcDistance(*this, b);
    return ( dist <= LIMITE_VUE );
 
+}
+
+
+const auto& Bestiole::detecteBestioles(auto& listeBestioles)
+{  
+   std::vector<Bestiole*> listeBestiolesDetectees;
+
+    for (Bestiole* other : listeBestioles) 
+    {
+        if (other != this && jeTeVois(*other))
+        {
+            listeBestiolesDetectees.push_back(other);
+        }
+    }// end for$
+
+   return listeBestiolesDetectees;
 }

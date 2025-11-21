@@ -5,8 +5,10 @@
 #include "UImg.h"
 #include "Bestiole.h"
 
+
 #include <iostream>
 #include <vector>
+#include <memory>
 
 using namespace std;
 
@@ -18,7 +20,8 @@ private :
    static const T          white[];
 
    int                     width, height;
-   std::vector<Bestiole>   listeBestioles;
+   std::vector<std::unique_ptr<Bestiole>>   listeBestioles;
+
 
 public :
    Milieu( int _width, int _height );
@@ -29,7 +32,13 @@ public :
 
    void step( void );
 
-   void addMember( const Bestiole & b ) { listeBestioles.push_back(b); listeBestioles.back().initCoords(width, height); }
+   const auto& getListeBestioles() const { return listeBestioles; }
+
+   void addMember(std::unique_ptr<Bestiole> b) {
+    b->initCoords(width, height);
+    listeBestioles.push_back(std::move(b));
+   }
+
    int nbVoisins( const Bestiole & b );
 
 };
