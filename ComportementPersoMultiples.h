@@ -32,6 +32,8 @@ public:
 
     void bouge(Bestiole& bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const override;
 
+    std::string getName() const override { return "Comportement Perso Multiples"; }
+
 };
 
 

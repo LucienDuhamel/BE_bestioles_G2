@@ -5,6 +5,7 @@
 #include "Bestiole.h"
 
 #include <vector>
+#include <string>
 
 class ComportementGregaire : public Comportement
 {
@@ -19,6 +20,8 @@ public:
     static ComportementGregaire* getInstance();
 
     void bouge(Bestiole& bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const override;
+
+    std::string getName() const override { return "Comportement Gregaire"; }
 };
 
 #endif

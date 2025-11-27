@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <CImg.h>
+#include <cstdio>
 
 using namespace std;
 using namespace cimg_library;
@@ -11,6 +12,7 @@ using namespace cimg_library;
 
 //class Milieu;
 #include "Milieu.h"
+#include "Simulation.h"
 
 
 class Aquarium : public CImgDisplay
@@ -18,6 +20,8 @@ class Aquarium : public CImgDisplay
 
 private :
    Milieu       * flotte;
+
+   Simulation  * simulation;
 
    int            delay;
 

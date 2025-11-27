@@ -172,3 +172,18 @@ EspeceBestiole* Bestiole::clone() const
     return new Bestiole(*this);
 }
 
+
+const std::vector<EspeceBestiole*>& Bestiole::detecteBestioles( const std::vector<EspeceBestiole*>& listeBestioles)
+{  
+   std::vector<EspeceBestiole*> listeBestiolesDetectees;
+
+   for (EspeceBestiole* other : listeBestioles) 
+   {
+      if (other != nullptr && other != this && jeTeVois(*other))
+      {
+         listeBestiolesDetectees.push_back(other);
+      }
+   }
+
+   return listeBestiolesDetectees;
+}

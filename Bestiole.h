@@ -53,6 +53,10 @@ public :                                           // Forme canonique :
 
    EspeceBestiole* clone() const override;
 
+   Comportement* getComportement() const override { return comportement; }
+   double getorientation() const override { return orientation; }
+   double getVitesse() const override { return vitesse; }
+
 
 
 };

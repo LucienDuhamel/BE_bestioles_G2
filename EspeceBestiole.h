@@ -11,6 +11,8 @@ using namespace std;
 
 class Milieu;
 
+class Comportement;
+
 class EspeceBestiole
 {
 
@@ -43,6 +45,13 @@ public :
    virtual EspeceBestiole* clone() const = 0;
 
    friend bool operator==( const EspeceBestiole & b1, const EspeceBestiole & b2 );
+
+   int getx() const { return x; }
+   int gety() const { return y; }
+   int getidentite() const { return identite; }
+   virtual Comportement* getComportement() const = 0;
+   virtual double getVitesse() const = 0;
+   virtual double getorientation() const = 0;
 
 };
 

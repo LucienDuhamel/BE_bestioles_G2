@@ -17,6 +17,8 @@ public :
 
    virtual void bouge(Bestiole& bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const = 0;
 
+   virtual std::string getName() const = 0;
+
 };
 
 
