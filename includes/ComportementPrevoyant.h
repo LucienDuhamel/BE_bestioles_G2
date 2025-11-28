@@ -28,8 +28,8 @@ public:
     static ComportementPrevoyant* getInstance();
 
     T * getCouleur()  const override;
-
-    void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) const override;
+    std::string getNom() const override { return "Prevoyant"; }
+    void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) override;
 
 };
 

@@ -9,7 +9,7 @@
 
 const double      Bestiole::MAX_VITESSE = 10.;
 
-const int         Bestiole::MAX_AGE = 100;
+const int         Bestiole::MAX_AGE = 1000;
 
 
 Bestiole::Bestiole( void )
@@ -70,40 +70,6 @@ void Bestiole::setCouleur(T   * coul)
    memcpy(couleur, coul, 3 * sizeof(T));
 }
 
-void Bestiole::bouge( int xLim, int yLim )
-{
-
-   double         nx, ny;
-   double         dx = cos( orientation )*vitesse;
-   double         dy = -sin( orientation )*vitesse;
-   int            cx, cy;
-
-   cx = static_cast<int>( cumulX ); cumulX -= cx;
-   cy = static_cast<int>( cumulY ); cumulY -= cy;
-
-   nx = x + dx + cx;
-   ny = y + dy + cy;
-
-   if ( (nx < 0) || (nx > xLim - 1) ) {
-      orientation = M_PI - orientation;
-      cumulX = 0.;
-   }
-   else {
-      x = static_cast<int>( nx );
-      cumulX += nx - x;
-   }
-
-   if ( (ny < 0) || (ny > yLim - 1) ) {
-      orientation = -orientation;
-      cumulY = 0.;
-   }
-   else {
-      y = static_cast<int>( ny );
-      cumulY += ny - y;
-   }
-
-}
-
 double Bestiole::getDeathProb() const
 {
    return deathProb;
@@ -133,7 +99,7 @@ bool Bestiole::jeTeVois( const EspeceBestiole & b ) const
    double         dist;
 
 
-   dist = std::sqrt( (x-b.getX())*(x-b.getX()) + (y-b.getY())*(y-b.getY()) );
+   dist = calcDistance( *this, b );
    return ( dist <= LIMITE_VUE );
 
 }

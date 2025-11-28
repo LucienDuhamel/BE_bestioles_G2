@@ -1,10 +1,10 @@
-
 #include "EspeceBestiole.h"
+#include "Milieu.h"
 
 const double      EspeceBestiole::AFF_SIZE = 8.;
-const double      EspeceBestiole::LIMITE_VUE = 30.;
+const double      EspeceBestiole::LIMITE_VUE = 100.;
 int               EspeceBestiole::next = 0;
-const double      EspeceBestiole::CLONAGE_PROP = 0.2;
+const double      EspeceBestiole::CLONAGE_PROP = 0.1;
 
 EspeceBestiole::EspeceBestiole()
 {
@@ -42,6 +42,65 @@ EspeceBestiole::~EspeceBestiole( void )
    delete[] couleur;
 
    cout << "dest EspeceBestiole" << endl;
+
+}
+
+void EspeceBestiole::action( Milieu & monMilieu )
+{
+   if(idDed())
+   {
+      couleur[ 0 ] = 0;
+      couleur[ 1 ] = 0;
+      couleur[ 2 ] = 0;
+      return;
+   }
+
+   bouge( monMilieu.getWidth(), monMilieu.getHeight());
+}
+
+void EspeceBestiole::bouge( int xLim, int yLim )
+{
+
+   double         nx, ny;
+   double         dx = cos( orientation )*vitesse;
+   double         dy = -sin( orientation )*vitesse;
+   int            cx, cy;
+
+   cx = static_cast<int>( cumulX ); cumulX -= cx;
+   cy = static_cast<int>( cumulY ); cumulY -= cy;
+
+   nx = x + dx + cx;
+   ny = y + dy + cy;
+
+   if ( (nx < 0) || (nx > xLim - 1) ) {
+      orientation = M_PI - orientation;
+      cumulX = 0.;
+   }
+   else {
+      x = static_cast<int>( nx );
+      cumulX += nx - x;
+   }
+
+   if ( (ny < 0) || (ny > yLim - 1) ) {
+      orientation = -orientation;
+      cumulY = 0.;
+   }
+   else {
+      y = static_cast<int>( ny );
+      cumulY += ny - y;
+   }
+
+}
+
+void EspeceBestiole::draw( UImg & support )
+{
+
+   double         xt = x + cos( orientation )*AFF_SIZE/2.1;
+   double         yt = y - sin( orientation )*AFF_SIZE/2.1;
+
+
+   support.draw_ellipse( x, y, AFF_SIZE, AFF_SIZE/5., -orientation/M_PI*180., couleur );
+   support.draw_circle( xt, yt, AFF_SIZE/2., couleur );
 
 }
 

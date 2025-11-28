@@ -9,6 +9,11 @@
 
 using namespace std;
 
+#include <random>
+
+double randomBetween(double a, double b);
+
+
 template <typename T>
 double calcDistance(T x1, T y1, T x2, T y2)
 {

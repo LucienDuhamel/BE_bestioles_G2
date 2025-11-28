@@ -19,7 +19,8 @@ private:
 public:
     static ComportementGregaire* getInstance();
     T * getCouleur() const override;
-    void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) const override;
+    std::string getNom() const override { return "Gregaire"; }
+    void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) override;
 };
 
 #endif

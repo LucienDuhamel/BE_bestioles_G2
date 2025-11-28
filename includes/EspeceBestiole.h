@@ -22,7 +22,7 @@ protected :
 
 protected :
    int               identite;
-
+   double            cumulX, cumulY;
    double            vitesse;
    double            orientation;
    int               x, y;
@@ -34,11 +34,13 @@ public :
    EspeceBestiole();                                
    EspeceBestiole(const EspeceBestiole& other);
    virtual ~EspeceBestiole( void ) ;
-   virtual void action( Milieu & monMilieu ) = 0;
-   virtual void draw( UImg & support ) = 0;
+   virtual void action( Milieu & monMilieu );
+   virtual void draw( UImg & support );
    virtual bool jeTeVois( const EspeceBestiole & b ) const = 0 ;
    void initCoords( int xLim, int yLim );
    virtual bool idDed() const  = 0;
+
+   void bouge( int xLim, int yLim );
 
    virtual bool isInCollisionWith( const EspeceBestiole & b ) const ;
    virtual void CollisionEffect()  = 0;

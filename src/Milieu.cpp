@@ -21,10 +21,10 @@ Milieu::Milieu( int _width, int _height ) : UImg( _width, _height, 1, 3 ),
    listeComportements.push_back(ComportementPeureux::getInstance());
    listeComportements.push_back(ComportementPrevoyant::getInstance());
 
-   listeComportements.push_back(ComportementPersoMultiples::getInstance(listeComportements));
+   listeComportements.push_back(new ComportementPersoMultiples(listeComportements));
    std::cout << "Milieu::Milieu - Comportements initialises." << listeComportements.size() << std::endl;
    
-   std::vector<double> proportions = {0.2, 0.1, 0.1, 0.3, 0.3};
+   std::vector<double> proportions = {0.0, 1.0, 0.0, 0.0, 0.0};
    bestioleFactory = new BestioleFactory(listeComportements, proportions);
    cout << "const Milieu" << endl;
 

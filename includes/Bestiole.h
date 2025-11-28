@@ -22,9 +22,6 @@ private :
    static const int        MAX_AGE;
 
 private :
-   double            cumulX, cumulY;
-   double            orientation;
-   double            vitesse;
    int               age;
    int               age_Lim;
    double deathProb;
@@ -32,9 +29,6 @@ private :
 
 
    Comportement* comportement;
-
-private :
-   void bouge( int xLim, int yLim );
 
 public :                                           // Forme canonique :
    Bestiole( void );                               // Constructeur par defaut

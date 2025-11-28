@@ -1,11 +1,10 @@
 #include "Comportement.h"
 #include "Bestiole.h"
 #include "ComportementPersoMultiples.h"
+#include "utils.h"
 #include <iostream>
 #include <vector>
 #include <errno.h>
-
-ComportementPersoMultiples* ComportementPersoMultiples::singletonPersoMultiples = nullptr;
 
 
 
@@ -13,7 +12,14 @@ ComportementPersoMultiples::ComportementPersoMultiples(const std::vector<Comport
 {   
 
     for (auto& c : comportementsDisponibles)
-        listeComportements.push_back(std::move(c));
+        listeComportements.push_back(c);
+        
+    comportementCourant = listeComportements[rand() % listeComportements.size()];
+    couleur = new T[ 3 ];
+    // Couleur violette (par défaut lors de la première création)
+    couleur[ 0 ] = 163;
+    couleur[ 1 ] = 73;
+    couleur[ 2 ] = 164;
 }
 
 ComportementPersoMultiples::~ComportementPersoMultiples()
@@ -21,45 +27,21 @@ ComportementPersoMultiples::~ComportementPersoMultiples()
     listeComportements.clear();
 }
 
-ComportementPersoMultiples*   ComportementPersoMultiples::getInstance(const std::vector<Comportement*>& listeComportements)
-{
-    if (singletonPersoMultiples == nullptr){
-        singletonPersoMultiples = new ComportementPersoMultiples(listeComportements);
-        singletonPersoMultiples->couleur = new T[ 3 ];
-
-        // Couleur violette (par défaut lors de la première création)
-        singletonPersoMultiples->couleur[ 0 ] = 163;
-        singletonPersoMultiples->couleur[ 1 ] = 73;
-        singletonPersoMultiples->couleur[ 2 ] = 164;
-
-    }
-
-    return  singletonPersoMultiples;
-}
-
-ComportementPersoMultiples*   ComportementPersoMultiples::getInstance()
-{
-    if (singletonPersoMultiples == nullptr)
-        std::cerr <<"ComportementPersoMultiples instance not initialized with ListComportement!" << std::endl;
-
-    return  singletonPersoMultiples;
-}
-
 T * ComportementPersoMultiples::getCouleur()  const {
     return couleur;
 } 
 
 
-void ComportementPersoMultiples::reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) const 
+void ComportementPersoMultiples::reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) 
 {   
 
     if (listeComportements.empty()) {
         std::cerr << "Erreur : pas de comportements disponibles !\n";
         return;
     }
-
-    Comportement* comportementCourant;
-    comportementCourant = listeComportements[rand() % listeComportements.size()];
+    
+    if (randomBetween(0.0, 1.0) < PROBA_CHANGEMENT_COMPORTEMENT)
+        comportementCourant = listeComportements[rand() % listeComportements.size()];
     comportementCourant->reagit(bestiole, listeBestioles);
     bestiole.setCouleur(comportementCourant->getCouleur());
 

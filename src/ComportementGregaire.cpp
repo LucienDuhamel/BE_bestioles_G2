@@ -25,7 +25,7 @@ ComportementGregaire*  ComportementGregaire::getInstance()
 T * ComportementGregaire::getCouleur() const {
     return couleur;
 }
-void ComportementGregaire::reagit( Bestiole& bestiole, const std::vector<EspeceBestiole*>& listeBestioles) const
+void ComportementGregaire::reagit( Bestiole& bestiole, const std::vector<EspeceBestiole*>& listeBestioles)
 {
     const auto& liste = bestiole.detecteBestioles(listeBestioles);
 

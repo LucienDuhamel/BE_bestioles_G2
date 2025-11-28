@@ -30,7 +30,7 @@ T * ComportementPrevoyant::getCouleur()  const {
 void ComportementPrevoyant::reagit(
     Bestiole& bestiole,
     const std::vector<EspeceBestiole*>& listeBestioles
-) const
+)
 {
     // Bestioles visibles
     const auto& visibles = bestiole.detecteBestioles(listeBestioles);

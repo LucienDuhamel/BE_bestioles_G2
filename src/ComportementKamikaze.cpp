@@ -29,7 +29,7 @@ T * ComportementKamikaze::getCouleur()  const {
     return couleur;
 }
 
-void ComportementKamikaze::reagit( Bestiole& bestiole, const std::vector<EspeceBestiole*>& listeBestioles) const
+void ComportementKamikaze::reagit( Bestiole& bestiole, const std::vector<EspeceBestiole*>& listeBestioles)
 {
     const auto& bestiolesVisibles = bestiole.detecteBestioles(listeBestioles);
 
@@ -41,13 +41,13 @@ void ComportementKamikaze::reagit( Bestiole& bestiole, const std::vector<EspeceB
     double distanceMin = calcDistance(bestiole, *cible);
 
     // Recherche de la bestiole la plus proche
-    for (EspeceBestiole* autre : bestiolesVisibles)
-    {
-        double d = calcDistance(bestiole, *autre);
+    for (EspeceBestiole* other : bestiolesVisibles)
+    {   
+        double d = calcDistance(bestiole, *other);
         if (d < distanceMin)
         {
             distanceMin = d;
-            cible = autre;
+            cible = other;
         }
     }
 

@@ -34,7 +34,7 @@ T * ComportementPeureux::getCouleur()  const  {
 void ComportementPeureux::reagit(
     Bestiole& bestiole,
     const std::vector<EspeceBestiole*>& listeBestioles
-) const
+)
 {
     // Liste des bestioles visibles
     const auto& bestiolesVisibles = bestiole.detecteBestioles(listeBestioles);

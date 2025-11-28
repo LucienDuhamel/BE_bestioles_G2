@@ -35,6 +35,9 @@ Bestiole* BestioleFactory::creerEspeceBestiole() const
     double typeProb = static_cast<double>( rand() )/RAND_MAX;
     int i=0;
     while( i<(int)proportionsAccumilatives.size()-1 && typeProb>=proportionsAccumilatives[i] ) i++ ;
+    // if (listeComportements[i]->getNom() == "PersoMultiples") {
+    //     Comportement* comportementPersoMultiples = new ComportementPersoMultiples(listeComportements);
+    // }
     bestiole->setComportement(listeComportements[i]);
     bestiole->setCouleur(listeComportements[i]->getCouleur());
     

@@ -14,25 +14,21 @@ class ComportementPersoMultiples : public Comportement
 {
 
 private:
+    static constexpr double PROBA_CHANGEMENT_COMPORTEMENT = 0.010;
     std::vector<Comportement*> listeComportements;
-
-    ComportementPersoMultiples()= delete;
-    ComportementPersoMultiples(const std::vector<Comportement*>& comportementsDisponibles);
-    ComportementPersoMultiples(const ComportementPersoMultiples&) = delete;
-    ComportementPersoMultiples& operator=(const ComportementPersoMultiples&) = delete;
-
+    Comportement* comportementCourant;
     T * couleur;
-    static ComportementPersoMultiples* singletonPersoMultiples;
 
 public:
 
+    ComportementPersoMultiples(const std::vector<Comportement*>& comportementsDisponibles);
     ~ComportementPersoMultiples();
-    static ComportementPersoMultiples* getInstance(const std::vector<Comportement*>& listeComportements) ;
-    static ComportementPersoMultiples* getInstance() ;
+    ComportementPersoMultiples(const ComportementPersoMultiples&);
+    ComportementPersoMultiples& operator=(const ComportementPersoMultiples&) = delete;
 
     T * getCouleur()  const override;
-
-    void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) const override;
+    std::string getNom() const override { return "PersoMultiples"; }
+    void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) override;
 
 };
 
