@@ -11,7 +11,7 @@
 #include <vector>
 #include <iostream>
 const T    Milieu::white[] = { (T)255, (T)255, (T)255 };
-const double  Milieu::TAUX_DE_NAISSANCES_SPONTANE = 0.4;//static_cast<double>( rand() ) / RAND_MAX;
+const double  Milieu::TAUX_DE_NAISSANCES_SPONTANE = 0.01;//static_cast<double>( rand() ) / RAND_MAX;
 
 Milieu::Milieu( int _width, int _height ) : UImg( _width, _height, 1, 3 ),
                                             width(_width), height(_height)
@@ -71,8 +71,6 @@ void Milieu::step( void )
    
 
    // clonage spontanement
-
-   
    for ( int i= listeEspeceBestioles.size()-1; i >=0 ; i-- )
       if((double)std::rand() / RAND_MAX <= listeEspeceBestioles[i]->CLONAGE_PROP)
          //listeEspeceBestioles.push_back(listeEspeceBestioles[i]->clone());
@@ -84,7 +82,6 @@ void Milieu::step( void )
    
    for ( std::vector<EspeceBestiole*>::iterator it = listeEspeceBestioles.begin() ; it != listeEspeceBestioles.end() ; ++it )
    {
-
       (*it)->action( *this );
       (*it)->draw( *this );
 
