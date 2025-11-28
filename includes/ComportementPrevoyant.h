@@ -11,21 +11,25 @@
 
 class ComportementPrevoyant : public Comportement
 {
+private:
+    static constexpr double T_PREDICT = 15.0;
+    static constexpr double DIST_MIN_COLLISION = 30.0;
+    static constexpr double AVOID_STRENGTH = 1.5;
 
 private:
     ComportementPrevoyant() {}
     ComportementPrevoyant(const ComportementPrevoyant&) = delete;
     ComportementPrevoyant& operator=(const ComportementPrevoyant&) = delete;
 
+    T * couleur;
     static ComportementPrevoyant* singletonPrevoyant;
 
 public:
     static ComportementPrevoyant* getInstance();
 
-    T * couleur;
     T * getCouleur()  const override;
-
-    void bouge(Bestiole& bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const override;
+    std::string getNom() const override { return "Prevoyant"; }
+    void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) override;
 
 };
 

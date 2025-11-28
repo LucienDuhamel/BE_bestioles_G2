@@ -1,6 +1,7 @@
 #include "Bestiole.h"
 
 #include "Milieu.h"
+#include "utils.h"
 
 #include <cstdlib>
 #include <cmath>
@@ -8,7 +9,7 @@
 
 const double      Bestiole::MAX_VITESSE = 10.;
 
-const int         Bestiole::MAX_AGE = 100;
+const int         Bestiole::MAX_AGE = 1000;
 
 
 Bestiole::Bestiole( void )
@@ -57,50 +58,16 @@ Bestiole::~Bestiole( void )
 
 }
 
-void Bestiole::setComportement(   Comportement* Lecomportement)
+void Bestiole::setComportement(   Comportement* leComportement)
 {
 
-   comportement = Lecomportement;
+   comportement = leComportement;
 
 }
 
 void Bestiole::setCouleur(T   * coul)
 {
    memcpy(couleur, coul, 3 * sizeof(T));
-}
-void Bestiole::bouge( int xLim, int yLim )
-{
-
-   double         nx, ny;
-   double         dx = cos( orientation )*vitesse;
-   double         dy = -sin( orientation )*vitesse;
-   int            cx, cy;
-
-
-   cx = static_cast<int>( cumulX ); cumulX -= cx;
-   cy = static_cast<int>( cumulY ); cumulY -= cy;
-
-   nx = x + dx + cx;
-   ny = y + dy + cy;
-
-   if ( (nx < 0) || (nx > xLim - 1) ) {
-      orientation = M_PI - orientation;
-      cumulX = 0.;
-   }
-   else {
-      x = static_cast<int>( nx );
-      cumulX += nx - x;
-   }
-
-   if ( (ny < 0) || (ny > yLim - 1) ) {
-      orientation = -orientation;
-      cumulY = 0.;
-   }
-   else {
-      y = static_cast<int>( ny );
-      cumulY += ny - y;
-   }
-
 }
 
 double Bestiole::getDeathProb() const
@@ -132,10 +99,11 @@ bool Bestiole::jeTeVois( const EspeceBestiole & b ) const
    double         dist;
 
 
-   dist = std::sqrt( (x-b.getX())*(x-b.getX()) + (y-b.getY())*(y-b.getY()) );
+   dist = calcDistance( *this, b );
    return ( dist <= LIMITE_VUE );
 
 }
+
 void Bestiole::action( Milieu & monMilieu )
 {
    if(idDed())
@@ -146,8 +114,8 @@ void Bestiole::action( Milieu & monMilieu )
       return;
    }
    age++;
-   comportement->bouge(*this, monMilieu.getListeEspeceBestioles() );
-   bouge( monMilieu.getWidth(), monMilieu.getHeight() );
+   comportement->reagit(*this, monMilieu.getListeEspeceBestioles() );
+   bouge( monMilieu.getWidth(), monMilieu.getHeight());
 
 }
 
@@ -185,3 +153,18 @@ EspeceBestiole* Bestiole::clone() const
     return new Bestiole(*this);
 }
 
+
+const std::vector<EspeceBestiole*> Bestiole::detecteBestioles( const std::vector<EspeceBestiole*>& listeBestioles)
+{  
+   std::vector<EspeceBestiole*> listeBestiolesDetectees;
+
+   for (EspeceBestiole* other : listeBestioles) 
+   {
+      if (other != nullptr && other != this && jeTeVois(*other))
+      {
+         listeBestiolesDetectees.push_back(other);
+      }
+   }
+
+   return listeBestiolesDetectees;
+}

@@ -10,7 +10,7 @@
 class BestioleFactory : public EspeceBestioleFactory
 {
 private:
-    std::vector<Comportement*> ListComportements;
+    std::vector<Comportement*> listeComportements;
     std::vector<double> proportionsAccumilatives;
 public :
     ~BestioleFactory();

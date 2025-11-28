@@ -1,5 +1,7 @@
 #include "Bestiole.h"
 #include "ComportementGregaire.h"
+#include "utils.h"
+
 #include <iostream>
 #include <vector>
 
@@ -10,9 +12,11 @@ ComportementGregaire*  ComportementGregaire::getInstance()
     if (singletonGregaire == nullptr){
         singletonGregaire = new ComportementGregaire();
         singletonGregaire->couleur = new T[ 3 ];
-        singletonGregaire->couleur[ 0 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
-        singletonGregaire->couleur[ 1 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
-        singletonGregaire->couleur[ 2 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
+        
+        // Couleur orange
+        singletonGregaire->couleur[ 0 ] = 255;
+        singletonGregaire->couleur[ 1 ] = 128;
+        singletonGregaire->couleur[ 2 ] = 0;
 
     }
 
@@ -21,7 +25,18 @@ ComportementGregaire*  ComportementGregaire::getInstance()
 T * ComportementGregaire::getCouleur() const {
     return couleur;
 }
-void ComportementGregaire::bouge(Bestiole& bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const 
+void ComportementGregaire::reagit( Bestiole& bestiole, const std::vector<EspeceBestiole*>& listeBestioles)
 {
+    const auto& liste = bestiole.detecteBestioles(listeBestioles);
 
+    if (liste.empty()) return;   // éviter division par zéro
+
+    double mOrientation = 0.0;
+
+    for (EspeceBestiole* b : liste) {
+        mOrientation += b->getOrientation();
+    }
+
+    mOrientation /= liste.size();
+    bestiole.setOrientation(mOrientation);
 }

@@ -7,8 +7,10 @@ using namespace std;
 
 int main()
 {
-
-   Aquarium       ecosysteme( 640, 480, 30 );
+   int delay = 100; // délai en ms, 30ms avant changement
+   int width = 1280;
+   int height = 960;
+   Aquarium       ecosysteme( width, height, delay );
 
    
    ecosysteme.getMilieu().initConfig(30);

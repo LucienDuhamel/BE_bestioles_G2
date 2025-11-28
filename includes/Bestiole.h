@@ -22,9 +22,6 @@ private :
    static const int        MAX_AGE;
 
 private :
-   double            cumulX, cumulY;
-   double            orientation;
-   double            vitesse;
    int               age;
    int               age_Lim;
    double deathProb;
@@ -33,9 +30,6 @@ private :
 
    Comportement* comportement;
 
-private :
-   void bouge( int xLim, int yLim );
-
 public :                                           // Forme canonique :
    Bestiole( void );                               // Constructeur par defaut
    Bestiole( const Bestiole & b );                 // Constructeur de copies
@@ -43,17 +37,19 @@ public :                                           // Forme canonique :
                                                     // Operateur d'affectation binaire par defaut
    void action( Milieu & monMilieu ) override;
    void draw( UImg & support ) override;
+
+
    void setCouleur(T   * couleur);
-   bool jeTeVois( const EspeceBestiole & b ) const override;
    void setComportement(   Comportement* comportement);
    bool idDed() const override;
 
    void CollisionEffect() override;
    double getDeathProb() const;
 
+   bool jeTeVois( const EspeceBestiole & b ) const override;
+   const std::vector<EspeceBestiole*> detecteBestioles(const std::vector<EspeceBestiole*>& listeBestioles);
+
    EspeceBestiole* clone() const override;
-
-
 
 };
 

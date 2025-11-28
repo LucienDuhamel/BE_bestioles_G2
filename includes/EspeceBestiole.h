@@ -22,7 +22,9 @@ protected :
 
 protected :
    int               identite;
-
+   double            cumulX, cumulY;
+   double            vitesse;
+   double            orientation;
    int               x, y;
    T               * couleur;
 
@@ -32,19 +34,28 @@ public :
    EspeceBestiole();                                
    EspeceBestiole(const EspeceBestiole& other);
    virtual ~EspeceBestiole( void ) ;
-   int getX() const {return x;}
-   int getY() const {return y;}
-   virtual void action( Milieu & monMilieu ) = 0;
-   virtual void draw( UImg & support ) = 0;
+   virtual void action( Milieu & monMilieu );
+   virtual void draw( UImg & support );
    virtual bool jeTeVois( const EspeceBestiole & b ) const = 0 ;
    void initCoords( int xLim, int yLim );
    virtual bool idDed() const  = 0;
+
+   void bouge( int xLim, int yLim );
 
    virtual bool isInCollisionWith( const EspeceBestiole & b ) const ;
    virtual void CollisionEffect()  = 0;
    virtual EspeceBestiole* clone() const = 0;
 
    friend bool operator==( const EspeceBestiole & b1, const EspeceBestiole & b2 );
+
+   int getX() const { return x; };
+   int getY() const { return y; };
+
+   double getVitesse() const { return vitesse; };
+   void setVitesse(double newVitesse) { vitesse = newVitesse; }
+
+   double getOrientation() const { return orientation; };
+   void setOrientation(double newOrientation) { orientation = newOrientation; }
 
 };
 

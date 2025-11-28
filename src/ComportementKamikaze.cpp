@@ -1,5 +1,7 @@
 #include "Bestiole.h"
 #include "ComportementKamikaze.h"
+#include "utils.h"
+
 #include <iostream>
 #include <vector>
 
@@ -12,9 +14,11 @@ ComportementKamikaze*   ComportementKamikaze::getInstance()
     if (singletonKamikaze == nullptr){
         singletonKamikaze = new ComportementKamikaze();
         singletonKamikaze->couleur = new T[ 3 ];
-        singletonKamikaze->couleur[ 0 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
-        singletonKamikaze->couleur[ 1 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
-        singletonKamikaze->couleur[ 2 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
+
+        // Couleur rouge foncé
+        singletonKamikaze->couleur[ 0 ] = 200;
+        singletonKamikaze->couleur[ 1 ] = 0;
+        singletonKamikaze->couleur[ 2 ] = 0;
 
     }
 
@@ -25,7 +29,28 @@ T * ComportementKamikaze::getCouleur()  const {
     return couleur;
 }
 
-void ComportementKamikaze::bouge(Bestiole& bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const 
+void ComportementKamikaze::reagit( Bestiole& bestiole, const std::vector<EspeceBestiole*>& listeBestioles)
 {
-    
+    const auto& bestiolesVisibles = bestiole.detecteBestioles(listeBestioles);
+
+    if (bestiolesVisibles.empty())
+        return; 
+
+    // Initialisation : on suppose la première bestiole comme cible
+    EspeceBestiole* cible = bestiolesVisibles.front();
+    double distanceMin = calcDistance(bestiole, *cible);
+
+    // Recherche de la bestiole la plus proche
+    for (EspeceBestiole* other : bestiolesVisibles)
+    {   
+        double d = calcDistance(bestiole, *other);
+        if (d < distanceMin)
+        {
+            distanceMin = d;
+            cible = other;
+        }
+    }
+
+    // Ajuster l'orientation vers la cible
+    bestiole.setOrientation(calcOrientation(bestiole, *cible));
 }

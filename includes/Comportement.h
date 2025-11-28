@@ -17,7 +17,8 @@ public :
    
    virtual ~Comportement( void )= default;
    virtual T * getCouleur() const = 0;
-   virtual void bouge(Bestiole& bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const = 0;
+   virtual std::string getNom() const = 0;
+   virtual void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) = 0;
 
 };
 
