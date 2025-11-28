@@ -34,6 +34,7 @@ public :
    virtual ~EspeceBestiole( void ) ;
    int getX() const {return x;}
    int getY() const {return y;}
+   int getId() const { return identite; }
    virtual void action( Milieu & monMilieu ) = 0;
    virtual void draw( UImg & support ) = 0;
    virtual bool jeTeVois( const EspeceBestiole & b ) const = 0 ;

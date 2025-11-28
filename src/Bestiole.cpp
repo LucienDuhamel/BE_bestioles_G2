@@ -1,4 +1,11 @@
 #include "Bestiole.h"
+#include "ICapteur.h"
+#include "IAccessoire.h"
+#include "Yeux.h"
+#include "Oreilles.h"
+#include "Carapace.h"
+#include "Nageoires.h"
+#include "Camouflage.h"
 
 #include "Milieu.h"
 
@@ -25,7 +32,8 @@ Bestiole::Bestiole( void )
    cumulX = cumulY = 0.;
    orientation = static_cast<double>( rand() )/RAND_MAX*2.*M_PI;
    vitesse = static_cast<double>( rand() )/RAND_MAX*MAX_VITESSE;
-
+   camouflage = 0.0;
+   resistance = 0.0;
    
 }
 
@@ -44,16 +52,32 @@ Bestiole::Bestiole( const Bestiole & b ) : EspeceBestiole(b)
    comportement = b.comportement;
    orientation = b.orientation;
    vitesse = b.vitesse;
-
+   camouflage = b.camouflage;
+   resistance = b.resistance;
+   //Clone les capteurs et accessoires avec une deep copy
+   for ( const auto & capteur : b.listeCapteur ) {
+      if ( capteur ) listeCapteur.push_back( capteur->clone() );
+   }
+   for ( const auto & accessoire : b.listeAccessoire ) {
+      if ( accessoire ) listeAccessoire.push_back( accessoire->clone() );
+   }
 }
 
 
 
 Bestiole::~Bestiole( void )
 {
+   // delete les pointeurs des capteurs et accessoires
+   for (auto p : listeCapteur) {
+      delete p;
+   }
+   listeCapteur.clear();
+   for (auto p : listeAccessoire) {
+      delete p;
+   }
+   listeAccessoire.clear();
 
-
-   cout << "dest Bestiole -> " ;
+   cout << "dest Bestiole" << endl;
 
 }
 
@@ -185,3 +209,58 @@ EspeceBestiole* Bestiole::clone() const
     return new Bestiole(*this);
 }
 
+
+double Bestiole::getVitesse() {
+    return this->vitesse;
+}
+double Bestiole::getCamouflage() {
+    return this->camouflage;
+}
+double Bestiole::getResistance() {
+    return this->resistance;
+}
+double Bestiole::getOrientation() {
+    return this->orientation;
+}
+const std::vector<ICapteur*>& Bestiole::getListeCapteur() const {
+   return this->listeCapteur;
+}
+const std::vector<IAccessoire*>& Bestiole::getListeAccessoire() const {
+   return this->listeAccessoire;
+}
+
+
+
+void Bestiole::setVitesse(double vitesse) {
+   this->vitesse = vitesse;
+}
+void Bestiole::setCamouflage(double camouflage) {
+   this->camouflage = camouflage;
+}
+void Bestiole::setResistance(double resistance) {
+   this->resistance = resistance;
+}
+void Bestiole::addCapteur(ICapteur* capteur) {
+   if (capteur) {
+      listeCapteur.push_back(capteur);
+   }
+}
+
+void Bestiole::addAccessoire(IAccessoire* accessoire) {
+   if (!accessoire) return;
+
+   // Bestiole prend possession de l'accessoire
+   listeAccessoire.push_back(accessoire);
+
+   // Applique immédiatement les effets connus selon le type d'accessoire
+   if ( Carapace* c = dynamic_cast<Carapace*>(accessoire) ) {
+      c->setVitesseCarapace(this);
+      c->setResistanceCarapace(this);
+   }
+   else if ( Nageoires* n = dynamic_cast<Nageoires*>(accessoire) ) {
+      n->setVitesseNageoires(this);
+   }
+   else if ( Camouflage* cam = dynamic_cast<Camouflage*>(accessoire) ) {
+      cam->setCamouflage(this);
+   }
+}
