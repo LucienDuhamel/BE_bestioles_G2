@@ -16,16 +16,15 @@ const double  Milieu::TAUX_DE_NAISSANCES_SPONTANE = 0.4;//static_cast<double>( r
 Milieu::Milieu( int _width, int _height ) : UImg( _width, _height, 1, 3 ),
                                             width(_width), height(_height)
 {
-   listeComportements.push_back(ComportementGregaire::getInstance());
-   listeComportements.push_back(ComportementKamikaze::getInstance());
-   listeComportements.push_back(ComportementPeureux::getInstance());
-   listeComportements.push_back(ComportementPrevoyant::getInstance());
+   ListeComportements.push_back(ComportementGregaire::getInstance());
+   ListeComportements.push_back(ComportementKamikaze::getInstance());
+   ListeComportements.push_back(ComportementPeureux::getInstance());
+   ListeComportements.push_back(ComportementPrevoyant::getInstance());
 
-   listeComportements.push_back(new ComportementPersoMultiples(listeComportements));
-   std::cout << "Milieu::Milieu - Comportements initialises." << listeComportements.size() << std::endl;
+   ListeComportements.push_back(ComportementPersoMultiples::getInstance(ListeComportements));
    
-   std::vector<double> proportions = {0.0, 1.0, 0.0, 0.0, 0.0};
-   bestioleFactory = new BestioleFactory(listeComportements, proportions);
+   std::vector<double> proportions = {0.2, 0.1, 0.1, 0.3, 0.3};
+   bestioleFactory = new BestioleFactory(ListeComportements, proportions);
    cout << "const Milieu" << endl;
 
    std::srand( time(NULL) );
@@ -42,10 +41,10 @@ Milieu::~Milieu( void )
     listeEspeceBestioles.clear();
 
     // Supprime tous les comportements
-    for (auto* c : listeComportements) {
+    for (auto* c : ListeComportements) {
         delete c;
     }
-    listeComportements.clear();
+    ListeComportements.clear();
 
     // Supprime la factory si elle a été créée dynamiquement
     delete bestioleFactory;
@@ -73,11 +72,11 @@ void Milieu::step( void )
 
    // clonage spontanement
 
-   /*for ( std::vector<EspeceBestiole*>::iterator it = listeEspeceBestioles.end() ; it != listeEspeceBestioles.begin() ;  )
-      if((double)std::rand() / RAND_MAX <= (*(--it))->CLONAGE_PROP)
-         listeEspeceBestioles.push_back((*it)->clone());
-         //addMember((*it)->clone());
-   */
+   
+   for ( int i= listeEspeceBestioles.size()-1; i >=0 ; i-- )
+      if((double)std::rand() / RAND_MAX <= listeEspeceBestioles[i]->CLONAGE_PROP)
+         //listeEspeceBestioles.push_back(listeEspeceBestioles[i]->clone());
+         addMember(listeEspeceBestioles[i]->clone());
 
    // Naissance spontanement
    if((double)std::rand() / RAND_MAX <= TAUX_DE_NAISSANCES_SPONTANE)

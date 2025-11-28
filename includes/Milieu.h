@@ -21,7 +21,7 @@ private :
    
    int                     width, height;
    std::vector<EspeceBestiole*>   listeEspeceBestioles;
-   std::vector<Comportement*> listeComportements;
+   std::vector<Comportement*> ListeComportements;
    EspeceBestioleFactory* bestioleFactory;
 
 
@@ -33,7 +33,7 @@ public :
    int getHeight( void ) const { return height; };
 
    void step( void );
-   const std::vector<EspeceBestiole*>& getListeEspeceBestioles() const {return listeEspeceBestioles;};
+   std::vector<EspeceBestiole*> getListeEspeceBestioles() const {return listeEspeceBestioles;};
    void addMember( EspeceBestiole* b ) { listeEspeceBestioles.push_back(b); listeEspeceBestioles.back()->initCoords(width, height); }
    void addMember() {addMember(bestioleFactory->creerEspeceBestiole()); }
    int nbVoisins( const EspeceBestiole& b );
