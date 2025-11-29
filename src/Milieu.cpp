@@ -11,7 +11,7 @@
 #include <vector>
 #include <iostream>
 const T    Milieu::white[] = { (T)255, (T)255, (T)255 };
-const double  Milieu::TAUX_DE_NAISSANCES_SPONTANE = 0.01;//static_cast<double>( rand() ) / RAND_MAX;
+const double  Milieu::TAUX_DE_NAISSANCES_SPONTANE = 0.05;//static_cast<double>( rand() ) / RAND_MAX;
 
 Milieu::Milieu( int _width, int _height ) : UImg( _width, _height, 1, 3 ),
                                             width(_width), height(_height)
@@ -83,26 +83,41 @@ void Milieu::step( void )
    for ( std::vector<EspeceBestiole*>::iterator it = listeEspeceBestioles.begin() ; it != listeEspeceBestioles.end() ; ++it )
    {
       (*it)->action( *this );
+      
+      // Provisoire : Détection pour chaque bestiole ayant des capteurs et print dans le terminal
+      std::vector<Bestiole*> listeBestioles;
+      for (auto* eb : listeEspeceBestioles) {
+         if (Bestiole* b = dynamic_cast<Bestiole*>(eb)) {
+            listeBestioles.push_back(b);
+         }
+      }
+      std::vector<Bestiole*> detectees = (*it)->detecteBestioles(listeBestioles);
+      if (!detectees.empty()) {
+         std::cout << "Bestiole " << (*it)->getId() << " détecte: ";
+         for (Bestiole* b : detectees) {
+            std::cout << b->getId() << " ";
+         }
+         std::cout << std::endl;
+      }
+      
+      
       (*it)->draw( *this );
 
    } // for
 
 }
+// Fonction jeTevois n'existe plus
 
-
-int Milieu::nbVoisins( const EspeceBestiole & b )
-{
-
-   int         nb = 0;
-
-
-   for ( std::vector<EspeceBestiole*>::iterator it = listeEspeceBestioles.begin() ; it != listeEspeceBestioles.end() ; ++it )
-      if ( !(b == *(*it)) && b.jeTeVois(*(*it)) )
-         ++nb;
-
-   return nb;
-
-}
+//int Milieu::nbVoisins( const EspeceBestiole & b )
+//{
+//int         nb = 0;
+//   for ( std::vector<EspeceBestiole*>::iterator it = listeEspeceBestioles.begin() ; it != listeEspeceBestioles.end() ; ++it )
+//      if ( !(b == *(*it)) && b.jeTeVois(*(*it)) )
+//         ++nb;
+//
+//   return nb;
+//
+//}
 void Milieu::removeMember(  EspeceBestiole*  b )
 {
    for ( std::vector<EspeceBestiole*>::iterator it = listeEspeceBestioles.begin() ; it != listeEspeceBestioles.end() ; ++it )

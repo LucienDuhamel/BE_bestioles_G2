@@ -4,9 +4,9 @@
 
 Oreilles::Oreilles()
 {
-    // Default constructor with default values
-    distanceVisionOreilles = 80.0;      // 80 unit range
-    pourcentageDetectionOreilles = 0.8; // 80% detection
+    // Constructeur par défault
+    distanceVisionOreilles = 80.0;      
+    pourcentageDetectionOreilles = 0.8; 
 }
 
 Oreilles::Oreilles(double distanceVisionOreilles, double pourcentageDetectionOreilles)
@@ -26,7 +26,7 @@ void Oreilles::draw(UImg& support, Bestiole* b)
 
     // definition position oreilles
     const double side = 5.0;    // offset lateral
-    const double forward = 8.0; // offset frontal 
+    const double forward = 3.0; // offset frontal 
     const int rayon = 1.75;        // rayon des points
 
     int lx = x + static_cast<int>( std::cos(theta + M_PI/2.0) * side + std::cos(theta) * forward );

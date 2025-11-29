@@ -5,7 +5,7 @@
 Nageoires::Nageoires()
 {
     // Constructeur par défault
-    CoeffVitesseNageoires = 40; 
+    CoeffVitesseNageoires = 3; 
 }
 
 Nageoires::Nageoires(double CoeffVitesseNageoires)
@@ -21,9 +21,15 @@ void Nageoires::draw(UImg& support, Bestiole* b)
     int cy = b->getY() - static_cast<int>( -std::sin(b->getOrientation()) * 12 );
     support.draw_circle(cx, cy, 3, couleurViolet);
 }
-void Nageoires::setVitesseNageoires(Bestiole* b){
+void Nageoires::setVitesseNageoires(Bestiole* b) {
+    double nouvelleVitesse = b->getVitesse() * CoeffVitesseNageoires;
 
-    b->setVitesse(b->getVitesse() * CoeffVitesseNageoires);
+    // Si la nouvelle vitesse dépasse le max autorisé, on la plafonne
+    //if (nouvelleVitesse > Config::MAX_VITESSE) {
+    //    nouvelleVitesse = Config::MAX_VITESSE;
+    //}
+
+    b->setVitesse(nouvelleVitesse);
 }
 Nageoires* Nageoires::clone() const {
     return new Nageoires(CoeffVitesseNageoires);

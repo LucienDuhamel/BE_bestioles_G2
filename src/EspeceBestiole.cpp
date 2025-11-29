@@ -4,7 +4,7 @@
 const double      EspeceBestiole::AFF_SIZE = 8.;
 const double      EspeceBestiole::LIMITE_VUE = 30.;
 int               EspeceBestiole::next = 0;
-const double      EspeceBestiole::CLONAGE_PROP = 0.01;
+const double      EspeceBestiole::CLONAGE_PROP = 0.001;
 
 EspeceBestiole::EspeceBestiole()
 {
