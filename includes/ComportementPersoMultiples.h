@@ -1,7 +1,7 @@
 #ifndef _ComportementPersoMultiples_
 #define _ComportementPersoMultiples_
 
-
+#include "config.h"
 #include "Bestiole.h"
 #include "Comportement.h"
 
@@ -14,21 +14,26 @@ class ComportementPersoMultiples : public Comportement
 {
 
 private:
-    static constexpr double PROBA_CHANGEMENT_COMPORTEMENT = 0.010;
-    std::vector<Comportement*> listeComportements;
-    Comportement* comportementCourant;
-    T * couleur;
+    std::vector<Comportement*> comportementsDisponibles;
+
+
+    ComportementPersoMultiples()= delete;
+    ComportementPersoMultiples(std::vector<Comportement*> listeComportements);
+    ComportementPersoMultiples(const ComportementPersoMultiples&) = delete;
+    ComportementPersoMultiples& operator=(const ComportementPersoMultiples&) = delete;
+
+    static ComportementPersoMultiples* singletonPersoMultiples;
 
 public:
 
-    ComportementPersoMultiples(const std::vector<Comportement*>& comportementsDisponibles);
     ~ComportementPersoMultiples();
-    ComportementPersoMultiples(const ComportementPersoMultiples&);
-    ComportementPersoMultiples& operator=(const ComportementPersoMultiples&) = delete;
+    static ComportementPersoMultiples* getInstance(std::vector<Comportement*> listeComportements) ;
+    static ComportementPersoMultiples* getInstance() ;
 
+    T * couleur;
     T * getCouleur()  const override;
     std::string getNom() const override { return "PersoMultiples"; }
-    void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) override;
+    void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) const override;
 
 };
 

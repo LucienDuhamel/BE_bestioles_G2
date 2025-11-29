@@ -3,7 +3,7 @@
 
 
 #include "UImg.h"
-
+#include "config.h"
 #include <iostream>
 #include "Comportement.h"
 #include "Milieu.h"
@@ -17,27 +17,31 @@ class Bestiole : public EspeceBestiole
 {
 
 private :
-   
-   static const double     MAX_VITESSE;
-   static const int        MAX_AGE;
+   static double     MAX_VITESSE;
+   static int        MAX_AGE;
+
+   // Pour les bestioles a comportements multiples
+   static double     MAX_PROBA_CHANGEMENT_COMPORTEMENT;
 
 private :
    int               age;
    int               age_Lim;
    double deathProb;
    bool Killed;
-
-
    Comportement* comportement;
+
+   // Pour les bestioles a comportements multiples
+   double probaChangementComportement;
+   Comportement* comportementApparent;
 
 public :                                           // Forme canonique :
    Bestiole( void );                               // Constructeur par defaut
    Bestiole( const Bestiole & b );                 // Constructeur de copies
    ~Bestiole( void );
-                                                    // Operateur d'affectation binaire par defaut
+
+   void initFromConfig();
    void action( Milieu & monMilieu ) override;
    void draw( UImg & support ) override;
-
 
    void setCouleur(T   * couleur);
    void setComportement(   Comportement* comportement);
@@ -50,6 +54,11 @@ public :                                           // Forme canonique :
    const std::vector<EspeceBestiole*> detecteBestioles(const std::vector<EspeceBestiole*>& listeBestioles);
 
    EspeceBestiole* clone() const override;
+
+   // Pour les bestioles a comportements multiples
+   double getProbaChangementComportement() const { return probaChangementComportement; };
+   Comportement* getComportementApparent() const { return comportementApparent; };
+   void setComportementApparent(Comportement* newComportementApparent) { comportementApparent = newComportementApparent; }; 
 
 };
 

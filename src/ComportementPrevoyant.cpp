@@ -4,6 +4,10 @@
 #include <vector>
 #include <cmath>
 
+T ComportementPrevoyant::couleur_cfg[3] = {0, 0, 0};
+double ComportementPrevoyant::T_PREDICT = 0.0;
+double ComportementPrevoyant::DIST_MIN_COLLISION = 0.0;
+
 ComportementPrevoyant* ComportementPrevoyant::singletonPrevoyant = nullptr;
 
 ComportementPrevoyant*   ComportementPrevoyant::getInstance()
@@ -12,14 +16,29 @@ ComportementPrevoyant*   ComportementPrevoyant::getInstance()
         singletonPrevoyant = new ComportementPrevoyant();
         singletonPrevoyant->couleur = new T[ 3 ];
 
+        if((couleur_cfg[0]==0 && couleur_cfg[1]==0 && couleur_cfg[2]==0)
+            || T_PREDICT==0.0 || DIST_MIN_COLLISION==0.0) {
+            singletonPrevoyant->initFromConfig();
+        }
+
         // Couleur bleu clair
-        singletonPrevoyant->couleur[ 0 ] = 30;
-        singletonPrevoyant->couleur[ 1 ] = 144;
-        singletonPrevoyant->couleur[ 2 ] = 255;
+        singletonPrevoyant->couleur[ 0 ] = couleur_cfg[0];
+        singletonPrevoyant->couleur[ 1 ] = couleur_cfg[1];
+        singletonPrevoyant->couleur[ 2 ] = couleur_cfg[2];
 
     }
 
     return  singletonPrevoyant;
+}
+
+void ComportementPrevoyant::initFromConfig() {
+    // par défaut : vert clair
+    couleur_cfg[0] = Config::getInstance().getInt("PRE_COULEUR_R", 30);
+    couleur_cfg[1] = Config::getInstance().getDouble("PRE_COULEUR_G", 144);
+    couleur_cfg[2] = Config::getInstance().getDouble("PRE_COULEUR_B", 255);
+
+    T_PREDICT = Config::getInstance().getDouble("T_PREDICT", 15.0);
+    DIST_MIN_COLLISION = Config::getInstance().getDouble("DIST_MIN_COLLISION", 30.0);
 }
 
 T * ComportementPrevoyant::getCouleur()  const {
@@ -30,7 +49,7 @@ T * ComportementPrevoyant::getCouleur()  const {
 void ComportementPrevoyant::reagit(
     Bestiole& bestiole,
     const std::vector<EspeceBestiole*>& listeBestioles
-)
+) const
 {
     // Bestioles visibles
     const auto& visibles = bestiole.detecteBestioles(listeBestioles);

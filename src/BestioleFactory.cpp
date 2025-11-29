@@ -39,6 +39,7 @@ Bestiole* BestioleFactory::creerEspeceBestiole() const
     //     Comportement* comportementPersoMultiples = new ComportementPersoMultiples(listeComportements);
     // }
     bestiole->setComportement(listeComportements[i]);
+    bestiole->setComportementApparent(listeComportements[i]);
     bestiole->setCouleur(listeComportements[i]->getCouleur());
     
     return bestiole;

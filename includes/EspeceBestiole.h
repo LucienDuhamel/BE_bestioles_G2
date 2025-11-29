@@ -1,7 +1,7 @@
 #ifndef _EspeceBestiole_
 #define _EspeceBestiole_
 
-
+#include "config.h"
 #include "UImg.h"
 
 #include <iostream>
@@ -15,10 +15,12 @@ class EspeceBestiole
 {
 
 protected :
-   static const double     AFF_SIZE;
-   static const double     LIMITE_VUE;
-   
+   static double     AFF_SIZE;
+   static double     LIMITE_VUE;
    static int              next;
+
+public :
+   static double     CLONAGE_PROP;
 
 protected :
    int               identite;
@@ -28,12 +30,11 @@ protected :
    int               x, y;
    T               * couleur;
 
-public:
-static const double     CLONAGE_PROP;
 public :        
    EspeceBestiole();                                
    EspeceBestiole(const EspeceBestiole& other);
    virtual ~EspeceBestiole( void ) ;
+   void initFromConfig();
    virtual void action( Milieu & monMilieu );
    virtual void draw( UImg & support );
    virtual bool jeTeVois( const EspeceBestiole & b ) const = 0 ;

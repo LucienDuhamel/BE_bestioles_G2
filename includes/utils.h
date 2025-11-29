@@ -6,6 +6,12 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
+#include <fstream>
+#include <string>
+#include <unordered_map>
+#include <iostream>
+#include <sstream>
+#include <random>
 
 using namespace std;
 
@@ -13,6 +19,7 @@ using namespace std;
 
 double randomBetween(double a, double b);
 
+std::unordered_map<std::string, std::string> loadJSONConfig(const std::string& filename);
 
 template <typename T>
 double calcDistance(T x1, T y1, T x2, T y2)
@@ -30,12 +37,13 @@ double calcDistance(const B& b, const C& c)
 
 
 template<typename T>
-double calcOrientation(T x1 , T y1, T x2, T y2 ){
-    double dx = static_cast<double>(x1) - static_cast<double>(x2);
-    double dy = static_cast<double>(y1) - static_cast<double>(y2);
+double calcOrientation(T x1 , T y1, T x2, T y2) {
+    double dx = static_cast<double>(x2) - static_cast<double>(x1);  // cible - bestiole
+    double dy = static_cast<double>(y2) - static_cast<double>(y1);
 
-    return std::atan(dy/dx);
+    return std::atan2(-dy, dx); // lorsque l'axe des y est vers le bas
 }
+
 
 template <typename B, typename C>
 double calcOrientation(const B& b, const C& c)

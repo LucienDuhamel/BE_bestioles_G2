@@ -1,4 +1,6 @@
 #include "Aquarium.h"
+#include "utils.h"
+#include "config.h"
 
 #include <iostream>
 
@@ -6,14 +8,17 @@ using namespace std;
 
 
 int main()
-{
-   int delay = 100; // délai en ms, 30ms avant changement
-   int width = 1280;
-   int height = 960;
-   Aquarium       ecosysteme( width, height, delay );
+{  
+   Config::getInstance().load("config.txt");
 
+   const int WIDTH = Config::getInstance().getInt("WIDTH");
+   const int HEIGHT = Config::getInstance().getInt("HEIGHT");
+   const int DELAY = Config::getInstance().getInt("DELAY");
+   const int NB_BESTIOLES_INIT = Config::getInstance().getInt("NB_BESTIOLES_INIT");
+
+   Aquarium       ecosysteme( WIDTH, HEIGHT, DELAY );
    
-   ecosysteme.getMilieu().initConfig(30);
+   ecosysteme.getMilieu().initConfig(NB_BESTIOLES_INIT);
    
    ecosysteme.run();
 

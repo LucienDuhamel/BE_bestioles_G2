@@ -1,10 +1,10 @@
 #include "EspeceBestiole.h"
 #include "Milieu.h"
 
-const double      EspeceBestiole::AFF_SIZE = 8.;
-const double      EspeceBestiole::LIMITE_VUE = 100.;
-int               EspeceBestiole::next = 0;
-const double      EspeceBestiole::CLONAGE_PROP = 0.1;
+double     EspeceBestiole::AFF_SIZE = -1.0;
+double     EspeceBestiole::LIMITE_VUE = -1.0;
+int        EspeceBestiole::next = 0;
+double     EspeceBestiole::CLONAGE_PROP = 0.0;
 
 EspeceBestiole::EspeceBestiole()
 {
@@ -15,7 +15,12 @@ EspeceBestiole::EspeceBestiole()
     x = 0;
     y = 0;
 
-    couleur = new T[ 3 ];
+   // Si les paramètres statiques n'ont pas encore été initialisés, les initialiser
+   if (AFF_SIZE <= 0 || LIMITE_VUE <= 0) {
+       this->initFromConfig();
+   }
+
+   couleur = new T[ 3 ];
    couleur[ 0 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
    couleur[ 1 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
    couleur[ 2 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
@@ -43,6 +48,15 @@ EspeceBestiole::~EspeceBestiole( void )
 
    cout << "dest EspeceBestiole" << endl;
 
+}
+
+
+void EspeceBestiole::initFromConfig() {
+   // Initialisation des parametres statiques depuis le fichier de config (valeurs par defaut si absentes)
+   AFF_SIZE = Config::getInstance().getDouble("AFF_SIZE", 8.0);
+   LIMITE_VUE = Config::getInstance().getDouble("LIMITE_VUE", 30.0);
+   next = Config::getInstance().getInt("NEXT", 0.0);
+   CLONAGE_PROP = Config::getInstance().getDouble("CLONAGE_PROP", 0.001);
 }
 
 void EspeceBestiole::action( Milieu & monMilieu )

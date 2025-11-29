@@ -1,6 +1,7 @@
 #ifndef _ComportementPeureux_
 #define _ComportementPeureux_
 
+#include "config.h"
 #include "Comportement.h"
 #include "Bestiole.h"
 
@@ -12,9 +13,13 @@
 class ComportementPeureux : public Comportement
 {
 private : 
-    static const int BESTIOLE_SCARED_NUMBER = 3; // Nombre de bestioles détectées pour être effrayé
-    static const int REMAINING_SCARED_STEPS = 2; // Nombre d'étapes restantes à être effrayé
-    static const int SPEED_COEF = 5;             // Coefficient de vitesse quand effrayé
+    // Couleur statique récupérée depuis le fichier de configuration
+    static T couleur_cfg[3];
+
+    // Paramètres statiques récupérés depuis le fichier de configuration
+    static int BESTIOLE_SCARED_NUMBER; // Nombre de bestioles détectées pour être effrayé
+    static int REMAINING_SCARED_STEPS; // Nombre d'étapes restantes à être effrayé
+    static double SPEED_COEF;             // Coefficient de vitesse quand effrayé
 
     // États modifiés lors de l'exécution (valeurs par défaut)
     mutable bool isScared = false;
@@ -26,6 +31,7 @@ private:
     ComportementPeureux(const ComportementPeureux&) = delete;
     ComportementPeureux& operator=(const ComportementPeureux&) = delete;
 
+    void initFromConfig();
     T * couleur;
     static ComportementPeureux* singletonPeureux;
 
@@ -34,7 +40,7 @@ public:
 
     T * getCouleur()  const override;
     std::string getNom() const override { return "Peureux"; }
-    void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) override;
+    void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) const override;
 
 };
 

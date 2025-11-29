@@ -1,7 +1,7 @@
 #ifndef _BestioleFactory_
 #define _BestioleFactory_
 
-
+#include "config.h"
 #include "EspeceBestiole.h"
 #include "Comportement.h"
 #include "EspeceBestioleFactory.h"

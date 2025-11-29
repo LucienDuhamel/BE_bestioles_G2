@@ -6,11 +6,11 @@
 #include <cstdlib>
 #include <cmath>
 
+#include <iostream>
 
-const double      Bestiole::MAX_VITESSE = 10.;
-
-const int         Bestiole::MAX_AGE = 1000;
-
+int         Bestiole::MAX_AGE = 0;
+double      Bestiole::MAX_VITESSE = 0.0;
+double      Bestiole::MAX_PROBA_CHANGEMENT_COMPORTEMENT = 0.0;
 
 Bestiole::Bestiole( void )
 {
@@ -18,7 +18,6 @@ Bestiole::Bestiole( void )
    //identite = ++next;
 
    cout << "const Bestiole (" << identite << ") par defaut" << endl;
-
    age_Lim = static_cast<double>( rand() )/RAND_MAX*MAX_AGE;
    age = 0;
    Killed = false;
@@ -27,7 +26,13 @@ Bestiole::Bestiole( void )
    orientation = static_cast<double>( rand() )/RAND_MAX*2.*M_PI;
    vitesse = static_cast<double>( rand() )/RAND_MAX*MAX_VITESSE;
 
-   
+   // Initialisation des parametres statiques depuis le fichier de config
+   if( MAX_AGE == 0 || MAX_VITESSE == 0.0 )
+   {
+      initFromConfig();
+   }
+
+   probaChangementComportement = static_cast<double>( randomBetween(0.0, MAX_PROBA_CHANGEMENT_COMPORTEMENT) );
 }
 
 
@@ -46,6 +51,9 @@ Bestiole::Bestiole( const Bestiole & b ) : EspeceBestiole(b)
    orientation = b.orientation;
    vitesse = b.vitesse;
 
+   probaChangementComportement = b.probaChangementComportement;
+   comportementApparent = b.comportementApparent;
+
 }
 
 
@@ -57,6 +65,14 @@ Bestiole::~Bestiole( void )
    cout << "dest Bestiole -> " ;
 
 }
+
+// Initialisation des parametres statiques depuis le fichier de config (valeurs par defaut si absentes)
+void Bestiole::initFromConfig() {
+    MAX_AGE = Config::getInstance().getInt("MAX_AGE", 1000);
+    MAX_VITESSE = Config::getInstance().getDouble("MAX_VITESSE", 5.0);
+    MAX_PROBA_CHANGEMENT_COMPORTEMENT = Config::getInstance().getDouble("MAX_PROBA_CHANGEMENT_COMPORTEMENT", 0.05);
+}
+
 
 void Bestiole::setComportement(   Comportement* leComportement)
 {

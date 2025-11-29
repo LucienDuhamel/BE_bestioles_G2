@@ -5,9 +5,8 @@
 #include <iostream>
 #include <vector>
 
-
 ComportementKamikaze* ComportementKamikaze::singletonKamikaze = nullptr;
-
+T ComportementKamikaze::couleur_cfg[3] = {0, 0, 0};
 
 ComportementKamikaze*   ComportementKamikaze::getInstance()
 {
@@ -15,26 +14,34 @@ ComportementKamikaze*   ComportementKamikaze::getInstance()
         singletonKamikaze = new ComportementKamikaze();
         singletonKamikaze->couleur = new T[ 3 ];
 
-        // Couleur rouge foncé
-        singletonKamikaze->couleur[ 0 ] = 200;
-        singletonKamikaze->couleur[ 1 ] = 0;
-        singletonKamikaze->couleur[ 2 ] = 0;
+        if(couleur_cfg[0]==0 && couleur_cfg[1]==0 && couleur_cfg[2]==0){
+            singletonKamikaze->initFromConfig();
+        }
+        singletonKamikaze->couleur[ 0 ] = couleur_cfg[0];
+        singletonKamikaze->couleur[ 1 ] = couleur_cfg[1];
+        singletonKamikaze->couleur[ 2 ] = couleur_cfg[2];
 
     }
 
     return  singletonKamikaze;
 }
 
+void ComportementKamikaze::initFromConfig() {
+    // par défaut : rouge
+    couleur_cfg[0] = Config::getInstance().getInt("KAM_COULEUR_R", 200);
+    couleur_cfg[1] = Config::getInstance().getDouble("KAM_COULEUR_G", 0);
+    couleur_cfg[2] = Config::getInstance().getDouble("KAM_COULEUR_B", 0);
+}
+
 T * ComportementKamikaze::getCouleur()  const {
     return couleur;
 }
 
-void ComportementKamikaze::reagit( Bestiole& bestiole, const std::vector<EspeceBestiole*>& listeBestioles)
+void ComportementKamikaze::reagit( Bestiole& bestiole, const std::vector<EspeceBestiole*>& listeBestioles) const
 {
     const auto& bestiolesVisibles = bestiole.detecteBestioles(listeBestioles);
 
-    if (bestiolesVisibles.empty())
-        return; 
+    if (bestiolesVisibles.empty()) return; 
 
     // Initialisation : on suppose la première bestiole comme cible
     EspeceBestiole* cible = bestiolesVisibles.front();
