@@ -8,10 +8,14 @@
 #include "Comportement.h"
 #include "Milieu.h"
 #include "EspeceBestiole.h"
+#include <memory>
+#include <vector>
 
 using namespace std;
 
-
+class Milieu;
+class ICapteur;
+class IAccessoire;
 
 class Bestiole : public EspeceBestiole
 {
@@ -28,7 +32,13 @@ private :
    int               age_Lim;
    double deathProb;
    bool Killed;
+   double            camouflage;
+   double            resistance;
+
    Comportement* comportement;
+public:
+   std::vector<ICapteur*> listeCapteur;
+   std::vector<IAccessoire*> listeAccessoire;
 
    // Pour les bestioles a comportements multiples
    double probaChangementComportement;
@@ -59,6 +69,16 @@ public :                                           // Forme canonique :
    double getProbaChangementComportement() const { return probaChangementComportement; };
    Comportement* getComportementApparent() const { return comportementApparent; };
    void setComportementApparent(Comportement* newComportementApparent) { comportementApparent = newComportementApparent; }; 
+   double getCamouflage();
+   double getResistance();
+   const std::vector<ICapteur*>& getListeCapteur() const;
+   const std::vector<IAccessoire*>& getListeAccessoire() const;
+
+   void setCamouflage(double camouflage);
+   void setResistance(double resistance);
+
+   void addCapteur(ICapteur* capteur);
+   void addAccessoire(IAccessoire* accessoire);
 
 };
 

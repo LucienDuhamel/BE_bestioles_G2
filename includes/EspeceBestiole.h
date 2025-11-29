@@ -37,6 +37,7 @@ public :
    void initFromConfig();
    virtual void action( Milieu & monMilieu );
    virtual void draw( UImg & support );
+   int getId() const { return identite; }
    virtual bool jeTeVois( const EspeceBestiole & b ) const = 0 ;
    void initCoords( int xLim, int yLim );
    virtual bool idDed() const  = 0;

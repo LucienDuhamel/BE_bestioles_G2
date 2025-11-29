@@ -3,6 +3,10 @@
 #include "config.h"
 
 #include <iostream>
+#include <memory>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
@@ -20,9 +24,12 @@ int main()
    
    ecosysteme.getMilieu().initConfig(NB_BESTIOLES_INIT);
    
+
+
+
+
+
    ecosysteme.run();
-
-
    return 0;
 
 }
