@@ -1,6 +1,3 @@
-
-
-
 #include "Bestiole.h"
 #include "Comportement.h"
 #include <vector>
@@ -16,7 +13,7 @@
 
 BestioleFactory::~BestioleFactory()
 {
-    ListComportements.clear();
+    listeComportements.clear();
     proportionsAccumilatives.clear();
 }
 
@@ -29,9 +26,9 @@ BestioleFactory::BestioleFactory(std::vector<Comportement*> Comportements, std::
     for (double x : Proportions ) accum+=x;
     assert( accum==1.0);
 
-    ListComportements.clear();
+    listeComportements.clear();
     for (auto& c : Comportements)
-        ListComportements.push_back(std::move(c));
+        listeComportements.push_back(std::move(c));
 
     proportionsAccumilatives.clear();
     proportionsAccumilatives.push_back(Proportions[0]);
@@ -45,8 +42,12 @@ Bestiole* BestioleFactory::creerEspeceBestiole() const
     double typeProb = static_cast<double>( rand() )/RAND_MAX;
     int i=0;
     while( i<(int)proportionsAccumilatives.size()-1 && typeProb>=proportionsAccumilatives[i] ) i++ ;
-    bestiole->setComportement(ListComportements[i]);
-    bestiole->setCouleur(ListComportements[i]->getCouleur());
+    // if (listeComportements[i]->getNom() == "PersoMultiples") {
+    //     Comportement* comportementPersoMultiples = new ComportementPersoMultiples(listeComportements);
+    // }
+    bestiole->setComportement(listeComportements[i]);
+    bestiole->setComportementApparent(listeComportements[i]);
+    bestiole->setCouleur(listeComportements[i]->getCouleur());
     
     // Chaque capteur a 50% de chance d'être présent (indépendamment des autres)
     if (rand() % 2 == 0) {

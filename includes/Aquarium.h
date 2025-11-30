@@ -10,6 +10,7 @@ using namespace cimg_library;
 
 
 //class Milieu;
+#include "config.h"
 #include "Milieu.h"
 
 

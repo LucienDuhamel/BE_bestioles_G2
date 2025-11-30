@@ -1,11 +1,6 @@
 #include "Aquarium.h"
-#include "Milieu.h"
-#include "Bestiole.h"
-#include "Yeux.h"
-#include "Oreilles.h"
-#include "Carapace.h"
-#include "Nageoires.h"
-#include "Camouflage.h"
+#include "utils.h"
+#include "config.h"
 
 #include <iostream>
 #include <memory>
@@ -17,10 +12,17 @@ using namespace std;
 
 
 int main()
-{
+{  
+   Config::getInstance().load("config.txt");
 
-   Aquarium       ecosysteme( 640, 480, 30 );
-   ecosysteme.getMilieu().initConfig(30);
+   const int WIDTH = Config::getInstance().getInt("WIDTH");
+   const int HEIGHT = Config::getInstance().getInt("HEIGHT");
+   const int DELAY = Config::getInstance().getInt("DELAY");
+   const int NB_BESTIOLES_INIT = Config::getInstance().getInt("NB_BESTIOLES_INIT");
+
+   Aquarium       ecosysteme( WIDTH, HEIGHT, DELAY );
+   
+   ecosysteme.getMilieu().initConfig(NB_BESTIOLES_INIT);
    
 
 

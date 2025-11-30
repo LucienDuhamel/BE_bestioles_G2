@@ -3,7 +3,7 @@
 
 
 #include "UImg.h"
-
+#include "config.h"
 #include <iostream>
 #include "Comportement.h"
 #include "Milieu.h"
@@ -21,14 +21,13 @@ class Bestiole : public EspeceBestiole
 {
 
 private :
-   
-   static const double     MAX_VITESSE;
-   static const int        MAX_AGE;
+   static double     MAX_VITESSE;
+   static int        MAX_AGE;
+
+   // Pour les bestioles a comportements multiples
+   static double     MAX_PROBA_CHANGEMENT_COMPORTEMENT;
 
 private :
-   double            cumulX, cumulY;
-   double            orientation;
-   double            vitesse;
    int               age;
    int               age_Lim;
    double deathProb;
@@ -41,16 +40,19 @@ private :
    std::vector<ICapteur*> listeCapteur;
    std::vector<IAccessoire*> listeAccessoire;
 
-private :
-   void bouge( int xLim, int yLim );
+   // Pour les bestioles a comportements multiples
+   double probaChangementComportement;
+   Comportement* comportementApparent;
 
 public :                                           // Forme canonique :
    Bestiole( void );                               // Constructeur par defaut
    Bestiole( const Bestiole & b );                 // Constructeur de copies
    ~Bestiole( void );
-                                                    // Operateur d'affectation binaire par defaut
+
+   void initFromConfig();
    void action( Milieu & monMilieu ) override;
    void draw( UImg & support ) override;
+
    void setCouleur(T   * couleur);
    std::vector<Bestiole*> detecteBestioles(std::vector<Bestiole*> const& listeBestioles) const;
    void setComportement(   Comportement* comportement);
@@ -59,16 +61,20 @@ public :                                           // Forme canonique :
    void CollisionEffect() override;
    double getDeathProb() const;
 
+   bool jeTeVois( const EspeceBestiole & b ) const override;
+   const std::vector<EspeceBestiole*> detecteBestioles(const std::vector<EspeceBestiole*>& listeBestioles);
+
    EspeceBestiole* clone() const override;
 
-   double getVitesse();
+   // Pour les bestioles a comportements multiples
+   double getProbaChangementComportement() const { return probaChangementComportement; };
+   Comportement* getComportementApparent() const { return comportementApparent; };
+   void setComportementApparent(Comportement* newComportementApparent) { comportementApparent = newComportementApparent; }; 
    double getCamouflage();
    double getResistance();
-   double getOrientation();
    const std::vector<ICapteur*>& getListeCapteur() const;
    const std::vector<IAccessoire*>& getListeAccessoire() const;
 
-   void setVitesse(double vitesse);
    void setCamouflage(double camouflage);
    void setResistance(double resistance);
 

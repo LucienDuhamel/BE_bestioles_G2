@@ -1,7 +1,7 @@
 #ifndef _BestioleFactory_
 #define _BestioleFactory_
 
-
+#include "config.h"
 #include "EspeceBestiole.h"
 #include "Comportement.h"
 #include "EspeceBestioleFactory.h"
@@ -10,7 +10,7 @@
 class BestioleFactory : public EspeceBestioleFactory
 {
 private:
-    std::vector<Comportement*> ListComportements;
+    std::vector<Comportement*> listeComportements;
     std::vector<double> proportionsAccumilatives;
 public :
     ~BestioleFactory();
