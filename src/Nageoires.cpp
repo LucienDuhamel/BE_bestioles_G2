@@ -24,11 +24,6 @@ void Nageoires::draw(UImg& support, Bestiole* b)
 void Nageoires::setVitesseNageoires(Bestiole* b) {
     double nouvelleVitesse = b->getVitesse() * CoeffVitesseNageoires;
 
-    // Si la nouvelle vitesse dépasse le max autorisé, on la plafonne
-    //if (nouvelleVitesse > Config::MAX_VITESSE) {
-    //    nouvelleVitesse = Config::MAX_VITESSE;
-    //}
-
     b->setVitesse(nouvelleVitesse);
 }
 Nageoires* Nageoires::clone() const {
