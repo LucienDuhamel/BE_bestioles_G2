@@ -137,15 +137,40 @@ void Bestiole::CollisionEffect()
     
 }
 
-bool Bestiole::jeTeVois( const EspeceBestiole & b ) const
+std::vector<Bestiole*> Bestiole::detecteBestioles(std::vector<Bestiole*> const& listeBestioles) const
 {
+    std::vector<Bestiole*> resultat;
 
-   double         dist;
+    // Si aucun capteur, retourne vide
+    if (listeCapteur.empty())
+        return resultat;
 
+    // Parcours de tous les capteurs de la bestiole
+    for (ICapteur* capteur : this->listeCapteur) {
+        if (!capteur) continue;
 
-   dist = calcDistance( *this, b );
-   return ( dist <= LIMITE_VUE );
+        // detecter attend (liste, Bestiole*)
+        std::vector<Bestiole*> ListeBestiolesdetectees = capteur->detecter(listeBestioles, const_cast<Bestiole*>(this));
 
+        // Vérifie les doublons
+        for (Bestiole* bestioleDetectee : ListeBestiolesdetectees) {
+
+            // Vérifie si la bestiole est déjà dans resultat
+            bool dejaPresent = false;
+            for (Bestiole* b : resultat) {
+                if (b == bestioleDetectee) {
+                    dejaPresent = true;
+                    break;
+                }
+            }
+
+            // Ajoute seulement si pas trouvée
+            if (!dejaPresent) {
+                resultat.push_back(bestioleDetectee);
+            }
+        }
+    }
+    return resultat;
 }
 
 void Bestiole::action( Milieu & monMilieu )
@@ -173,6 +198,16 @@ void Bestiole::draw( UImg & support )
 
    support.draw_ellipse( x, y, AFF_SIZE, AFF_SIZE/5., -orientation/M_PI*180., couleur );
    support.draw_circle( xt, yt, AFF_SIZE/2., couleur );
+
+   //Dessin des Accessoires
+    for (auto accessoire : listeAccessoire) {
+        accessoire->draw(support, this);
+    }
+
+    // Dessin des Capteurs 
+    for (auto capteur : listeCapteur) {
+        capteur->draw(support, this);
+    }
 
 }
 
@@ -249,6 +284,7 @@ void Bestiole::addAccessoire(IAccessoire* accessoire) {
       c->setResistanceCarapace(this);
    }
    else if ( Nageoires* n = dynamic_cast<Nageoires*>(accessoire) ) {
+
       n->setVitesseNageoires(this);
    }
    else if ( Camouflage* cam = dynamic_cast<Camouflage*>(accessoire) ) {

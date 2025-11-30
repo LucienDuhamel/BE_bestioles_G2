@@ -25,9 +25,9 @@ void Yeux::draw(UImg& support, Bestiole* b)
     int x = b->getX();
     int y = b->getY();
 
-    // Dessine deux points cyan sur les côtés de la tête de la bestiole
+    // Dessine deux points bleu sur les côtés de la tête de la bestiole
     const double side = 3.0;    // offset latéral
-    const double forward = 11.0; // offset frontal
+    const double forward = 9.5; // offset frontal
     const int rayon = 1.75;        // rayon du point
 
     int lx = x + static_cast<int>( std::cos(theta + M_PI/2.0) * side + std::cos(theta) * forward );

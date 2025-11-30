@@ -4,6 +4,13 @@
 #include "BestioleFactory.h"
 #include <cassert>
 
+#include "Yeux.h"
+#include "Oreilles.h"
+#include "Carapace.h"
+#include "Nageoires.h"
+#include "Camouflage.h"
+#include <cstdlib>
+
 BestioleFactory::~BestioleFactory()
 {
     listeComportements.clear();
@@ -42,6 +49,29 @@ Bestiole* BestioleFactory::creerEspeceBestiole() const
     bestiole->setComportementApparent(listeComportements[i]);
     bestiole->setCouleur(listeComportements[i]->getCouleur());
     
+    // Chaque capteur a 50% de chance d'être présent (indépendamment des autres)
+    if (rand() % 2 == 0) {
+        bestiole->addCapteur(new Yeux());
+    }
+
+    if (rand() % 2 == 0) {
+        bestiole->addCapteur(new Oreilles());
+    }
+
+    // Chaque accessoire a 50% de chance d'être présent
+
+    if (rand() % 4 == 0) {
+        bestiole->addAccessoire(new Carapace());
+    }
+
+    if (rand() % 2 == 0) {
+        bestiole->addAccessoire(new Nageoires());
+    }
+
+    if (rand() % 2 == 0) {
+        bestiole->addAccessoire(new Camouflage());
+    }
+
     return bestiole;
 
 }

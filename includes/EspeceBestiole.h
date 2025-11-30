@@ -5,11 +5,14 @@
 #include "UImg.h"
 
 #include <iostream>
+#include <vector>
+#include <memory>
 
 using namespace std;
 
 
 class Milieu;
+class Bestiole;
 
 class EspeceBestiole
 {
@@ -35,10 +38,10 @@ public :
    EspeceBestiole(const EspeceBestiole& other);
    virtual ~EspeceBestiole( void ) ;
    void initFromConfig();
-   virtual void action( Milieu & monMilieu );
-   virtual void draw( UImg & support );
    int getId() const { return identite; }
-   virtual bool jeTeVois( const EspeceBestiole & b ) const = 0 ;
+   virtual void action( Milieu & monMilieu ) = 0;
+   virtual void draw( UImg & support ) = 0;
+   virtual std::vector<Bestiole*> detecteBestioles(std::vector<Bestiole*> const& listeBestioles) const = 0;
    void initCoords( int xLim, int yLim );
    virtual bool idDed() const  = 0;
 

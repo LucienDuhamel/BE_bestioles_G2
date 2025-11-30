@@ -118,19 +118,15 @@ void Milieu::step( void )
 }
 
 
-int Milieu::nbVoisins( const EspeceBestiole & b )
-{
+//int Milieu::nbVoisins( const EspeceBestiole & b )
+//{
+//   int         nb = 0;
+//   for ( std::vector<EspeceBestiole*>::iterator it = listeEspeceBestioles.begin() ; it != listeEspeceBestioles.end() ; ++it )
+//      if ( !(b == *(*it)) && b.jeTeVois(*(*it)) )
+//         ++nb;
+//   return nb;
+//}
 
-   int         nb = 0;
-
-
-   for ( std::vector<EspeceBestiole*>::iterator it = listeEspeceBestioles.begin() ; it != listeEspeceBestioles.end() ; ++it )
-      if ( !(b == *(*it)) && b.jeTeVois(*(*it)) )
-         ++nb;
-
-   return nb;
-
-}
 void Milieu::removeMember(  EspeceBestiole*  b )
 {
    for ( std::vector<EspeceBestiole*>::iterator it = listeEspeceBestioles.begin() ; it != listeEspeceBestioles.end() ; ++it )

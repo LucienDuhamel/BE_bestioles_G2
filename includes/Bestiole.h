@@ -36,7 +36,7 @@ private :
    double            resistance;
 
    Comportement* comportement;
-public:
+
    std::vector<ICapteur*> listeCapteur;
    std::vector<IAccessoire*> listeAccessoire;
 
@@ -54,6 +54,7 @@ public :                                           // Forme canonique :
    void draw( UImg & support ) override;
 
    void setCouleur(T   * couleur);
+   std::vector<Bestiole*> detecteBestioles(std::vector<Bestiole*> const& listeBestioles) const;
    void setComportement(   Comportement* comportement);
    bool idDed() const override;
 
