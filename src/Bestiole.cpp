@@ -8,14 +8,15 @@
 #include "Camouflage.h"
 
 #include "Milieu.h"
+#include "utils.h"
 
 #include <cstdlib>
 #include <cmath>
 
+#include <iostream>
 
-const double      Bestiole::MAX_VITESSE = 10.;
-
-const int         Bestiole::MAX_AGE = 10000;
+int         Bestiole::MAX_AGE = 0;
+double      Bestiole::MAX_VITESSE = 0.0;
 
 
 Bestiole::Bestiole( void )
@@ -24,16 +25,22 @@ Bestiole::Bestiole( void )
    //identite = ++next;
 
    cout << "const Bestiole (" << identite << ") par defaut" << endl;
-
-   age_Lim = static_cast<double>( rand() )/RAND_MAX*MAX_AGE;
+   age_Lim = randomBetween(0.0,1.0)*MAX_AGE;
    age = 0;
    Killed = false;
-   deathProb = static_cast<double>( rand() )/RAND_MAX;
+   deathProb = randomBetween(0.0,1.0);
    cumulX = cumulY = 0.;
-   orientation = static_cast<double>( rand() )/RAND_MAX*2.*M_PI;
-   vitesse = static_cast<double>( rand() )/RAND_MAX*MAX_VITESSE;
+   orientation = randomBetween(0.0,1.0)*2.*M_PI;
+   vitesse = randomBetween(0.0,1.0)*MAX_VITESSE;
    camouflage = 0.0;
    resistance = 0.0;
+
+   // Initialisation des parametres statiques depuis le fichier de config
+   if( MAX_AGE == 0 || MAX_VITESSE == 0.0 )
+   {
+      initFromConfig();
+   }
+
    
 }
 
@@ -49,9 +56,11 @@ Bestiole::Bestiole( const Bestiole & b ) : EspeceBestiole(b)
    Killed = b.Killed;
    deathProb = b.deathProb;
    cumulX = cumulY = 0.;
-   comportement = b.comportement;
+   comportement = b.comportement->clone();
    orientation = b.orientation;
    vitesse = b.vitesse;
+
+
    camouflage = b.camouflage;
    resistance = b.resistance;
    //Clone les capteurs et accessoires avec une deep copy
@@ -75,56 +84,36 @@ Bestiole::~Bestiole( void )
    for (auto p : listeAccessoire) {
       delete p;
    }
-   listeAccessoire.clear();
 
+   listeAccessoire.clear();
+   Comportement* test=comportement->clone();
+   if(test!=comportement) // Perso Multiple == not singletant
+   {
+      delete test;
+      delete comportement;
+   }
    cout << "dest Bestiole" << endl;
 
 }
 
-void Bestiole::setComportement(   Comportement* Lecomportement)
+// Initialisation des parametres statiques depuis le fichier de config (valeurs par defaut si absentes)
+void Bestiole::initFromConfig() {
+    MAX_AGE = Config::getInstance().getInt("MAX_AGE", 1000);
+    MAX_VITESSE = Config::getInstance().getDouble("MAX_VITESSE", 5.0);
+}
+
+
+void Bestiole::setComportement(   Comportement* leComportement)
 {
 
-   comportement = Lecomportement;
+   comportement = leComportement;
+   setCouleur(comportement->getCouleur());
 
 }
 
 void Bestiole::setCouleur(T   * coul)
 {
    memcpy(couleur, coul, 3 * sizeof(T));
-}
-void Bestiole::bouge( int xLim, int yLim )
-{
-
-   double         nx, ny;
-   double         dx = cos( orientation )*vitesse;
-   double         dy = -sin( orientation )*vitesse;
-   int            cx, cy;
-
-
-   cx = static_cast<int>( cumulX ); cumulX -= cx;
-   cy = static_cast<int>( cumulY ); cumulY -= cy;
-
-   nx = x + dx + cx;
-   ny = y + dy + cy;
-
-   if ( (nx < 0) || (nx > xLim - 1) ) {
-      orientation = M_PI - orientation;
-      cumulX = 0.;
-   }
-   else {
-      x = static_cast<int>( nx );
-      cumulX += nx - x;
-   }
-
-   if ( (ny < 0) || (ny > yLim - 1) ) {
-      orientation = -orientation;
-      cumulY = 0.;
-   }
-   else {
-      y = static_cast<int>( ny );
-      cumulY += ny - y;
-   }
-
 }
 
 double Bestiole::getDeathProb() const
@@ -135,11 +124,7 @@ double Bestiole::getDeathProb() const
 
 void Bestiole::CollisionEffect()
 {
-   // TO Do
-
-   // Sinon elle rebondit = demi-tour
-    orientation += M_PI;
-    double r = (double)rand() / RAND_MAX;
+    double r = randomBetween(0.0,1.0);
 
     if (r < getDeathProb())
     {
@@ -147,12 +132,22 @@ void Bestiole::CollisionEffect()
         return;
     }
 
+    // Déviation aléatoire pour éviter de rester bloqué
+    double deviation = randomBetween(-M_PI/2, M_PI/2);
+    orientation += deviation;
     
+    // Normaliser l'orientation entre 0 et 2*PI
+    while (orientation < 0) orientation += 2*M_PI;
+    while (orientation >= 2*M_PI) orientation -= 2*M_PI;
+    
+    // Petit recul pour séparer les bestioles
+    x -= static_cast<int>(cos(orientation) * vitesse * 2);
+    y += static_cast<int>(sin(orientation) * vitesse * 2);
 }
 
-std::vector<Bestiole*> Bestiole::detecteBestioles(std::vector<Bestiole*> const& listeBestioles) const
+const std::vector<EspeceBestiole*> Bestiole::detecteBestioles(const std::vector<EspeceBestiole*>& listeBestioles)
 {
-    std::vector<Bestiole*> resultat;
+    std::vector<EspeceBestiole*> resultat;
 
     // Si aucun capteur, retourne vide
     if (listeCapteur.empty())
@@ -163,14 +158,14 @@ std::vector<Bestiole*> Bestiole::detecteBestioles(std::vector<Bestiole*> const& 
         if (!capteur) continue;
 
         // detecter attend (liste, Bestiole*)
-        std::vector<Bestiole*> ListeBestiolesdetectees = capteur->detecter(listeBestioles, const_cast<Bestiole*>(this));
+        std::vector<EspeceBestiole*> ListeBestiolesdetectees = capteur->detecter(listeBestioles, this);
 
         // Vérifie les doublons
-        for (Bestiole* bestioleDetectee : ListeBestiolesdetectees) {
+        for (EspeceBestiole* bestioleDetectee : ListeBestiolesdetectees) {
 
             // Vérifie si la bestiole est déjà dans resultat
             bool dejaPresent = false;
-            for (Bestiole* b : resultat) {
+            for (EspeceBestiole* b : resultat) {
                 if (b == bestioleDetectee) {
                     dejaPresent = true;
                     break;
@@ -185,6 +180,7 @@ std::vector<Bestiole*> Bestiole::detecteBestioles(std::vector<Bestiole*> const& 
     }
     return resultat;
 }
+
 void Bestiole::action( Milieu & monMilieu )
 {
    if(idDed())
@@ -195,8 +191,8 @@ void Bestiole::action( Milieu & monMilieu )
       return;
    }
    age++;
-   comportement->bouge(*this, monMilieu.getListeEspeceBestioles() );
-   bouge( monMilieu.getWidth(), monMilieu.getHeight() );
+   comportement->reagit(*this, monMilieu.getListeEspeceBestioles() );
+   bouge( monMilieu.getWidth(), monMilieu.getHeight());
 
 }
 
@@ -245,17 +241,11 @@ EspeceBestiole* Bestiole::clone() const
 }
 
 
-double Bestiole::getVitesse() {
-    return this->vitesse;
-}
 double Bestiole::getCamouflage() {
     return this->camouflage;
 }
 double Bestiole::getResistance() {
     return this->resistance;
-}
-double Bestiole::getOrientation() {
-    return this->orientation;
 }
 const std::vector<ICapteur*>& Bestiole::getListeCapteur() const {
    return this->listeCapteur;
@@ -264,11 +254,6 @@ const std::vector<IAccessoire*>& Bestiole::getListeAccessoire() const {
    return this->listeAccessoire;
 }
 
-
-
-void Bestiole::setVitesse(double vitesse) {
-   this->vitesse = vitesse;
-}
 void Bestiole::setCamouflage(double camouflage) {
    this->camouflage = camouflage;
 }

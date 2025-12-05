@@ -1,52 +1,69 @@
 #include "Comportement.h"
 #include "Bestiole.h"
 #include "ComportementPersoMultiples.h"
+#include "utils.h"
 #include <iostream>
 #include <vector>
 #include <errno.h>
 
-ComportementPersoMultiples* ComportementPersoMultiples::singletonPersoMultiples = nullptr;
 
 
 
-ComportementPersoMultiples::ComportementPersoMultiples(std::vector<Comportement*> ListComportement)
+double      ComportementPersoMultiples::MAX_PROBA_CHANGEMENT_COMPORTEMENT = 0.0;
+
+ComportementPersoMultiples::ComportementPersoMultiples(std::vector<Comportement*> listeComportements)
 {
-    for (auto& c : ListComportement)
-        ListComportements.push_back(std::move(c));
+    for (auto& c : listeComportements)
+        comportementsDisponibles.push_back(std::move(c));
+
+    ComportementApparentIndex = rand() % comportementsDisponibles.size() ;
+    // Initialisation des parametres statiques depuis le fichier de config
+   if( MAX_PROBA_CHANGEMENT_COMPORTEMENT == 0.0 )
+   {
+      initFromConfig();
+   }
+   probaChangementComportement = static_cast<double>( randomBetween(0.0, MAX_PROBA_CHANGEMENT_COMPORTEMENT) );
+
 }
+
 
 ComportementPersoMultiples::~ComportementPersoMultiples()
 {
-    ListComportements.clear();
+    comportementsDisponibles.clear();
 }
 
-ComportementPersoMultiples*   ComportementPersoMultiples::getInstance(std::vector<Comportement*> ListComportement)
+Comportement*   ComportementPersoMultiples::clone() const 
 {
-    if (singletonPersoMultiples == nullptr){
-        singletonPersoMultiples = new ComportementPersoMultiples(ListComportement);
-        singletonPersoMultiples->couleur = new T[ 3 ];
-        singletonPersoMultiples->couleur[ 0 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
-        singletonPersoMultiples->couleur[ 1 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
-        singletonPersoMultiples->couleur[ 2 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
-
-    }
-
-    return  singletonPersoMultiples;
-}
-
-ComportementPersoMultiples*   ComportementPersoMultiples::getInstance()
-{
-    if (singletonPersoMultiples == nullptr)
-        std::cerr <<"ComportementPersoMultiples instance not initialized with ListComportement!" << std::endl;
-
-    return  singletonPersoMultiples;
+    return new ComportementPersoMultiples(comportementsDisponibles);
 }
 
 T * ComportementPersoMultiples::getCouleur()  const {
-    return couleur;
+    return comportementsDisponibles[ComportementApparentIndex]->getCouleur();
+} 
+
+
+void ComportementPersoMultiples::reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles )
+{   
+
+    if (comportementsDisponibles.empty()) {
+        std::cerr << "Erreur : pas de comportements disponibles !\n";
+        return;
+    }
+    
+    if (randomBetween(0.0, 1.0)< probaChangementComportement) {
+        
+        int saut =  rand() % (comportementsDisponibles.size()-1);
+        ComportementApparentIndex = (ComportementApparentIndex + saut) % comportementsDisponibles.size() ;
+        
+        bestiole.setCouleur(comportementsDisponibles[ComportementApparentIndex]->getCouleur());
+    }
+
+    comportementsDisponibles[ComportementApparentIndex]->reagit(bestiole, listeBestioles);
+
 }
-void ComportementPersoMultiples::bouge(Bestiole& bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const 
-{
-    ListComportements[rand() % ListComportements.size()]->bouge(bestiole, listeBestioles);
+
+// Initialisation des parametres statiques depuis le fichier de config (valeurs par defaut si absentes)
+void ComportementPersoMultiples::initFromConfig() {
+    MAX_PROBA_CHANGEMENT_COMPORTEMENT = Config::getInstance().getDouble("MAX_PROBA_CHANGEMENT_COMPORTEMENT", 0.05);
 
 }

@@ -4,11 +4,13 @@
 #include "config.h"
 #include <cstdlib>
 
+double Camouflage::camoMin = -1.0;
+double Camouflage::camoMax = -1.0;
+
 Camouflage::Camouflage()
-{
-    Config& cfg = Config::getInstance();
-    double camoMin = cfg.getDouble("CAMOUFLAGE_MIN");
-    double camoMax = cfg.getDouble("CAMOUFLAGE_MAX");
+{   
+    if (camoMin < 0.0 || camoMax < 0.0)
+        initFromConfig();
     
     camouflage = camoMin + (static_cast<double>(rand()) / RAND_MAX) * (camoMax - camoMin);
 }
@@ -51,4 +53,11 @@ Camouflage* Camouflage::clone() const {
     Camouflage* c = new Camouflage();
     c->camouflage = this->camouflage;
     return c;
+}
+
+
+void Camouflage::initFromConfig(){
+    Config& cfg = Config::getInstance();
+    Camouflage::camoMin = cfg.getDouble("CAMOUFLAGE_MIN");
+    Camouflage::camoMax = cfg.getDouble("CAMOUFLAGE_MAX");
 }

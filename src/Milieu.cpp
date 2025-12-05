@@ -5,26 +5,37 @@
 #include "ComportementPersoMultiples.h"
 #include "ComportementPrevoyant.h"
 #include "BestioleFactory.h"
+#include "utils.h"
 #include <cstdlib>
 #include <ctime>
 #include <cmath>
 #include <vector>
 #include <iostream>
+
 const T    Milieu::white[] = { (T)255, (T)255, (T)255 };
-const double  Milieu::TAUX_DE_NAISSANCES_SPONTANE = 0.05;//static_cast<double>( rand() ) / RAND_MAX;
+double  Milieu::PROP_GREGAIRE = 0.0;
+double  Milieu::PROP_KAMIKAZE = 0.0;
+double  Milieu::PROP_PEUREUX = 0.0;
+double  Milieu::PROP_PREVOYANT = 0.0;
+double  Milieu::PROP_MULTIPLES = 0.0;
+double  Milieu::TAUX_DE_NAISSANCES_SPONTANEE = 0.0;
+
 
 Milieu::Milieu( int _width, int _height ) : UImg( _width, _height, 1, 3 ),
                                             width(_width), height(_height)
 {
-   ListeComportements.push_back(ComportementGregaire::getInstance());
-   ListeComportements.push_back(ComportementKamikaze::getInstance());
-   ListeComportements.push_back(ComportementPeureux::getInstance());
-   ListeComportements.push_back(ComportementPrevoyant::getInstance());
+   listeComportements.push_back(ComportementGregaire::getInstance());
+   listeComportements.push_back(ComportementKamikaze::getInstance());
+   listeComportements.push_back(ComportementPeureux::getInstance());
+   listeComportements.push_back(ComportementPrevoyant::getInstance());
 
-   ListeComportements.push_back(ComportementPersoMultiples::getInstance(ListeComportements));
+   listeComportements.push_back(new ComportementPersoMultiples(listeComportements));
    
-   std::vector<double> proportions = {0.2, 0.1, 0.1, 0.3, 0.3};
-   bestioleFactory = new BestioleFactory(ListeComportements, proportions);
+   if(PROP_GREGAIRE + PROP_KAMIKAZE + PROP_PEUREUX + PROP_PREVOYANT + PROP_MULTIPLES != 1){
+      this->initFromConfig();
+   }
+   std::vector<double> proportions = {PROP_GREGAIRE, PROP_KAMIKAZE, PROP_PEUREUX, PROP_PREVOYANT, PROP_MULTIPLES};
+   bestioleFactory = new BestioleFactory(listeComportements, proportions);
    cout << "const Milieu" << endl;
 
    std::srand( time(NULL) );
@@ -41,10 +52,10 @@ Milieu::~Milieu( void )
     listeEspeceBestioles.clear();
 
     // Supprime tous les comportements
-    for (auto* c : ListeComportements) {
+    for (auto* c : listeComportements) {
         delete c;
     }
-    ListeComportements.clear();
+    listeComportements.clear();
 
     // Supprime la factory si elle a été créée dynamiquement
     delete bestioleFactory;
@@ -52,10 +63,26 @@ Milieu::~Milieu( void )
 
 }
 
+
 void Milieu::initConfig(int nbEspeces)
-{
-   for ( int i = 1; i <= nbEspeces; ++i )
+{  
+   kill_all();
+   for ( int i = 0; i <= nbEspeces; ++i )
       addMember();
+}
+
+void Milieu::initFromConfig() {
+   // Initialisation du taux de naissances spontanées depuis le fichier de config
+   PROP_GREGAIRE = Config::getInstance().getDouble("PROP_GREGAIRE", 0.2);
+   PROP_KAMIKAZE = Config::getInstance().getDouble("PROP_KAMIKAZE", 0.2);
+   PROP_PEUREUX = Config::getInstance().getDouble("PROP_PEUREUX", 0.2);
+   PROP_PREVOYANT = Config::getInstance().getDouble("PROP_PREVOYANT", 0.2);
+   PROP_MULTIPLES = Config::getInstance().getDouble("PROP_MULTIPLES", 0.2);
+
+   if(PROP_GREGAIRE + PROP_KAMIKAZE + PROP_PEUREUX + PROP_PREVOYANT + PROP_MULTIPLES != 1){
+      std::cout<<"Les proportions de types de bestioles doivent faire 1 en les sommant !!"<<std::endl;
+   }
+   TAUX_DE_NAISSANCES_SPONTANEE = Config::getInstance().getDouble("TAUX_DE_NAISSANCES_SPONTANE", 0.01);
 }
 
 
@@ -71,53 +98,27 @@ void Milieu::step( void )
    
 
    // clonage spontanement
+
+   
    for ( int i= listeEspeceBestioles.size()-1; i >=0 ; i-- )
-      if((double)std::rand() / RAND_MAX <= listeEspeceBestioles[i]->CLONAGE_PROP)
+      if(randomBetween(0.0,1.0) <= listeEspeceBestioles[i]->CLONAGE_PROP)
          //listeEspeceBestioles.push_back(listeEspeceBestioles[i]->clone());
          addMember(listeEspeceBestioles[i]->clone());
 
    // Naissance spontanement
-   if((double)std::rand() / RAND_MAX <= TAUX_DE_NAISSANCES_SPONTANE)
+   if(randomBetween(0.0,1.0) <= TAUX_DE_NAISSANCES_SPONTANEE)
       addMember();
    
    for ( std::vector<EspeceBestiole*>::iterator it = listeEspeceBestioles.begin() ; it != listeEspeceBestioles.end() ; ++it )
    {
+
       (*it)->action( *this );
-      
-      // Provisoire : Détection pour chaque bestiole ayant des capteurs et print dans le terminal
-      std::vector<Bestiole*> listeBestioles;
-      for (auto* eb : listeEspeceBestioles) {
-         if (Bestiole* b = dynamic_cast<Bestiole*>(eb)) {
-            listeBestioles.push_back(b);
-         }
-      }
-      std::vector<Bestiole*> detectees = (*it)->detecteBestioles(listeBestioles);
-      if (!detectees.empty()) {
-         std::cout << "Bestiole " << (*it)->getId() << " détecte: ";
-         for (Bestiole* b : detectees) {
-            std::cout << b->getId() << " ";
-         }
-         std::cout << std::endl;
-      }
-      
-      
       (*it)->draw( *this );
 
    } // for
 
 }
-// Fonction jeTevois n'existe plus
 
-//int Milieu::nbVoisins( const EspeceBestiole & b )
-//{
-//int         nb = 0;
-//   for ( std::vector<EspeceBestiole*>::iterator it = listeEspeceBestioles.begin() ; it != listeEspeceBestioles.end() ; ++it )
-//      if ( !(b == *(*it)) && b.jeTeVois(*(*it)) )
-//         ++nb;
-//
-//   return nb;
-//
-//}
 void Milieu::removeMember(  EspeceBestiole*  b )
 {
    for ( std::vector<EspeceBestiole*>::iterator it = listeEspeceBestioles.begin() ; it != listeEspeceBestioles.end() ; ++it )
@@ -154,4 +155,13 @@ void Milieu::detecteCollisions()
             (*it)->CollisionEffect();
             break;
          }
+}
+
+
+void Milieu::kill_all()
+{
+   for ( std::vector<EspeceBestiole*>::iterator it = listeEspeceBestioles.begin() ; it != listeEspeceBestioles.end() ; ++it )
+      delete *it;
+
+   listeEspeceBestioles.clear();
 }

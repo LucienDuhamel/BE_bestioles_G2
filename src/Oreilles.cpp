@@ -4,14 +4,16 @@
 #include "config.h"
 #include <cstdlib>
 
+double Oreilles::distMin = -1.0;
+double Oreilles::distMax = -1.0;
+double Oreilles::pourcMin = -1.0;
+double Oreilles::pourcMax = -1.0;
+
 Oreilles::Oreilles()
-{
-    Config& cfg = Config::getInstance();
-    double distMin = cfg.getDouble("DISTANCE_VISION_OREILLE_MIN");
-    double distMax = cfg.getDouble("DISTANCE_VISION_OREILLE_MAX");
-    double pourcMin = cfg.getDouble("POURCENTAGE_DETECTION_OREILLE_MIN");
-    double pourcMax = cfg.getDouble("POURCENTAGE_DETECTION_OREILLE_MAX");
-    
+{   
+
+    if(distMin < 0.0 || distMax < 0.0 || pourcMin < 0.0 || pourcMax < 0.0)
+        initFromConfig();
     distanceVisionOreilles = distMin + (static_cast<double>(rand()) / RAND_MAX) * (distMax - distMin);
     pourcentageDetectionOreilles = pourcMin + (static_cast<double>(rand()) / RAND_MAX) * (pourcMax - pourcMin);
 }
@@ -39,11 +41,11 @@ void Oreilles::draw(UImg& support, Bestiole* b)
     support.draw_circle(lx, ly, rayon, couleurOreilles);
     support.draw_circle(rx, ry, rayon, couleurOreilles);
 }
-std::vector<Bestiole*> Oreilles::detecter( std::vector<Bestiole*> listeBestioles, Bestiole* b )
+std::vector<EspeceBestiole*> Oreilles::detecter( std::vector<EspeceBestiole*> listeBestioles, Bestiole* b )
 {
-    std::vector<Bestiole*> ListeBestiolesDetectees;
+    std::vector<EspeceBestiole*> ListeBestiolesDetectees;
     
-    for (Bestiole* autre: listeBestioles) {
+    for (EspeceBestiole* autre: listeBestioles) {
         if (autre != b) {
             // Calcul de la distance entre les deux bestioles
             double dx = autre->getX() - b->getX();
@@ -68,4 +70,13 @@ Oreilles* Oreilles::clone() const {
     o->distanceVisionOreilles = this->distanceVisionOreilles;
     o->pourcentageDetectionOreilles = this->pourcentageDetectionOreilles;
     return o;
+}
+
+
+void Oreilles::initFromConfig() {
+    Config& cfg = Config::getInstance();
+    Oreilles::distMin = cfg.getDouble("DISTANCE_VISION_OREILLE_MIN");
+    Oreilles::distMax = cfg.getDouble("DISTANCE_VISION_OREILLE_MAX");
+    Oreilles::pourcMin = cfg.getDouble("POURCENTAGE_DETECTION_OREILLE_MIN");
+    Oreilles::pourcMax = cfg.getDouble("POURCENTAGE_DETECTION_OREILLE_MAX");
 }

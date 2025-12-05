@@ -6,8 +6,10 @@
 class Carapace : public IAccessoire
 {
 private :
-   double CoeffVitesseCarapace;
-   double CoeffResistanceCarapace;
+    static double vitesseMax;
+    static double resistMax;
+    double CoeffVitesseCarapace;
+    double CoeffResistanceCarapace;
 public:
     Carapace();
     ~Carapace() = default;
@@ -16,6 +18,7 @@ public:
     void setVitesseCarapace(Bestiole* b);
     void setResistanceCarapace(Bestiole* b);
     Carapace* clone() const override;
+    void initFromConfig();
 };
 
 #endif

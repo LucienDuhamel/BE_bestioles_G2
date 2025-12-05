@@ -4,10 +4,12 @@
 #include "config.h"
 #include <cstdlib>
 
+double Nageoires::vitesseMax = -1.0;
+
 Nageoires::Nageoires()
-{
-    Config& cfg = Config::getInstance();
-    double vitesseMax = cfg.getDouble("COEFF_VITESSE_NAGEOIRE_MAX");
+{   
+    if (vitesseMax < 0.0)
+        initFromConfig();
     
     CoeffVitesseNageoires = 1.0 + (static_cast<double>(rand()) / RAND_MAX) * (vitesseMax - 1.0);
 }
@@ -29,4 +31,9 @@ Nageoires* Nageoires::clone() const {
     Nageoires* n = new Nageoires();
     n->CoeffVitesseNageoires = this->CoeffVitesseNageoires;
     return n;
+}
+
+void Nageoires::initFromConfig() {
+    Config& cfg = Config::getInstance();
+    Nageoires::vitesseMax = cfg.getDouble("COEFF_VITESSE_NAGEOIRE_MAX");
 }

@@ -8,6 +8,8 @@ class Bestiole;
 class Nageoires : public IAccessoire
 
 {
+private : 
+   static double vitesseMax;
 private :
    double CoeffVitesseNageoires;
 
@@ -18,6 +20,7 @@ public:
     void draw(UImg& support, Bestiole* b) override;
     void setVitesseNageoires(Bestiole* b);
     Nageoires* clone() const override;
+    void initFromConfig();
 };
 
 #endif

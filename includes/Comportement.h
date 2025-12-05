@@ -1,7 +1,7 @@
 #ifndef _Comportement_
 #define _Comportement_
 
-
+#include "config.h"
 #include "EspeceBestiole.h"
 #include "UImg.h"
 
@@ -15,10 +15,10 @@ class Comportement
 
 public :
    
-   virtual ~Comportement( void )= default;
+   virtual ~Comportement( )= default;
    virtual T * getCouleur() const = 0;
-   virtual void bouge(Bestiole& bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const = 0;
-
+   virtual void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) = 0;
+   virtual Comportement* clone() const = 0;
 };
 
 

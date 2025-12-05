@@ -4,12 +4,13 @@
 #include "config.h"
 #include <cstdlib>
 
+double Carapace::vitesseMax = -1.0;
+double Carapace::resistMax = -1.0;
+
 Carapace::Carapace()
 {
-    Config& cfg = Config::getInstance();
-    double vitesseMax = cfg.getDouble("COEFF_VITESSE_CARAPACE_MAX");
-    double resistMax = cfg.getDouble("COEFF_RESISTANCE_CARAPACE_MAX");
-    
+    if (vitesseMax <0.0 || resistMax <0.0)
+        initFromConfig();    
     CoeffVitesseCarapace = 1.0 + (static_cast<double>(rand()) / RAND_MAX) * (vitesseMax - 1.0);
     CoeffResistanceCarapace = 1.0 + (static_cast<double>(rand()) / RAND_MAX) * (resistMax - 1.0);
 }
@@ -40,4 +41,10 @@ Carapace* Carapace::clone() const {
     c->CoeffVitesseCarapace = this->CoeffVitesseCarapace;
     c->CoeffResistanceCarapace = this->CoeffResistanceCarapace;
     return c;
+}
+
+void Carapace::initFromConfig(){
+    Config& cfg = Config::getInstance();
+    Carapace::vitesseMax = cfg.getDouble("COEFF_VITESSE_CARAPACE_MAX");
+    Carapace::resistMax = cfg.getDouble("COEFF_RESISTANCE_CARAPACE_MAX");
 }

@@ -8,6 +8,11 @@ class Bestiole;
 
 class Oreilles : public ICapteur
 {
+private: 
+    static double distMin;
+    static double distMax;
+    static double pourcMin;
+    static double pourcMax;
 private:
     double distanceVisionOreilles;
     double pourcentageDetectionOreilles;
@@ -16,8 +21,9 @@ public:
     ~Oreilles() = default;
 
     void draw(UImg& support, Bestiole* b) override;
-    std::vector<Bestiole*> detecter( std::vector<Bestiole*> listeBestioles, Bestiole* b ) override;
+    std::vector<EspeceBestiole*> detecter( std::vector<EspeceBestiole*> listeBestioles, Bestiole* b ) override;
     Oreilles* clone() const override;
+    void initFromConfig();
 };
 
 #endif

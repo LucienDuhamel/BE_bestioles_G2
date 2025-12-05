@@ -1,7 +1,7 @@
 #ifndef _EspeceBestiole_
 #define _EspeceBestiole_
 
-
+#include "config.h"
 #include "UImg.h"
 
 #include <iostream>
@@ -18,37 +18,51 @@ class EspeceBestiole
 {
 
 protected :
-   static const double     AFF_SIZE;
-   static const double     LIMITE_VUE;
-   
+   static double     AFF_SIZE;
+   static double     LIMITE_VUE;
    static int              next;
+
+public :
+   static double     CLONAGE_PROP;
 
 protected :
    int               identite;
-
+   double            cumulX, cumulY;
+   double            vitesse;
+   double            orientation;
    int               x, y;
    T               * couleur;
 
-public:
-static const double     CLONAGE_PROP;
 public :        
    EspeceBestiole();                                
    EspeceBestiole(const EspeceBestiole& other);
    virtual ~EspeceBestiole( void ) ;
-   int getX() const {return x;}
-   int getY() const {return y;}
+   void initFromConfig();
    int getId() const { return identite; }
    virtual void action( Milieu & monMilieu ) = 0;
    virtual void draw( UImg & support ) = 0;
-   virtual std::vector<Bestiole*> detecteBestioles(std::vector<Bestiole*> const& listeBestioles) const = 0;
+   virtual const std::vector<EspeceBestiole*> detecteBestioles(const std::vector<EspeceBestiole*>& listeBestioles) = 0;
    void initCoords( int xLim, int yLim );
    virtual bool idDed() const  = 0;
+
+   void bouge( int xLim, int yLim );
 
    virtual bool isInCollisionWith( const EspeceBestiole & b ) const ;
    virtual void CollisionEffect()  = 0;
    virtual EspeceBestiole* clone() const = 0;
 
    friend bool operator==( const EspeceBestiole & b1, const EspeceBestiole & b2 );
+
+   int getX() const { return x; };
+   int getY() const { return y; };
+
+   double getVitesse() const { return vitesse; }
+   void setVitesse(double newVitesse) { vitesse = newVitesse; }
+
+   virtual double getCamouflage()const { return 0; };
+
+   double getOrientation() const { return orientation; };
+   void setOrientation(double newOrientation) { orientation = newOrientation; }
 
 };
 

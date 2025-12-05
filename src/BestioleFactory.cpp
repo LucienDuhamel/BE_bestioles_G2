@@ -1,8 +1,6 @@
-
-
-
 #include "Bestiole.h"
 #include "Comportement.h"
+#include "utils.h"
 #include <vector>
 #include "BestioleFactory.h"
 #include <cassert>
@@ -16,22 +14,22 @@
 
 BestioleFactory::~BestioleFactory()
 {
-    ListComportements.clear();
+    listeComportements.clear();
     proportionsAccumilatives.clear();
 }
 
 BestioleFactory::BestioleFactory(std::vector<Comportement*> Comportements, std::vector<double> Proportions)
 {
     assert(!Comportements.empty());
-    assert(Comportements.size() == Proportions.size());
+    assert(Comportements.size() == Proportions.size() || Comportements.size()+1 == Proportions.size());
     
     double accum=0.0;
     for (double x : Proportions ) accum+=x;
     assert( accum==1.0);
 
-    ListComportements.clear();
+    listeComportements.clear();
     for (auto& c : Comportements)
-        ListComportements.push_back(std::move(c));
+        listeComportements.push_back(std::move(c));
 
     proportionsAccumilatives.clear();
     proportionsAccumilatives.push_back(Proportions[0]);
@@ -42,11 +40,12 @@ BestioleFactory::BestioleFactory(std::vector<Comportement*> Comportements, std::
 Bestiole* BestioleFactory::creerEspeceBestiole() const
 {
     Bestiole* bestiole = new Bestiole();
-    double typeProb = static_cast<double>( rand() )/RAND_MAX;
+    double typeProb = randomBetween(0.0,1.0);
     int i=0;
     while( i<(int)proportionsAccumilatives.size()-1 && typeProb>=proportionsAccumilatives[i] ) i++ ;
-    bestiole->setComportement(ListComportements[i]);
-    bestiole->setCouleur(ListComportements[i]->getCouleur());
+    
+    bestiole->setComportement(listeComportements[i]->clone());
+        
     
     // Chaque capteur a 50% de chance d'être présent (indépendamment des autres)
     if (rand() % 2 == 0) {

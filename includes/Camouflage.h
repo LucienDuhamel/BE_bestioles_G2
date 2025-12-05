@@ -5,6 +5,10 @@
 
 class Camouflage : public IAccessoire
 {
+
+private: 
+    static double camoMin;
+    static double camoMax;
 private:
     double camouflage;
 public:
@@ -14,6 +18,7 @@ public:
     void draw(UImg& support, Bestiole* b) override;
     void setCamouflage(Bestiole* b);
     Camouflage* clone() const override;
+    void initFromConfig();
 };
 
 #endif
