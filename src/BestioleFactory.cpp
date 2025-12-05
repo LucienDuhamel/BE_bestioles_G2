@@ -1,5 +1,6 @@
 #include "Bestiole.h"
 #include "Comportement.h"
+#include "utils.h"
 #include <vector>
 #include "BestioleFactory.h"
 #include <cassert>
@@ -32,7 +33,7 @@ BestioleFactory::BestioleFactory(std::vector<Comportement*> Comportements, std::
 Bestiole* BestioleFactory::creerEspeceBestiole() const
 {
     Bestiole* bestiole = new Bestiole();
-    double typeProb = static_cast<double>( rand() )/RAND_MAX;
+    double typeProb = randomBetween(0.0,1.0);
     int i=0;
     while( i<(int)proportionsAccumilatives.size()-1 && typeProb>=proportionsAccumilatives[i] ) i++ ;
     

@@ -41,7 +41,7 @@ Aquarium::~Aquarium( void )
 void Aquarium::run(void)
 {
     cout << "running Aquarium" << endl;
-
+   bool Nopose = true;
     while (!is_closed())
     {
          wait(delay);
@@ -57,7 +57,8 @@ void Aquarium::run(void)
                     break;
                 case ' ': // spacebar
                     // toggle pause flag here
-                    continue;
+                    wait(3*delay);
+                    Nopose = !Nopose;
                     break;
                 case 'a':
                     cout << "Key A pressed: add a bestiole" << endl;
@@ -79,8 +80,12 @@ void Aquarium::run(void)
             }
         }
 
-        flotte->step();
-        display(*flotte);
+
+        if(Nopose){
+            flotte->step();
+         display(*flotte);
+        }
+        
         
     }
 }

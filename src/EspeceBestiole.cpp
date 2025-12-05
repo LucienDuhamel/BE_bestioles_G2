@@ -1,5 +1,7 @@
 #include "EspeceBestiole.h"
 #include "Milieu.h"
+#include "utils.h"
+
 
 double     EspeceBestiole::AFF_SIZE = -1.0;
 double     EspeceBestiole::LIMITE_VUE = -1.0;
@@ -21,9 +23,9 @@ EspeceBestiole::EspeceBestiole()
    }
 
    couleur = new T[ 3 ];
-   couleur[ 0 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
-   couleur[ 1 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
-   couleur[ 2 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
+   couleur[ 0 ] = randomBetween(0.0,230. );
+   couleur[ 1 ] = randomBetween(0.0,230. );
+   couleur[ 2 ] = randomBetween(0.0,230. );
 
 }
 

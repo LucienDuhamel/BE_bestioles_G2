@@ -25,13 +25,13 @@ Bestiole::Bestiole( void )
    //identite = ++next;
 
    cout << "const Bestiole (" << identite << ") par defaut" << endl;
-   age_Lim = static_cast<double>( rand() )/RAND_MAX*MAX_AGE;
+   age_Lim = randomBetween(0.0,1.0)*MAX_AGE;
    age = 0;
    Killed = false;
-   deathProb = static_cast<double>( rand() )/RAND_MAX;
+   deathProb = randomBetween(0.0,1.0);
    cumulX = cumulY = 0.;
-   orientation = static_cast<double>( rand() )/RAND_MAX*2.*M_PI;
-   vitesse = static_cast<double>( rand() )/RAND_MAX*MAX_VITESSE;
+   orientation = randomBetween(0.0,1.0)*2.*M_PI;
+   vitesse = randomBetween(0.0,1.0)*MAX_VITESSE;
    camouflage = 0.0;
    resistance = 0.0;
 
@@ -128,7 +128,7 @@ void Bestiole::CollisionEffect()
 
    // Sinon elle rebondit = demi-tour
     orientation += M_PI;
-    double r = (double)rand() / RAND_MAX;
+    double r = randomBetween(0.0,1.0);
 
     if (r < getDeathProb())
     {

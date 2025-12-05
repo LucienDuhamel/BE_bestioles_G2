@@ -5,6 +5,7 @@
 #include "ComportementPersoMultiples.h"
 #include "ComportementPrevoyant.h"
 #include "BestioleFactory.h"
+#include "utils.h"
 #include <cstdlib>
 #include <ctime>
 #include <cmath>
@@ -100,12 +101,12 @@ void Milieu::step( void )
 
    
    for ( int i= listeEspeceBestioles.size()-1; i >=0 ; i-- )
-      if((double)std::rand() / RAND_MAX <= listeEspeceBestioles[i]->CLONAGE_PROP)
+      if(randomBetween(0.0,1.0) <= listeEspeceBestioles[i]->CLONAGE_PROP)
          //listeEspeceBestioles.push_back(listeEspeceBestioles[i]->clone());
          addMember(listeEspeceBestioles[i]->clone());
 
    // Naissance spontanement
-   if(false && (double)std::rand() / RAND_MAX <= TAUX_DE_NAISSANCES_SPONTANEE)
+   if(randomBetween(0.0,1.0) <= TAUX_DE_NAISSANCES_SPONTANEE)
       addMember();
    
    for ( std::vector<EspeceBestiole*>::iterator it = listeEspeceBestioles.begin() ; it != listeEspeceBestioles.end() ; ++it )
