@@ -18,7 +18,6 @@
 int         Bestiole::MAX_AGE = 0;
 double      Bestiole::MAX_VITESSE = 0.0;
 
-
 Bestiole::Bestiole( void )
 {
 
