@@ -32,15 +32,13 @@ private:
     ComportementPeureux& operator=(const ComportementPeureux&) = delete;
 
     void initFromConfig();
-    T * couleur;
     static ComportementPeureux* singletonPeureux;
 
 public:
     static ComportementPeureux* getInstance();
-
+    Comportement* clone() const override;
     T * getCouleur()  const override;
-    std::string getNom() const override { return "Peureux"; }
-    void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) const override;
+    void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) override;
 
 };
 

@@ -17,7 +17,7 @@
 
 int         Bestiole::MAX_AGE = 0;
 double      Bestiole::MAX_VITESSE = 0.0;
-double      Bestiole::MAX_PROBA_CHANGEMENT_COMPORTEMENT = 0.0;
+
 
 Bestiole::Bestiole( void )
 {
@@ -41,7 +41,6 @@ Bestiole::Bestiole( void )
       initFromConfig();
    }
 
-   probaChangementComportement = static_cast<double>( randomBetween(0.0, MAX_PROBA_CHANGEMENT_COMPORTEMENT) );
    
 }
 
@@ -57,13 +56,10 @@ Bestiole::Bestiole( const Bestiole & b ) : EspeceBestiole(b)
    Killed = b.Killed;
    deathProb = b.deathProb;
    cumulX = cumulY = 0.;
-   comportement = b.comportement;
+   comportement = b.comportement->clone();
    orientation = b.orientation;
    vitesse = b.vitesse;
 
-   // Bestioles comportements multiples
-   probaChangementComportement = b.probaChangementComportement;
-   comportementApparent = b.comportementApparent;
 
    camouflage = b.camouflage;
    resistance = b.resistance;
@@ -88,8 +84,14 @@ Bestiole::~Bestiole( void )
    for (auto p : listeAccessoire) {
       delete p;
    }
-   listeAccessoire.clear();
 
+   listeAccessoire.clear();
+   Comportement* test=comportement->clone();
+   if(test!=comportement) // Perso Multiple == not singletant
+   {
+      delete test;
+      delete comportement;
+   }
    cout << "dest Bestiole" << endl;
 
 }
@@ -98,7 +100,6 @@ Bestiole::~Bestiole( void )
 void Bestiole::initFromConfig() {
     MAX_AGE = Config::getInstance().getInt("MAX_AGE", 1000);
     MAX_VITESSE = Config::getInstance().getDouble("MAX_VITESSE", 5.0);
-    MAX_PROBA_CHANGEMENT_COMPORTEMENT = Config::getInstance().getDouble("MAX_PROBA_CHANGEMENT_COMPORTEMENT", 0.05);
 }
 
 
@@ -106,6 +107,7 @@ void Bestiole::setComportement(   Comportement* leComportement)
 {
 
    comportement = leComportement;
+   setCouleur(comportement->getCouleur());
 
 }
 
@@ -178,6 +180,7 @@ void Bestiole::draw( UImg & support )
 
 bool Bestiole::idDed() const
 {
+   return false;
    if(age>=age_Lim)
    {
       cout<< "(" << identite << ") age limit reached " ;

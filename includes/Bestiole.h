@@ -24,8 +24,7 @@ private :
    static double     MAX_VITESSE;
    static int        MAX_AGE;
 
-   // Pour les bestioles a comportements multiples
-   static double     MAX_PROBA_CHANGEMENT_COMPORTEMENT;
+   
 
 private :
    int               age;
@@ -40,9 +39,7 @@ public:
    std::vector<ICapteur*> listeCapteur;
    std::vector<IAccessoire*> listeAccessoire;
 
-   // Pour les bestioles a comportements multiples
-   double probaChangementComportement;
-   Comportement* comportementApparent;
+   
 
 public :                                           // Forme canonique :
    Bestiole( void );                               // Constructeur par defaut
@@ -66,9 +63,6 @@ public :                                           // Forme canonique :
    EspeceBestiole* clone() const override;
 
    // Pour les bestioles a comportements multiples
-   double getProbaChangementComportement() const { return probaChangementComportement; };
-   Comportement* getComportementApparent() const { return comportementApparent; };
-   void setComportementApparent(Comportement* newComportementApparent) { comportementApparent = newComportementApparent; }; 
    double getCamouflage();
    double getResistance();
    const std::vector<ICapteur*>& getListeCapteur() const;

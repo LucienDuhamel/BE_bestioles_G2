@@ -2,6 +2,7 @@
 
 #include "Milieu.h"
 
+int Aquarium::NB_BESTIOLES_INIT = 0;
 
 Aquarium::Aquarium( int width, int height, int _delay ) : CImgDisplay(), delay( _delay )
 {
@@ -16,8 +17,15 @@ Aquarium::Aquarium( int width, int height, int _delay ) : CImgDisplay(), delay( 
    assign( *flotte, "Simulation d'ecosysteme" );
 
    move( static_cast<int>((screenWidth-width)/2), static_cast<int>((screenHeight-height)/2) );
+   initFromConfig();
+   flotte->initConfig(NB_BESTIOLES_INIT);
 
 }
+
+// Initialisation des parametres statiques depuis le fichier de config (valeurs par defaut si absentes)
+void Aquarium::initFromConfig() {
+    NB_BESTIOLES_INIT = Config::getInstance().getInt("NB_BESTIOLES_INIT");
+   }
 
 
 Aquarium::~Aquarium( void )
@@ -30,27 +38,50 @@ Aquarium::~Aquarium( void )
 }
 
 
-void Aquarium::run( void )
+void Aquarium::run(void)
 {
+    cout << "running Aquarium" << endl;
 
-   cout << "running Aquarium" << endl;
+    while (!is_closed())
+    {
+         wait(delay);
+        if (is_key()) {
+            int k = key();
+            cout << "Vous avez presse la touche " << static_cast<unsigned char>(k);
+            cout << " (" << k << ")" << endl;
 
-   while ( ! is_closed() )
-   {
+            if ( is_keyESC() ) close();
+            switch (k) {
+                case 'q': // quit with 'q'
+                    close();
+                    break;
+                case ' ': // spacebar
+                    // toggle pause flag here
+                    continue;
+                    break;
+                case 'a':
+                    cout << "Key A pressed: add a bestiole" << endl;
+                    flotte->addMember();
+                    break;
+                case 'r':
+                    cout << "Key R pressed: reset simulation" << endl;
+                    // reset logic
+                    flotte->initConfig(NB_BESTIOLES_INIT);
+                    break;
+                case 'k':
+                    cout << "Key K pressed: kill everyone" << endl;
+                    // reset logic
+                    flotte->kill_all();
+                    break;
+                default:
+                    cout << "Unhandled key" << endl;
+                    break;
+            }
+        }
 
-      // cout << "iteration de la simulation" << endl;
-
-      if ( is_key() ) {
-         cout << "Vous avez presse la touche " << static_cast<unsigned char>( key() );
-         cout << " (" << key() << ")" << endl;
-         if ( is_keyESC() ) close();
-      }
-
-      flotte->step();
-      display( *flotte );
-
-      wait( delay );
-
-   } // while
-
+        flotte->step();
+        display(*flotte);
+        
+    }
 }
+

@@ -21,14 +21,14 @@ private:
     
     // Couleur de la bestiole au comportement grégaire
     void initFromConfig();
-    T * couleur;
     static ComportementGregaire* singletonGregaire;
 
 public:
     static ComportementGregaire* getInstance();
+    Comportement* clone() const override;
     T * getCouleur() const override;
-    std::string getNom() const override { return "Gregaire"; }
-    void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) const override;
+    void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) override;
+    
 };
 
 #endif

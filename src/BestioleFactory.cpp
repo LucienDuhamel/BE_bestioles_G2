@@ -13,7 +13,7 @@ BestioleFactory::~BestioleFactory()
 BestioleFactory::BestioleFactory(std::vector<Comportement*> Comportements, std::vector<double> Proportions)
 {
     assert(!Comportements.empty());
-    assert(Comportements.size() == Proportions.size());
+    assert(Comportements.size() == Proportions.size() || Comportements.size()+1 == Proportions.size());
     
     double accum=0.0;
     for (double x : Proportions ) accum+=x;
@@ -35,12 +35,9 @@ Bestiole* BestioleFactory::creerEspeceBestiole() const
     double typeProb = static_cast<double>( rand() )/RAND_MAX;
     int i=0;
     while( i<(int)proportionsAccumilatives.size()-1 && typeProb>=proportionsAccumilatives[i] ) i++ ;
-    // if (listeComportements[i]->getNom() == "PersoMultiples") {
-    //     Comportement* comportementPersoMultiples = new ComportementPersoMultiples(listeComportements);
-    // }
-    bestiole->setComportement(listeComportements[i]);
-    bestiole->setComportementApparent(listeComportements[i]);
-    bestiole->setCouleur(listeComportements[i]->getCouleur());
+    
+    bestiole->setComportement(listeComportements[i]->clone());
+        
     
     return bestiole;
 

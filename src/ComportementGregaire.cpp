@@ -8,22 +8,23 @@
 ComportementGregaire* ComportementGregaire::singletonGregaire = nullptr;
 T ComportementGregaire::couleur_cfg[3] = {0, 0, 0};
 
-ComportementGregaire*  ComportementGregaire::getInstance()
+ComportementGregaire*  ComportementGregaire::getInstance()  
 {
     if (singletonGregaire == nullptr){
         singletonGregaire = new ComportementGregaire();
-        singletonGregaire->couleur = new T[ 3 ];
         
         if(couleur_cfg[0]==0 && couleur_cfg[1]==0 && couleur_cfg[2]==0){
             singletonGregaire->initFromConfig();
         }
-        singletonGregaire->couleur[ 0 ] = couleur_cfg[0];
-        singletonGregaire->couleur[ 1 ] = couleur_cfg[1];
-        singletonGregaire->couleur[ 2 ] = couleur_cfg[2];
 
     }
 
     return  singletonGregaire;
+}
+
+Comportement* ComportementGregaire::clone() const {
+    // Just return the singleton
+    return getInstance();
 }
 
 
@@ -36,9 +37,9 @@ void ComportementGregaire::initFromConfig() {
 }
 
 T * ComportementGregaire::getCouleur() const {
-    return couleur;
+    return couleur_cfg;
 }
-void ComportementGregaire::reagit( Bestiole& bestiole, const std::vector<EspeceBestiole*>& listeBestioles) const
+void ComportementGregaire::reagit( Bestiole& bestiole, const std::vector<EspeceBestiole*>& listeBestioles)
 {
     const auto& bestiolesVisibles = bestiole.detecteBestioles(listeBestioles);
 

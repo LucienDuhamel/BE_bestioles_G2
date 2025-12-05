@@ -21,11 +21,12 @@ private :
    Milieu       * flotte;
 
    int            delay;
-
+   static int NB_BESTIOLES_INIT;
 public :
    Aquarium( int width, int height, int _delay );
    ~Aquarium( void );
 
+   void initFromConfig();
    Milieu & getMilieu( void ) { return *flotte; }
 
    void run( void );
