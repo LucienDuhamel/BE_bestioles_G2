@@ -1,18 +1,18 @@
 #include "Carapace.h"
 #include "Bestiole.h"
 #include "UImg.h"
+#include "config.h"
+#include <cstdlib>
 
-// Constructeur par defaut
+double Carapace::vitesseMax = -1.0;
+double Carapace::resistMax = -1.0;
+
 Carapace::Carapace()
 {
-    CoeffVitesseCarapace =  10; 
-    CoeffResistanceCarapace = 5;   
-}
-
-Carapace::Carapace(double CoeffVitesseCarapace ,double CoeffResistanceCarapace)
-{
-    this->CoeffVitesseCarapace = CoeffVitesseCarapace;
-    this->CoeffResistanceCarapace = CoeffResistanceCarapace;
+    if (vitesseMax <0.0 || resistMax <0.0)
+        initFromConfig();    
+    CoeffVitesseCarapace = 1.0 + (static_cast<double>(rand()) / RAND_MAX) * (vitesseMax - 1.0);
+    CoeffResistanceCarapace = 1.0 + (static_cast<double>(rand()) / RAND_MAX) * (resistMax - 1.0);
 }
 
 void Carapace::draw(UImg& support, Bestiole* b)
@@ -25,17 +25,30 @@ void Carapace::draw(UImg& support, Bestiole* b)
     float opacity = 0.25f;
     support.draw_circle(cx, cy, rayon, couleurGold, opacity);
 }
-
-void Carapace::setVitesseCarapace(Bestiole* b){
+void Carapace::setParameters(Bestiole* b) const
+{
+    setVitesseCarapace(b);
+    setResistanceCarapace(b);
+}
+void Carapace::setVitesseCarapace(Bestiole* b)  const{
 
     b->setVitesse(b->getVitesse() / CoeffVitesseCarapace);
 }
 
-void Carapace::setResistanceCarapace(Bestiole* b){
+void Carapace::setResistanceCarapace(Bestiole* b) const {
 
     b->setResistance(CoeffResistanceCarapace);
 
 }
 Carapace* Carapace::clone() const {
-    return new Carapace(CoeffVitesseCarapace, CoeffResistanceCarapace);
+    Carapace* c = new Carapace();
+    c->CoeffVitesseCarapace = this->CoeffVitesseCarapace;
+    c->CoeffResistanceCarapace = this->CoeffResistanceCarapace;
+    return c;
+}
+
+void Carapace::initFromConfig(){
+    Config& cfg = Config::getInstance();
+    Carapace::vitesseMax = cfg.getDouble("COEFF_VITESSE_CARAPACE_MAX");
+    Carapace::resistMax = cfg.getDouble("COEFF_RESISTANCE_CARAPACE_MAX");
 }

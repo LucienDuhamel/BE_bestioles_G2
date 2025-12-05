@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <cmath>
 
 void Config::load(const std::string& filename)
 {
@@ -68,7 +69,32 @@ double Config::getDouble(const std::string& key, double defaultValue) const
     if (it == data.end())
         return defaultValue;
     std::cout << "Config::getDouble: key=" << key << ", value=" << it->second << std::endl;
-    return std::stod(it->second);
+    
+    std::string value = it->second;
+    
+    // Gérer M_PI dans les expressions
+    size_t pos = value.find("M_PI");
+    if (pos != std::string::npos) {
+        value.replace(pos, 4, std::to_string(M_PI));
+    }
+    
+    // Évaluer les expressions simples (division)
+    pos = value.find('/');
+    if (pos != std::string::npos) {
+        double numerator = std::stod(value.substr(0, pos));
+        double denominator = std::stod(value.substr(pos + 1));
+        return numerator / denominator;
+    }
+    
+    // Évaluer les expressions simples (multiplication)
+    pos = value.find('*');
+    if (pos != std::string::npos) {
+        double left = std::stod(value.substr(0, pos));
+        double right = std::stod(value.substr(pos + 1));
+        return left * right;
+    }
+    
+    return std::stod(value);
 }
 
 std::string Config::getString(const std::string& key, const std::string& defaultValue) const

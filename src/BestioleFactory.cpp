@@ -1,8 +1,16 @@
 #include "Bestiole.h"
 #include "Comportement.h"
+#include "utils.h"
 #include <vector>
 #include "BestioleFactory.h"
 #include <cassert>
+
+#include "Yeux.h"
+#include "Oreilles.h"
+#include "Carapace.h"
+#include "Nageoires.h"
+#include "Camouflage.h"
+#include <cstdlib>
 
 BestioleFactory::~BestioleFactory()
 {
@@ -13,7 +21,7 @@ BestioleFactory::~BestioleFactory()
 BestioleFactory::BestioleFactory(std::vector<Comportement*> Comportements, std::vector<double> Proportions)
 {
     assert(!Comportements.empty());
-    assert(Comportements.size() == Proportions.size());
+    assert(Comportements.size() == Proportions.size() || Comportements.size()+1 == Proportions.size());
     
     double accum=0.0;
     for (double x : Proportions ) accum+=x;
@@ -32,16 +40,36 @@ BestioleFactory::BestioleFactory(std::vector<Comportement*> Comportements, std::
 Bestiole* BestioleFactory::creerEspeceBestiole() const
 {
     Bestiole* bestiole = new Bestiole();
-    double typeProb = static_cast<double>( rand() )/RAND_MAX;
+    double typeProb = randomBetween(0.0,1.0);
     int i=0;
     while( i<(int)proportionsAccumilatives.size()-1 && typeProb>=proportionsAccumilatives[i] ) i++ ;
-    // if (listeComportements[i]->getNom() == "PersoMultiples") {
-    //     Comportement* comportementPersoMultiples = new ComportementPersoMultiples(listeComportements);
-    // }
-    bestiole->setComportement(listeComportements[i]);
-    bestiole->setComportementApparent(listeComportements[i]);
-    bestiole->setCouleur(listeComportements[i]->getCouleur());
     
+    bestiole->setComportement(listeComportements[i]->clone());
+        
+    
+    // Chaque capteur a 50% de chance d'être présent (indépendamment des autres)
+    if (rand() % 2 == 0) {
+        bestiole->addCapteur(new Yeux());
+    }
+
+    if (rand() % 2 == 0) {
+        bestiole->addCapteur(new Oreilles());
+    }
+
+    // Chaque accessoire a 50% de chance d'être présent
+
+    if (rand() % 4 == 0) {
+        bestiole->addAccessoire(new Carapace());
+    }
+
+    if (rand() % 2 == 0) {
+        bestiole->addAccessoire(new Nageoires());
+    }
+
+    if (rand() % 2 == 0) {
+        bestiole->addAccessoire(new Camouflage());
+    }
+
     return bestiole;
 
 }

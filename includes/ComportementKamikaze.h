@@ -22,15 +22,14 @@ private:
     ComportementKamikaze& operator=(const ComportementKamikaze&) = delete;
 
     void initFromConfig();
-    T * couleur;
     static ComportementKamikaze* singletonKamikaze;
 
 public:
     static ComportementKamikaze* getInstance();
+    Comportement* clone() const override;
     T * getCouleur()  const  override;
-    std::string getNom() const override { return "Kamikaze"; }
-    void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) const override;
-
+    void reagit(Bestiole& bestiole, std::vector<EspeceBestiole*> const&  listeBestioles ) override;
+    
 };
 
 

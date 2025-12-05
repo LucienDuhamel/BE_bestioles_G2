@@ -23,15 +23,13 @@ private:
     ComportementPrevoyant& operator=(const ComportementPrevoyant&) = delete;
 
     void initFromConfig();
-    T * couleur;
     static ComportementPrevoyant* singletonPrevoyant;
 
 public:
     static ComportementPrevoyant* getInstance();
-
+    Comportement* clone() const override;
     T * getCouleur()  const override;
-    std::string getNom() const override { return "Prevoyant"; }
-    void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) const override;
+    void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) override;
 
 };
 

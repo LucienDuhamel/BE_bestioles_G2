@@ -1,16 +1,18 @@
 #include "Camouflage.h"
 #include "Bestiole.h"
 #include "UImg.h"
+#include "config.h"
+#include <cstdlib>
+
+double Camouflage::camoMin = -1.0;
+double Camouflage::camoMax = -1.0;
 
 Camouflage::Camouflage()
-{
-    // Constructeur par défault
-    camouflage = 0.5; 
-}
-
-Camouflage::Camouflage(double camouflage)
-{
-    this->camouflage = camouflage;
+{   
+    if (camoMin < 0.0 || camoMax < 0.0)
+        initFromConfig();
+    
+    camouflage = camoMin + (static_cast<double>(rand()) / RAND_MAX) * (camoMax - camoMin);
 }
 
 void Camouflage::draw(UImg& support, Bestiole* b)
@@ -43,10 +45,23 @@ void Camouflage::draw(UImg& support, Bestiole* b)
         support.draw_line(x1, y1, x2, y2, stripeColor);
     }
 }
-void Camouflage::setCamouflage(Bestiole* b){
+void Camouflage::setParameters(Bestiole* b) const
+{
+    setCamouflage(b);
+}
+void Camouflage::setCamouflage(Bestiole* b) const {
 
     b->setCamouflage(this->camouflage);
 }
 Camouflage* Camouflage::clone() const {
-    return new Camouflage(camouflage);
+    Camouflage* c = new Camouflage();
+    c->camouflage = this->camouflage;
+    return c;
+}
+
+
+void Camouflage::initFromConfig(){
+    Config& cfg = Config::getInstance();
+    Camouflage::camoMin = cfg.getDouble("CAMOUFLAGE_MIN");
+    Camouflage::camoMax = cfg.getDouble("CAMOUFLAGE_MAX");
 }

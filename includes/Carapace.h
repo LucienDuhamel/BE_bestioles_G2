@@ -6,17 +6,20 @@
 class Carapace : public IAccessoire
 {
 private :
-   double CoeffVitesseCarapace;
-   double CoeffResistanceCarapace;
+    static double vitesseMax;
+    static double resistMax;
+    double CoeffVitesseCarapace;
+    double CoeffResistanceCarapace;
 public:
     Carapace();
-    Carapace(double CoeffVitesseCarapace ,double CoeffResistanceCarapace);
     ~Carapace() = default;
 
     void draw(UImg& support, Bestiole* b) override;
-    void setVitesseCarapace(Bestiole* b);
-    void setResistanceCarapace(Bestiole* b);
+    void setParameters(Bestiole* b) const override;
+    void setVitesseCarapace(Bestiole* b) const;
+    void setResistanceCarapace(Bestiole* b) const;
     Carapace* clone() const override;
+    void initFromConfig();
 };
 
 #endif

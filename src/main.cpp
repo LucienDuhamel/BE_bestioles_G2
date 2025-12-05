@@ -15,14 +15,13 @@ int main()
 {  
    Config::getInstance().load("config.txt");
 
-   const int WIDTH = Config::getInstance().getInt("WIDTH");
-   const int HEIGHT = Config::getInstance().getInt("HEIGHT");
-   const int DELAY = Config::getInstance().getInt("DELAY");
-   const int NB_BESTIOLES_INIT = Config::getInstance().getInt("NB_BESTIOLES_INIT");
+   const int WIDTH = Config::getInstance().getInt("WIDTH", 800.0);
+   const int HEIGHT = Config::getInstance().getInt("HEIGHT", 600.0);
+   const int DELAY = Config::getInstance().getInt("DELAY", 100.0);
+   
 
    Aquarium       ecosysteme( WIDTH, HEIGHT, DELAY );
    
-   ecosysteme.getMilieu().initConfig(NB_BESTIOLES_INIT);
    
 
 

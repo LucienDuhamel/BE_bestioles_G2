@@ -24,8 +24,7 @@ private :
    static double     MAX_VITESSE;
    static int        MAX_AGE;
 
-   // Pour les bestioles a comportements multiples
-   static double     MAX_PROBA_CHANGEMENT_COMPORTEMENT;
+   
 
 private :
    int               age;
@@ -36,13 +35,11 @@ private :
    double            resistance;
 
    Comportement* comportement;
-public:
+
    std::vector<ICapteur*> listeCapteur;
    std::vector<IAccessoire*> listeAccessoire;
 
-   // Pour les bestioles a comportements multiples
-   double probaChangementComportement;
-   Comportement* comportementApparent;
+   
 
 public :                                           // Forme canonique :
    Bestiole( void );                               // Constructeur par defaut
@@ -60,17 +57,14 @@ public :                                           // Forme canonique :
    void CollisionEffect() override;
    double getDeathProb() const;
 
-   bool jeTeVois( const EspeceBestiole & b ) const override;
-   const std::vector<EspeceBestiole*> detecteBestioles(const std::vector<EspeceBestiole*>& listeBestioles);
+   const std::vector<EspeceBestiole*> detecteBestioles(const std::vector<EspeceBestiole*>& listeBestioles) override;
 
    EspeceBestiole* clone() const override;
 
    // Pour les bestioles a comportements multiples
-   double getProbaChangementComportement() const { return probaChangementComportement; };
-   Comportement* getComportementApparent() const { return comportementApparent; };
-   void setComportementApparent(Comportement* newComportementApparent) { comportementApparent = newComportementApparent; }; 
    double getCamouflage();
    double getResistance();
+   double getCamouflage() const override {return camouflage; }
    const std::vector<ICapteur*>& getListeCapteur() const;
    const std::vector<IAccessoire*>& getListeAccessoire() const;
 

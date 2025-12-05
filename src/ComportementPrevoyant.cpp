@@ -10,11 +10,10 @@ double ComportementPrevoyant::DIST_MIN_COLLISION = 0.0;
 
 ComportementPrevoyant* ComportementPrevoyant::singletonPrevoyant = nullptr;
 
-ComportementPrevoyant*   ComportementPrevoyant::getInstance()
+ComportementPrevoyant*   ComportementPrevoyant::getInstance()  
 {
     if (singletonPrevoyant == nullptr){
         singletonPrevoyant = new ComportementPrevoyant();
-        singletonPrevoyant->couleur = new T[ 3 ];
 
         if((couleur_cfg[0]==0 && couleur_cfg[1]==0 && couleur_cfg[2]==0)
             || T_PREDICT==0.0 || DIST_MIN_COLLISION==0.0) {
@@ -22,13 +21,14 @@ ComportementPrevoyant*   ComportementPrevoyant::getInstance()
         }
 
         // Couleur bleu clair
-        singletonPrevoyant->couleur[ 0 ] = couleur_cfg[0];
-        singletonPrevoyant->couleur[ 1 ] = couleur_cfg[1];
-        singletonPrevoyant->couleur[ 2 ] = couleur_cfg[2];
 
     }
 
     return  singletonPrevoyant;
+}
+Comportement* ComportementPrevoyant::clone() const {
+    // Just return the singleton
+    return getInstance();
 }
 
 void ComportementPrevoyant::initFromConfig() {
@@ -42,14 +42,14 @@ void ComportementPrevoyant::initFromConfig() {
 }
 
 T * ComportementPrevoyant::getCouleur()  const {
-    return couleur;
+    return couleur_cfg;
 }
 
 
 void ComportementPrevoyant::reagit(
     Bestiole& bestiole,
     const std::vector<EspeceBestiole*>& listeBestioles
-) const
+)
 {
     // Bestioles visibles
     const auto& visibles = bestiole.detecteBestioles(listeBestioles);

@@ -12,11 +12,10 @@ int ComportementPeureux::BESTIOLE_SCARED_NUMBER = 0;
 int ComportementPeureux::REMAINING_SCARED_STEPS = 0;
 double ComportementPeureux::SPEED_COEF = 0.0;
 
-ComportementPeureux*   ComportementPeureux::getInstance()
+ComportementPeureux*   ComportementPeureux::getInstance()  
 {
     if (singletonPeureux == nullptr){
         singletonPeureux = new ComportementPeureux();
-        singletonPeureux->couleur = new T[ 3 ];
 
         if((couleur_cfg[0]==0 && couleur_cfg[1]==0 && couleur_cfg[2]==0)
             || BESTIOLE_SCARED_NUMBER==0 
@@ -26,13 +25,14 @@ ComportementPeureux*   ComportementPeureux::getInstance()
         }
 
         // Couleur vert clair
-        singletonPeureux->couleur[ 0 ] = couleur_cfg[0];
-        singletonPeureux->couleur[ 1 ] = couleur_cfg[1];
-        singletonPeureux->couleur[ 2 ] = couleur_cfg[2];
 
     }
 
     return  singletonPeureux;
+}
+Comportement* ComportementPeureux::clone() const {
+    // Just return the singleton
+    return getInstance();
 }
 
 void ComportementPeureux::initFromConfig() {
@@ -47,14 +47,14 @@ void ComportementPeureux::initFromConfig() {
 }
 
 T * ComportementPeureux::getCouleur()  const  {
-    return couleur;
+    return couleur_cfg;
 }
 
 
 void ComportementPeureux::reagit(
     Bestiole& bestiole,
     const std::vector<EspeceBestiole*>& listeBestioles
-) const
+)
 {
     const auto& bestiolesVisibles = bestiole.detecteBestioles(listeBestioles);
 

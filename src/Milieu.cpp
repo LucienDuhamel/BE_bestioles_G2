@@ -5,6 +5,7 @@
 #include "ComportementPersoMultiples.h"
 #include "ComportementPrevoyant.h"
 #include "BestioleFactory.h"
+#include "utils.h"
 #include <cstdlib>
 #include <ctime>
 #include <cmath>
@@ -28,7 +29,7 @@ Milieu::Milieu( int _width, int _height ) : UImg( _width, _height, 1, 3 ),
    listeComportements.push_back(ComportementPeureux::getInstance());
    listeComportements.push_back(ComportementPrevoyant::getInstance());
 
-   listeComportements.push_back(ComportementPersoMultiples::getInstance(listeComportements));
+   listeComportements.push_back(new ComportementPersoMultiples(listeComportements));
    
    if(PROP_GREGAIRE + PROP_KAMIKAZE + PROP_PEUREUX + PROP_PREVOYANT + PROP_MULTIPLES != 1){
       this->initFromConfig();
@@ -65,6 +66,7 @@ Milieu::~Milieu( void )
 
 void Milieu::initConfig(int nbEspeces)
 {  
+   kill_all();
    for ( int i = 0; i <= nbEspeces; ++i )
       addMember();
 }
@@ -99,12 +101,12 @@ void Milieu::step( void )
 
    
    for ( int i= listeEspeceBestioles.size()-1; i >=0 ; i-- )
-      if((double)std::rand() / RAND_MAX <= listeEspeceBestioles[i]->CLONAGE_PROP)
+      if(randomBetween(0.0,1.0) <= listeEspeceBestioles[i]->CLONAGE_PROP)
          //listeEspeceBestioles.push_back(listeEspeceBestioles[i]->clone());
          addMember(listeEspeceBestioles[i]->clone());
 
    // Naissance spontanement
-   if((double)std::rand() / RAND_MAX <= TAUX_DE_NAISSANCES_SPONTANEE)
+   if(randomBetween(0.0,1.0) <= TAUX_DE_NAISSANCES_SPONTANEE)
       addMember();
    
    for ( std::vector<EspeceBestiole*>::iterator it = listeEspeceBestioles.begin() ; it != listeEspeceBestioles.end() ; ++it )
@@ -117,20 +119,6 @@ void Milieu::step( void )
 
 }
 
-
-int Milieu::nbVoisins( const EspeceBestiole & b )
-{
-
-   int         nb = 0;
-
-
-   for ( std::vector<EspeceBestiole*>::iterator it = listeEspeceBestioles.begin() ; it != listeEspeceBestioles.end() ; ++it )
-      if ( !(b == *(*it)) && b.jeTeVois(*(*it)) )
-         ++nb;
-
-   return nb;
-
-}
 void Milieu::removeMember(  EspeceBestiole*  b )
 {
    for ( std::vector<EspeceBestiole*>::iterator it = listeEspeceBestioles.begin() ; it != listeEspeceBestioles.end() ; ++it )
@@ -167,4 +155,13 @@ void Milieu::detecteCollisions()
             (*it)->CollisionEffect();
             break;
          }
+}
+
+
+void Milieu::kill_all()
+{
+   for ( std::vector<EspeceBestiole*>::iterator it = listeEspeceBestioles.begin() ; it != listeEspeceBestioles.end() ; ++it )
+      delete *it;
+
+   listeEspeceBestioles.clear();
 }

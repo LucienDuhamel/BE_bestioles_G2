@@ -8,22 +8,22 @@
 ComportementKamikaze* ComportementKamikaze::singletonKamikaze = nullptr;
 T ComportementKamikaze::couleur_cfg[3] = {0, 0, 0};
 
-ComportementKamikaze*   ComportementKamikaze::getInstance()
+ComportementKamikaze*   ComportementKamikaze::getInstance()  
 {
     if (singletonKamikaze == nullptr){
         singletonKamikaze = new ComportementKamikaze();
-        singletonKamikaze->couleur = new T[ 3 ];
 
         if(couleur_cfg[0]==0 && couleur_cfg[1]==0 && couleur_cfg[2]==0){
             singletonKamikaze->initFromConfig();
         }
-        singletonKamikaze->couleur[ 0 ] = couleur_cfg[0];
-        singletonKamikaze->couleur[ 1 ] = couleur_cfg[1];
-        singletonKamikaze->couleur[ 2 ] = couleur_cfg[2];
 
     }
 
     return  singletonKamikaze;
+}
+Comportement* ComportementKamikaze::clone() const {
+    // Just return the singleton
+    return getInstance();
 }
 
 void ComportementKamikaze::initFromConfig() {
@@ -34,10 +34,10 @@ void ComportementKamikaze::initFromConfig() {
 }
 
 T * ComportementKamikaze::getCouleur()  const {
-    return couleur;
+    return couleur_cfg;
 }
 
-void ComportementKamikaze::reagit( Bestiole& bestiole, const std::vector<EspeceBestiole*>& listeBestioles) const
+void ComportementKamikaze::reagit( Bestiole& bestiole, const std::vector<EspeceBestiole*>& listeBestioles)
 {
     const auto& bestiolesVisibles = bestiole.detecteBestioles(listeBestioles);
 

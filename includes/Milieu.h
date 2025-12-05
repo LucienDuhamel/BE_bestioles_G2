@@ -45,6 +45,7 @@ public :
    int nbVoisins( const EspeceBestiole& b );
    void removeMember( EspeceBestiole* b );
    void removeDeds();
+   void kill_all();
    void detecteCollisions();
 
 };

@@ -6,7 +6,7 @@ SRC_DIR = src
 INC_DIR = includes
 
 # Options de compilation
-CXXFLAGS = -Wall -Wextra -std=c++17 -I $(INC_DIR)
+CXXFLAGS = -Wall -Wextra -std=c++17 -I $(INC_DIR) -fsanitize=address,undefined -g
 
 # Fichiers sources et objets
 SRC = $(wildcard $(SRC_DIR)/*.cpp)
@@ -20,7 +20,7 @@ all: $(TARGET)
 
 # Edition de liens
 $(TARGET): $(OBJ)
-	$(CXX) $(OBJ) -o $(TARGET) -lX11 -lpthread
+	$(CXX) $(OBJ) -o $(TARGET) -lX11 -lpthread -fsanitize=address,undefined -g
 
 # Compilation des .cpp vers .o
 $(SRC_DIR)/%.o: $(SRC_DIR)/%.cpp
@@ -29,3 +29,4 @@ $(SRC_DIR)/%.o: $(SRC_DIR)/%.cpp
 # Nettoyage
 clean:
 	rm -f $(SRC_DIR)/*.o $(TARGET)
+
