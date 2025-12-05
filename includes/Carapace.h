@@ -10,7 +10,6 @@ private :
    double CoeffResistanceCarapace;
 public:
     Carapace();
-    Carapace(double CoeffVitesseCarapace ,double CoeffResistanceCarapace);
     ~Carapace() = default;
 
     void draw(UImg& support, Bestiole* b) override;

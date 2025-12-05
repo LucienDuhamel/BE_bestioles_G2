@@ -1,18 +1,19 @@
 #include "Oreilles.h"
 #include "Bestiole.h"
 #include "UImg.h"
+#include "config.h"
+#include <cstdlib>
 
 Oreilles::Oreilles()
 {
-    // Constructeur par défault
-    distanceVisionOreilles = 80.0;      
-    pourcentageDetectionOreilles = 0.8; 
-}
-
-Oreilles::Oreilles(double distanceVisionOreilles, double pourcentageDetectionOreilles)
-{
-    this->distanceVisionOreilles = distanceVisionOreilles;
-    this->pourcentageDetectionOreilles = pourcentageDetectionOreilles;
+    Config& cfg = Config::getInstance();
+    double distMin = cfg.getDouble("DISTANCE_VISION_OREILLE_MIN");
+    double distMax = cfg.getDouble("DISTANCE_VISION_OREILLE_MAX");
+    double pourcMin = cfg.getDouble("POURCENTAGE_DETECTION_OREILLE_MIN");
+    double pourcMax = cfg.getDouble("POURCENTAGE_DETECTION_OREILLE_MAX");
+    
+    distanceVisionOreilles = distMin + (static_cast<double>(rand()) / RAND_MAX) * (distMax - distMin);
+    pourcentageDetectionOreilles = pourcMin + (static_cast<double>(rand()) / RAND_MAX) * (pourcMax - pourcMin);
 }
 
 
@@ -63,5 +64,8 @@ std::vector<Bestiole*> Oreilles::detecter( std::vector<Bestiole*> listeBestioles
 }   
 
 Oreilles* Oreilles::clone() const {
-    return new Oreilles(distanceVisionOreilles, pourcentageDetectionOreilles);
+    Oreilles* o = new Oreilles();
+    o->distanceVisionOreilles = this->distanceVisionOreilles;
+    o->pourcentageDetectionOreilles = this->pourcentageDetectionOreilles;
+    return o;
 }

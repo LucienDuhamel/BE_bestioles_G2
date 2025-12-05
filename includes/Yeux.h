@@ -15,7 +15,6 @@ private:
 
 public:
     Yeux();
-    Yeux(double angleVisionYeux, double distanceVisionYeux, double pourcentageDetectionYeux);
     ~Yeux() = default;
 
     void draw(UImg& support, Bestiole* b) override;

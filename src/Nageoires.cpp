@@ -1,16 +1,15 @@
 #include "Nageoires.h"
 #include "Bestiole.h"
 #include "UImg.h"
+#include "config.h"
+#include <cstdlib>
 
 Nageoires::Nageoires()
 {
-    // Constructeur par défault
-    CoeffVitesseNageoires = 3; 
-}
-
-Nageoires::Nageoires(double CoeffVitesseNageoires)
-{
-    this->CoeffVitesseNageoires = CoeffVitesseNageoires;
+    Config& cfg = Config::getInstance();
+    double vitesseMax = cfg.getDouble("COEFF_VITESSE_NAGEOIRE_MAX");
+    
+    CoeffVitesseNageoires = 1.0 + (static_cast<double>(rand()) / RAND_MAX) * (vitesseMax - 1.0);
 }
 
 void Nageoires::draw(UImg& support, Bestiole* b)
@@ -27,5 +26,7 @@ void Nageoires::setVitesseNageoires(Bestiole* b) {
     b->setVitesse(nouvelleVitesse);
 }
 Nageoires* Nageoires::clone() const {
-    return new Nageoires(CoeffVitesseNageoires);
+    Nageoires* n = new Nageoires();
+    n->CoeffVitesseNageoires = this->CoeffVitesseNageoires;
+    return n;
 }

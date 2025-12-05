@@ -13,7 +13,6 @@ private :
 
 public:
     Nageoires();
-    Nageoires(double CoeffVitesseNageoires);
     ~Nageoires() = default;
 
     void draw(UImg& support, Bestiole* b) override;

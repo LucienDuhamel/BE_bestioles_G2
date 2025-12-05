@@ -9,7 +9,6 @@ private:
     double camouflage;
 public:
     Camouflage();
-    Camouflage(double camouflage);
     ~Camouflage() = default;
 
     void draw(UImg& support, Bestiole* b) override;

@@ -1,20 +1,22 @@
 #include "Yeux.h"
 #include "Bestiole.h"
 #include "UImg.h"
+#include "config.h"
+#include <cstdlib>
 
-//Constructeur par default
 Yeux::Yeux()
 {
-    angleVisionYeux = M_PI / 3;   
-    distanceVisionYeux = 25;      
-    pourcentageDetectionYeux = 0.8;   
-}
-
-Yeux::Yeux(double angleVisionYeux, double distanceVisionYeux, double pourcentageDetectionYeux)
-{
-    this->angleVisionYeux = angleVisionYeux;
-    this->distanceVisionYeux = distanceVisionYeux;
-    this->pourcentageDetectionYeux = pourcentageDetectionYeux;
+    Config& cfg = Config::getInstance();
+    double angleMin = cfg.getDouble("ANGLE_VISION_OEUIL_MIN");
+    double angleMax = cfg.getDouble("ANGLE_VISION_OEUIL_MAX");
+    double distMin = cfg.getDouble("DISTANCE_VISION_OEUIL_MIN");
+    double distMax = cfg.getDouble("DISTANCE_VISION_OEUIL_MAX");
+    double pourcMin = cfg.getDouble("POURCENTAGE_DETECTION_OEUIL_MIN");
+    double pourcMax = cfg.getDouble("POURCENTAGE_DETECTION_OEUIL_MAX");
+    
+    angleVisionYeux = angleMin + (static_cast<double>(rand()) / RAND_MAX) * (angleMax - angleMin);
+    distanceVisionYeux = distMin + (static_cast<double>(rand()) / RAND_MAX) * (distMax - distMin);
+    pourcentageDetectionYeux = pourcMin + (static_cast<double>(rand()) / RAND_MAX) * (pourcMax - pourcMin);
 }
 
 void Yeux::draw(UImg& support, Bestiole* b)
@@ -77,5 +79,9 @@ std::vector<Bestiole*> Yeux::detecter( std::vector<Bestiole*> listeBestioles, Be
 }
 
 Yeux* Yeux::clone() const {
-    return new Yeux(angleVisionYeux, distanceVisionYeux, pourcentageDetectionYeux);
+    Yeux* y = new Yeux();
+    y->angleVisionYeux = this->angleVisionYeux;
+    y->distanceVisionYeux = this->distanceVisionYeux;
+    y->pourcentageDetectionYeux = this->pourcentageDetectionYeux;
+    return y;
 }

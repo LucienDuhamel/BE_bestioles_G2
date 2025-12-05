@@ -13,7 +13,6 @@ private:
     double pourcentageDetectionOreilles;
 public:
     Oreilles();
-    Oreilles(double distanceVisionOreilles, double pourcentageDetectionOreilles);
     ~Oreilles() = default;
 
     void draw(UImg& support, Bestiole* b) override;
