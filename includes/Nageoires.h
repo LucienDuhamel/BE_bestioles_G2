@@ -18,7 +18,8 @@ public:
     ~Nageoires() = default;
 
     void draw(UImg& support, Bestiole* b) override;
-    void setVitesseNageoires(Bestiole* b);
+    void setParameters(Bestiole* b)  const override;
+    void setVitesseNageoires(Bestiole* b) const;
     Nageoires* clone() const override;
     void initFromConfig();
 };

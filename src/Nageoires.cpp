@@ -22,7 +22,12 @@ void Nageoires::draw(UImg& support, Bestiole* b)
     int cy = b->getY() - static_cast<int>( -std::sin(b->getOrientation()) * 12 );
     support.draw_circle(cx, cy, 3, couleurViolet);
 }
-void Nageoires::setVitesseNageoires(Bestiole* b) {
+void Nageoires::setParameters(Bestiole* b) const
+{
+    setVitesseNageoires(b);
+}
+
+void Nageoires::setVitesseNageoires(Bestiole* b) const {
     double nouvelleVitesse = b->getVitesse() * CoeffVitesseNageoires;
 
     b->setVitesse(nouvelleVitesse);

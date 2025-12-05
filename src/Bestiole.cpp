@@ -32,7 +32,7 @@ Bestiole::Bestiole( void )
    orientation = randomBetween(0.0,1.0)*2.*M_PI;
    vitesse = randomBetween(0.0,1.0)*MAX_VITESSE;
    camouflage = 0.0;
-   resistance = 0.0;
+   resistance = 1.0;
 
    // Initialisation des parametres statiques depuis le fichier de config
    if( MAX_AGE == 0 || MAX_VITESSE == 0.0 )
@@ -117,7 +117,7 @@ void Bestiole::setCouleur(T   * coul)
 
 double Bestiole::getDeathProb() const
 {
-   return deathProb;
+   return deathProb/resistance;
 }
 
 
@@ -272,15 +272,6 @@ void Bestiole::addAccessoire(IAccessoire* accessoire) {
    listeAccessoire.push_back(accessoire);
 
    // Applique immédiatement les effets connus selon le type d'accessoire
-   if ( Carapace* c = dynamic_cast<Carapace*>(accessoire) ) {
-      c->setVitesseCarapace(this);
-      c->setResistanceCarapace(this);
-   }
-   else if ( Nageoires* n = dynamic_cast<Nageoires*>(accessoire) ) {
-
-      n->setVitesseNageoires(this);
-   }
-   else if ( Camouflage* cam = dynamic_cast<Camouflage*>(accessoire) ) {
-      cam->setCamouflage(this);
-   }
+   accessoire->setParameters(this);
+   
 }

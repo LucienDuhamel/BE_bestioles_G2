@@ -25,13 +25,17 @@ void Carapace::draw(UImg& support, Bestiole* b)
     float opacity = 0.25f;
     support.draw_circle(cx, cy, rayon, couleurGold, opacity);
 }
-
-void Carapace::setVitesseCarapace(Bestiole* b){
+void Carapace::setParameters(Bestiole* b) const
+{
+    setVitesseCarapace(b);
+    setResistanceCarapace(b);
+}
+void Carapace::setVitesseCarapace(Bestiole* b)  const{
 
     b->setVitesse(b->getVitesse() / CoeffVitesseCarapace);
 }
 
-void Carapace::setResistanceCarapace(Bestiole* b){
+void Carapace::setResistanceCarapace(Bestiole* b) const {
 
     b->setResistance(CoeffResistanceCarapace);
 

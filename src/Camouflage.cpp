@@ -45,7 +45,11 @@ void Camouflage::draw(UImg& support, Bestiole* b)
         support.draw_line(x1, y1, x2, y2, stripeColor);
     }
 }
-void Camouflage::setCamouflage(Bestiole* b){
+void Camouflage::setParameters(Bestiole* b) const
+{
+    setCamouflage(b);
+}
+void Camouflage::setCamouflage(Bestiole* b) const {
 
     b->setCamouflage(this->camouflage);
 }
