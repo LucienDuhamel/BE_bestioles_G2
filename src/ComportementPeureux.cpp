@@ -56,22 +56,19 @@ void ComportementPeureux::reagit(
     const std::vector<EspeceBestiole*>& listeBestioles
 ) const
 {
-    // Liste des bestioles visibles
     const auto& bestiolesVisibles = bestiole.detecteBestioles(listeBestioles);
 
     // Si assez d'individus pour être effrayé
     if (static_cast<int>(bestiolesVisibles.size()) >= BESTIOLE_SCARED_NUMBER)
     {
         // Calcul du barycentre des positions
-        int bx = 0.0, by = 0.0;
-        for (EspeceBestiole* b : bestiolesVisibles)
-        {
-            bx += b->getX();
-            by += b->getY();
+        double bx = 0.0, by = 0.0;
+        for (EspeceBestiole* b : bestiolesVisibles) {
+            bx += static_cast<double>(b->getX());
+            by += static_cast<double>(b->getY());
         }
-
-        bx /= bestiolesVisibles.size();
-        by /= bestiolesVisibles.size();
+        bx /= static_cast<double>(bestiolesVisibles.size());
+        by /= static_cast<double>(bestiolesVisibles.size());
 
         // Fuite : orientation opposée au barycentre
         bestiole.setOrientation(
@@ -90,7 +87,7 @@ void ComportementPeureux::reagit(
     }
     else
     {
-        // Encore effrayé ?
+        // Encore effrayée ?
         if (nbStep > 0)
         {
             nbStep--;
@@ -103,4 +100,14 @@ void ComportementPeureux::reagit(
             }
         }
     }
+
+    std::cout << "Bestiole (" << bestiole.getId() << ") : "
+              << (isScared ? "Effrayée" : "Calme") 
+              << ", Vitesse = " << bestiole.getVitesse() 
+              << ", Étapes restantes effrayée = " << nbStep 
+              << "Vitesse initiale = " << vIni
+              << std::endl;
+
+
 }
+

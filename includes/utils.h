@@ -36,8 +36,8 @@ double calcDistance(const B& b, const C& c)
 }
 
 
-template<typename T>
-double calcOrientation(T x1 , T y1, T x2, T y2) {
+template<typename T, typename U>
+double calcOrientation(T x1 , T y1, U x2, U y2) {
     double dx = static_cast<double>(x2) - static_cast<double>(x1);  // cible - bestiole
     double dy = static_cast<double>(y2) - static_cast<double>(y1);
 
