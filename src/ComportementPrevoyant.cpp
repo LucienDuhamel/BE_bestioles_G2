@@ -7,7 +7,7 @@
 T ComportementPrevoyant::couleur_cfg[3] = {0, 0, 0};
 double ComportementPrevoyant::T_PREDICT = 0.0;
 double ComportementPrevoyant::DIST_MIN_COLLISION = 0.0;
-
+bool ComportementPrevoyant::configInitialized = false;
 ComportementPrevoyant* ComportementPrevoyant::singletonPrevoyant = nullptr;
 
 ComportementPrevoyant*   ComportementPrevoyant::getInstance()  
@@ -15,9 +15,9 @@ ComportementPrevoyant*   ComportementPrevoyant::getInstance()
     if (singletonPrevoyant == nullptr){
         singletonPrevoyant = new ComportementPrevoyant();
 
-        if((couleur_cfg[0]==0 && couleur_cfg[1]==0 && couleur_cfg[2]==0)
-            || T_PREDICT==0.0 || DIST_MIN_COLLISION==0.0) {
+        if(!configInitialized) {
             singletonPrevoyant->initFromConfig();
+            configInitialized = true;
         }
 
         // Couleur bleu clair
@@ -51,60 +51,76 @@ void ComportementPrevoyant::reagit(
     const std::vector<EspeceBestiole*>& listeBestioles
 )
 {
-    // Bestioles visibles
     const auto& visibles = bestiole.detecteBestioles(listeBestioles);
-
     if (visibles.empty())
         return;
 
     double bx = bestiole.getX();
     double by = bestiole.getY();
-    double vx = bestiole.getVitesse() * cos(bestiole.getOrientation());
-    double vy = bestiole.getVitesse() * sin(bestiole.getOrientation());
+    double btheta = bestiole.getOrientation();
+    double bv = bestiole.getVitesse();
 
-    // position future du bestiole prévoyant
-    double bx_future = bx + vx * T_PREDICT;
-    double by_future = by + vy * T_PREDICT;
+    // Position future correcte
+    double nbx = bx + bv * std::cos(btheta);
+    double nby = by + bv * std::sin(btheta);
 
-    // vecteur résultant d'évitement
     double avoidX = 0.0;
     double avoidY = 0.0;
 
     for (EspeceBestiole* other : visibles)
     {
-        if (other == nullptr)
+        if (!other || other == &bestiole)
             continue;
 
-        // position autre
         double ox = other->getX();
         double oy = other->getY();
-        double ovx = other->getVitesse() * cos(other->getOrientation());
-        double ovy = other->getVitesse() * sin(other->getOrientation());
 
-        // position future autre bestiole
-        double ox_future = ox + ovx * T_PREDICT;
-        double oy_future = oy + ovy * T_PREDICT;
-
-        // distance future
-        double dx = bx_future - ox_future;
-        double dy = by_future - oy_future;
-        double distFuture = std::sqrt(dx*dx + dy*dy);
-
-        if (distFuture < DIST_MIN_COLLISION)
+        // Collision immédiate
+        if (bestiole.isInCollisionWith(*other))
         {
-            // vecteur d'évitement : s’éloigner du point futur
-            avoidX += dx / distFuture;
-            avoidY += dy / distFuture;
+            double dx = bx - ox;
+            double dy = by - oy;
+            double d = std::sqrt(dx*dx + dy*dy);
+
+            if (d > 0) {
+                avoidX += dx / d;
+                avoidY += dy / d;
+            }
+            continue;
+        }
+
+        // Position future de l'autre
+        double otheta = other->getOrientation();
+        double ov = other->getVitesse();
+
+        double nox = ox + ov * std::cos(otheta);
+        double noy = oy + ov * std::sin(otheta);
+
+        if (isInHitBox(nox, noy, other->getAffSize(),
+                       nbx, nby, bestiole.getAffSize()))
+        {
+            // Fuite = direction opposée à la menace
+            double ddx = bx - nox;
+            double ddy = by - noy;
+            double d = std::sqrt(ddx*ddx + ddy*ddy);
+            if (d > 0) {
+                avoidX += ddx / d;
+                avoidY += ddy / d;
+            }
         }
     }
 
-    // Aucun risque détecté → continuer tout droit
     if (avoidX == 0.0 && avoidY == 0.0)
         return;
 
-    // Calcul de la nouvelle orientation
+    // Nouvelle orientation = fuite
     double newAngle = std::atan2(avoidY, avoidX);
 
-    // Ajustement vers une trajectoire d'évitement
     bestiole.setOrientation(newAngle);
 }
+
+
+
+
+
+

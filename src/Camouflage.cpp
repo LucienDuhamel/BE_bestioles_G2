@@ -6,11 +6,14 @@
 
 double Camouflage::camoMin = -1.0;
 double Camouflage::camoMax = -1.0;
+bool Camouflage::configInitialized = false;
 
 Camouflage::Camouflage()
 {   
-    if (camoMin < 0.0 || camoMax < 0.0)
+    if (!configInitialized) {
         initFromConfig();
+        configInitialized = true;
+    }
     
     camouflage = camoMin + (static_cast<double>(rand()) / RAND_MAX) * (camoMax - camoMin);
 }
@@ -62,6 +65,6 @@ Camouflage* Camouflage::clone() const {
 
 void Camouflage::initFromConfig(){
     Config& cfg = Config::getInstance();
-    Camouflage::camoMin = cfg.getDouble("CAMOUFLAGE_MIN");
-    Camouflage::camoMax = cfg.getDouble("CAMOUFLAGE_MAX");
+    Camouflage::camoMin = cfg.getDouble("CAMOUFLAGE_MIN", 0.0);
+    Camouflage::camoMax = cfg.getDouble("CAMOUFLAGE_MAX", 1.0);
 }

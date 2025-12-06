@@ -13,10 +13,13 @@
 class ComportementPersoMultiples : public Comportement
 {
 
+private: 
+    static double     MAX_PROBA_CHANGEMENT_COMPORTEMENT;
+    static bool configInitialized;
+
 private:
     std::vector<Comportement*> comportementsDisponibles;
-    // Pour les bestioles a comportements multiples
-    static double     MAX_PROBA_CHANGEMENT_COMPORTEMENT;
+
     int ComportementApparentIndex;
     // Pour les bestioles a comportements multiples
     double probaChangementComportement;

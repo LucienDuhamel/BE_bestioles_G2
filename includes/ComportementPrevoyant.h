@@ -4,6 +4,7 @@
 #include "config.h"
 #include "Comportement.h"
 #include "Bestiole.h"
+#include "utils.h"
 
 #include <iostream>
 #include <vector>
@@ -13,9 +14,11 @@
 class ComportementPrevoyant : public Comportement
 {
 private:
+    static ComportementPrevoyant* singletonPrevoyant;
     static T couleur_cfg[3];
     static double T_PREDICT;
     static double DIST_MIN_COLLISION;
+    static bool configInitialized;
 
 private:
     ComportementPrevoyant() {}
@@ -23,7 +26,6 @@ private:
     ComportementPrevoyant& operator=(const ComportementPrevoyant&) = delete;
 
     void initFromConfig();
-    static ComportementPrevoyant* singletonPrevoyant;
 
 public:
     static ComportementPrevoyant* getInstance();

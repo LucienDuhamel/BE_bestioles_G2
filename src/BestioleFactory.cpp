@@ -10,7 +10,27 @@
 #include "Carapace.h"
 #include "Nageoires.h"
 #include "Camouflage.h"
+#include "config.h"
 #include <cstdlib>
+
+// Static member initialization
+double BestioleFactory::PROBA_YEUX = 0.5;
+double BestioleFactory::PROBA_OREILLES = 0.5;
+double BestioleFactory::PROBA_CARAPACE = 0.25;
+double BestioleFactory::PROBA_NAGEOIRES = 0.5;
+double BestioleFactory::PROBA_CAMOUFLAGE = 0.5;
+bool BestioleFactory::configInitialized = false;
+
+void BestioleFactory::initFromConfig() const {
+    if (!configInitialized) {
+        PROBA_YEUX = Config::getInstance().getDouble("PROBA_YEUX", 0.5);
+        PROBA_OREILLES = Config::getInstance().getDouble("PROBA_OREILLES", 0.5);
+        PROBA_CARAPACE = Config::getInstance().getDouble("PROBA_CARAPACE", 0.25);
+        PROBA_NAGEOIRES = Config::getInstance().getDouble("PROBA_NAGEOIRES", 0.5);
+        PROBA_CAMOUFLAGE = Config::getInstance().getDouble("PROBA_CAMOUFLAGE", 0.5);
+        configInitialized = true;
+    }
+}
 
 BestioleFactory::~BestioleFactory()
 {
@@ -39,6 +59,9 @@ BestioleFactory::BestioleFactory(std::vector<Comportement*> Comportements, std::
 
 Bestiole* BestioleFactory::creerEspeceBestiole() const
 {
+    // Ensure config is loaded on first call
+    initFromConfig();
+    
     Bestiole* bestiole = new Bestiole();
     double typeProb = randomBetween(0.0,1.0);
     int i=0;
@@ -46,29 +69,29 @@ Bestiole* BestioleFactory::creerEspeceBestiole() const
     
     bestiole->setComportement(listeComportements[i]->clone());
         
-    
-    // Chaque capteur a 50% de chance d'être présent (indépendamment des autres)
-    if (rand() % 2 == 0) {
+    // Capteurs - probabilities are configurable via static members
+    if (randomBetween(0.0, 1.0) < PROBA_YEUX) {
         bestiole->addCapteur(new Yeux());
     }
 
-    if (rand() % 2 == 0) {
+    if (randomBetween(0.0, 1.0) < PROBA_OREILLES) {
         bestiole->addCapteur(new Oreilles());
     }
 
-    // Chaque accessoire a 50% de chance d'être présent
-
-    if (rand() % 4 == 0) {
+    // Accessoires - probabilities are configurable via static members
+    if (randomBetween(0.0, 1.0) < PROBA_CARAPACE) {
         bestiole->addAccessoire(new Carapace());
     }
 
-    if (rand() % 2 == 0) {
+    if (randomBetween(0.0, 1.0) < PROBA_NAGEOIRES) {
         bestiole->addAccessoire(new Nageoires());
     }
 
-    if (rand() % 2 == 0) {
+    if (randomBetween(0.0, 1.0) < PROBA_CAMOUFLAGE) {
         bestiole->addAccessoire(new Camouflage());
     }
+
+    bestiole->setVitesseIni(bestiole->getVitesse());
 
     return bestiole;
 

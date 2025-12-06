@@ -13,6 +13,7 @@ private:
     static double distMax;
     static double pourcMin;
     static double pourcMax;
+    static bool configInitialized;
 private:
     double distanceVisionOreilles;
     double pourcentageDetectionOreilles;

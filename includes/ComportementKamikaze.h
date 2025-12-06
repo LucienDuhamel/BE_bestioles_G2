@@ -14,15 +14,15 @@ class ComportementKamikaze : public Comportement
 {
 
 private: 
+    static ComportementKamikaze* singletonKamikaze;
     static T couleur_cfg[3];
+    static bool configInitialized;
 
 private:
     ComportementKamikaze() {}
     ComportementKamikaze(const ComportementKamikaze&) = delete;
     ComportementKamikaze& operator=(const ComportementKamikaze&) = delete;
-
     void initFromConfig();
-    static ComportementKamikaze* singletonKamikaze;
 
 public:
     static ComportementKamikaze* getInstance();

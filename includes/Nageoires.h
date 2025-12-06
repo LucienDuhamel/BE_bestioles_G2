@@ -10,6 +10,7 @@ class Nageoires : public IAccessoire
 {
 private : 
    static double vitesseMax;
+      static bool configInitialized;
 private :
    double CoeffVitesseNageoires;
 

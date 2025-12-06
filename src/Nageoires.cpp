@@ -5,11 +5,14 @@
 #include <cstdlib>
 
 double Nageoires::vitesseMax = -1.0;
+bool Nageoires::configInitialized = false;
 
 Nageoires::Nageoires()
 {   
-    if (vitesseMax < 0.0)
+    if (!configInitialized) {
         initFromConfig();
+        configInitialized = true;
+    }
     
     CoeffVitesseNageoires = 1.0 + (static_cast<double>(rand()) / RAND_MAX) * (vitesseMax - 1.0);
 }
@@ -40,5 +43,5 @@ Nageoires* Nageoires::clone() const {
 
 void Nageoires::initFromConfig() {
     Config& cfg = Config::getInstance();
-    Nageoires::vitesseMax = cfg.getDouble("COEFF_VITESSE_NAGEOIRE_MAX");
+    Nageoires::vitesseMax = cfg.getDouble("COEFF_VITESSE_NAGEOIRE_MAX", 10.0);
 }

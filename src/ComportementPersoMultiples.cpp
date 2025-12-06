@@ -10,6 +10,7 @@
 
 
 double      ComportementPersoMultiples::MAX_PROBA_CHANGEMENT_COMPORTEMENT = 0.0;
+bool ComportementPersoMultiples::configInitialized = false;
 
 ComportementPersoMultiples::ComportementPersoMultiples(std::vector<Comportement*> listeComportements)
 {
@@ -18,10 +19,11 @@ ComportementPersoMultiples::ComportementPersoMultiples(std::vector<Comportement*
 
     ComportementApparentIndex = rand() % comportementsDisponibles.size() ;
     // Initialisation des parametres statiques depuis le fichier de config
-   if( MAX_PROBA_CHANGEMENT_COMPORTEMENT == 0.0 )
-   {
-      initFromConfig();
-   }
+    if(!configInitialized)
+    {
+        initFromConfig();
+        configInitialized = true;
+    }
    probaChangementComportement = static_cast<double>( randomBetween(0.0, MAX_PROBA_CHANGEMENT_COMPORTEMENT) );
 
 }
@@ -55,6 +57,8 @@ void ComportementPersoMultiples::reagit(Bestiole& bestiole, const std::vector<Es
         int saut =  rand() % (comportementsDisponibles.size()-1);
         ComportementApparentIndex = (ComportementApparentIndex + saut) % comportementsDisponibles.size() ;
         
+        // si bestiole change de comportement, on remet sa vitesse initiale (pour le comportement peureux par ex)
+        bestiole.setVitesse(bestiole.getVitesseIni());
         bestiole.setCouleur(comportementsDisponibles[ComportementApparentIndex]->getCouleur());
     }
 

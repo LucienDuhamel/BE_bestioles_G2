@@ -3,6 +3,7 @@
 #include "Milieu.h"
 
 int Aquarium::NB_BESTIOLES_INIT = 0;
+bool Aquarium::configInitialized = false;
 
 Aquarium::Aquarium( int width, int height, int _delay ) : CImgDisplay(), delay( _delay )
 {
@@ -17,7 +18,10 @@ Aquarium::Aquarium( int width, int height, int _delay ) : CImgDisplay(), delay( 
    assign( *flotte, "Simulation d'ecosysteme" );
 
    move( static_cast<int>((screenWidth-width)/2), static_cast<int>((screenHeight-height)/2) );
-   initFromConfig();
+   if (!configInitialized) {
+       initFromConfig();
+       configInitialized = true;
+   }
    flotte->initConfig(NB_BESTIOLES_INIT);
 
 }

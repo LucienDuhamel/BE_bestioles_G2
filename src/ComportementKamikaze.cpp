@@ -7,14 +7,16 @@
 
 ComportementKamikaze* ComportementKamikaze::singletonKamikaze = nullptr;
 T ComportementKamikaze::couleur_cfg[3] = {0, 0, 0};
+bool ComportementKamikaze::configInitialized = false;
 
 ComportementKamikaze*   ComportementKamikaze::getInstance()  
 {
     if (singletonKamikaze == nullptr){
         singletonKamikaze = new ComportementKamikaze();
 
-        if(couleur_cfg[0]==0 && couleur_cfg[1]==0 && couleur_cfg[2]==0){
+        if(!configInitialized) {
             singletonKamikaze->initFromConfig();
+            configInitialized = true;
         }
 
     }

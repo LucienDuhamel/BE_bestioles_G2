@@ -12,33 +12,30 @@
 
 class ComportementPeureux : public Comportement
 {
-private : 
+
+private :
     // Couleur statique récupérée depuis le fichier de configuration
     static T couleur_cfg[3];
 
     // Paramètres statiques récupérés depuis le fichier de configuration
-    static int BESTIOLE_SCARED_NUMBER; // Nombre de bestioles détectées pour être effrayé
-    static int REMAINING_SCARED_STEPS; // Nombre d'étapes restantes à être effrayé
+    static int BESTIOLE_SCARED_NUMBER;    // Nombre de bestioles détectées pour être effrayé
+    static int REMAINING_SCARED_STEPS;    // Nombre d'étapes restantes à être effrayé
     static double SPEED_COEF;             // Coefficient de vitesse quand effrayé
+    static bool configInitialized;
 
-    // États modifiés lors de l'exécution (valeurs par défaut)
-    mutable bool isScared = false;
-    mutable int nbStep = 0;
-    mutable double vIni = 0.0;
+private : 
+    bool isScared = false;
+    int nbStep = 0;
 
 private:
-    ComportementPeureux() {}
-    ComportementPeureux(const ComportementPeureux&) = delete;
-    ComportementPeureux& operator=(const ComportementPeureux&) = delete;
-
     void initFromConfig();
-    static ComportementPeureux* singletonPeureux;
 
 public:
-    static ComportementPeureux* getInstance();
-    Comportement* clone() const override;
+    ComportementPeureux();
+    ~ComportementPeureux();
     T * getCouleur()  const override;
     void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) override;
+    Comportement* clone() const override;
 
 };
 

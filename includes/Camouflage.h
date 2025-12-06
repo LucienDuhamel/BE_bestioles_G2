@@ -9,6 +9,7 @@ class Camouflage : public IAccessoire
 private: 
     static double camoMin;
     static double camoMax;
+    static bool configInitialized;
 private:
     double camouflage;
 public:

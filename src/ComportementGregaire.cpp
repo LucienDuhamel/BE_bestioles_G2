@@ -7,14 +7,16 @@
 
 ComportementGregaire* ComportementGregaire::singletonGregaire = nullptr;
 T ComportementGregaire::couleur_cfg[3] = {0, 0, 0};
+bool ComportementGregaire::configInitialized = false;
 
 ComportementGregaire*  ComportementGregaire::getInstance()  
 {
     if (singletonGregaire == nullptr){
         singletonGregaire = new ComportementGregaire();
         
-        if(couleur_cfg[0]==0 && couleur_cfg[1]==0 && couleur_cfg[2]==0){
+        if(configInitialized == false) {
             singletonGregaire->initFromConfig();
+            configInitialized = true;
         }
 
     }

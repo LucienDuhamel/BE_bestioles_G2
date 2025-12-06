@@ -6,11 +6,14 @@
 
 double Carapace::vitesseMax = -1.0;
 double Carapace::resistMax = -1.0;
+bool Carapace::configInitialized = false;
 
 Carapace::Carapace()
 {
-    if (vitesseMax <0.0 || resistMax <0.0)
-        initFromConfig();    
+    if (!configInitialized) {
+        initFromConfig();
+        configInitialized = true;
+    }
     CoeffVitesseCarapace = 1.0 + (static_cast<double>(rand()) / RAND_MAX) * (vitesseMax - 1.0);
     CoeffResistanceCarapace = 1.0 + (static_cast<double>(rand()) / RAND_MAX) * (resistMax - 1.0);
 }
@@ -49,6 +52,6 @@ Carapace* Carapace::clone() const {
 
 void Carapace::initFromConfig(){
     Config& cfg = Config::getInstance();
-    Carapace::vitesseMax = cfg.getDouble("COEFF_VITESSE_CARAPACE_MAX");
-    Carapace::resistMax = cfg.getDouble("COEFF_RESISTANCE_CARAPACE_MAX");
+    Carapace::vitesseMax = cfg.getDouble("COEFF_VITESSE_CARAPACE_MAX", 20.0);
+    Carapace::resistMax = cfg.getDouble("COEFF_RESISTANCE_CARAPACE_MAX", 10.0);
 }

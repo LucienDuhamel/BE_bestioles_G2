@@ -7,6 +7,7 @@ class Carapace : public IAccessoire
 {
 private :
     static double vitesseMax;
+    static bool configInitialized;
     static double resistMax;
     double CoeffVitesseCarapace;
     double CoeffResistanceCarapace;

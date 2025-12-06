@@ -10,11 +10,14 @@ double Yeux::distMin = -1.0;
 double Yeux::distMax = -1.0;
 double Yeux::pourcMin = -1.0;
 double Yeux::pourcMax = -1.0;
+bool Yeux::configInitialized = false;
 
 Yeux::Yeux()
 {    
-    if(angleMin < 0.0 || angleMax < 0.0 || distMin < 0.0 || distMax < 0.0 || pourcMin < 0.0 || pourcMax < 0.0)
+    if(!configInitialized) {
         initFromConfig();
+        configInitialized = true;
+    }
     angleVisionYeux = angleMin + (static_cast<double>(rand()) / RAND_MAX) * (angleMax - angleMin);
     distanceVisionYeux = distMin + (static_cast<double>(rand()) / RAND_MAX) * (distMax - distMin);
     pourcentageDetectionYeux = pourcMin + (static_cast<double>(rand()) / RAND_MAX) * (pourcMax - pourcMin);
@@ -90,10 +93,10 @@ Yeux* Yeux::clone() const {
 
 void Yeux::initFromConfig(){
     Config& cfg = Config::getInstance();
-    Yeux::angleMin = cfg.getDouble("ANGLE_VISION_OEUIL_MIN");
-    Yeux::angleMax = cfg.getDouble("ANGLE_VISION_OEUIL_MAX");
-    Yeux::distMin = cfg.getDouble("DISTANCE_VISION_OEUIL_MIN");
-    Yeux::distMax = cfg.getDouble("DISTANCE_VISION_OEUIL_MAX");
-    Yeux::pourcMin = cfg.getDouble("POURCENTAGE_DETECTION_OEUIL_MIN");
-    Yeux::pourcMax = cfg.getDouble("POURCENTAGE_DETECTION_OEUIL_MAX");
+    Yeux::angleMin = cfg.getDouble("ANGLE_VISION_OEUIL_MIN", M_PI/6);
+    Yeux::angleMax = cfg.getDouble("ANGLE_VISION_OEUIL_MAX", M_PI);
+    Yeux::distMin = cfg.getDouble("DISTANCE_VISION_OEUIL_MIN", 10.0);
+    Yeux::distMax = cfg.getDouble("DISTANCE_VISION_OEUIL_MAX", 100.0);
+    Yeux::pourcMin = cfg.getDouble("POURCENTAGE_DETECTION_OEUIL_MIN", 0.01);
+    Yeux::pourcMax = cfg.getDouble("POURCENTAGE_DETECTION_OEUIL_MAX", 0.9);
 }

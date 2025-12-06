@@ -19,20 +19,23 @@ double  Milieu::PROP_PEUREUX = 0.0;
 double  Milieu::PROP_PREVOYANT = 0.0;
 double  Milieu::PROP_MULTIPLES = 0.0;
 double  Milieu::TAUX_DE_NAISSANCES_SPONTANEE = 0.0;
+bool    Milieu::configInitialized = false;
 
 
 Milieu::Milieu( int _width, int _height ) : UImg( _width, _height, 1, 3 ),
                                             width(_width), height(_height)
 {
+
+   // Attention l'ordre d'ajout des comportements détermine leur indice dans la factory
    listeComportements.push_back(ComportementGregaire::getInstance());
    listeComportements.push_back(ComportementKamikaze::getInstance());
-   listeComportements.push_back(ComportementPeureux::getInstance());
+   listeComportements.push_back(new ComportementPeureux());
    listeComportements.push_back(ComportementPrevoyant::getInstance());
-
    listeComportements.push_back(new ComportementPersoMultiples(listeComportements));
    
-   if(PROP_GREGAIRE + PROP_KAMIKAZE + PROP_PEUREUX + PROP_PREVOYANT + PROP_MULTIPLES != 1){
+   if(!configInitialized) {
       this->initFromConfig();
+      configInitialized = true;
    }
    std::vector<double> proportions = {PROP_GREGAIRE, PROP_KAMIKAZE, PROP_PEUREUX, PROP_PREVOYANT, PROP_MULTIPLES};
    bestioleFactory = new BestioleFactory(listeComportements, proportions);

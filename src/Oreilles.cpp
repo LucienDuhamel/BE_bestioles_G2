@@ -8,12 +8,15 @@ double Oreilles::distMin = -1.0;
 double Oreilles::distMax = -1.0;
 double Oreilles::pourcMin = -1.0;
 double Oreilles::pourcMax = -1.0;
+bool Oreilles::configInitialized = false;
 
 Oreilles::Oreilles()
 {   
 
-    if(distMin < 0.0 || distMax < 0.0 || pourcMin < 0.0 || pourcMax < 0.0)
+    if(!configInitialized) {
         initFromConfig();
+        configInitialized = true;
+    }
     distanceVisionOreilles = distMin + (static_cast<double>(rand()) / RAND_MAX) * (distMax - distMin);
     pourcentageDetectionOreilles = pourcMin + (static_cast<double>(rand()) / RAND_MAX) * (pourcMax - pourcMin);
 }
@@ -75,8 +78,8 @@ Oreilles* Oreilles::clone() const {
 
 void Oreilles::initFromConfig() {
     Config& cfg = Config::getInstance();
-    Oreilles::distMin = cfg.getDouble("DISTANCE_VISION_OREILLE_MIN");
-    Oreilles::distMax = cfg.getDouble("DISTANCE_VISION_OREILLE_MAX");
-    Oreilles::pourcMin = cfg.getDouble("POURCENTAGE_DETECTION_OREILLE_MIN");
-    Oreilles::pourcMax = cfg.getDouble("POURCENTAGE_DETECTION_OREILLE_MAX");
+    Oreilles::distMin = cfg.getDouble("DISTANCE_VISION_OREILLE_MIN", 10.0);
+    Oreilles::distMax = cfg.getDouble("DISTANCE_VISION_OREILLE_MAX", 100.0);
+    Oreilles::pourcMin = cfg.getDouble("POURCENTAGE_DETECTION_OREILLE_MIN", 0.01);
+    Oreilles::pourcMax = cfg.getDouble("POURCENTAGE_DETECTION_OREILLE_MAX", 0.9);
 }

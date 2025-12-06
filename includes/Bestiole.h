@@ -21,14 +21,17 @@ class Bestiole : public EspeceBestiole
 {
 
 private :
+   static double     AFF_SIZE;
    static double     MAX_VITESSE;
    static int        MAX_AGE;
+   static bool       configInitialized;
 
    
 
 private :
    int               age;
    int               age_Lim;
+   double            vIni;
    double deathProb;
    bool Killed;
    double            camouflage;
@@ -73,6 +76,11 @@ public :                                           // Forme canonique :
 
    void addCapteur(ICapteur* capteur);
    void addAccessoire(IAccessoire* accessoire);
+
+   double getAffSize() const override { return AFF_SIZE; }
+
+   double setVitesseIni(double v) { vIni = v; return vIni; }
+   double getVitesseIni() const { return vIni; }
 
 };
 

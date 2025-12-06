@@ -10,7 +10,7 @@ class EspeceBestioleFactory
 
 public :
    virtual ~EspeceBestioleFactory( void )= default;
-
+   static bool configInitialized;
    virtual EspeceBestiole* creerEspeceBestiole() const = 0;
 
 };

@@ -22,6 +22,7 @@ private :
 
    int            delay;
    static int NB_BESTIOLES_INIT;
+   static bool configInitialized;
 public :
    Aquarium( int width, int height, int _delay );
    ~Aquarium( void );

@@ -23,6 +23,7 @@ private :
    static double           PROP_PREVOYANT;
    static double           PROP_MULTIPLES;
    static double           TAUX_DE_NAISSANCES_SPONTANEE;
+   static bool             configInitialized;
    
    int                     width, height;
    std::vector<EspeceBestiole*>   listeEspeceBestioles;

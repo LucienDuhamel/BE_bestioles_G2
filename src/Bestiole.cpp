@@ -15,8 +15,10 @@
 
 #include <iostream>
 
-int         Bestiole::MAX_AGE = 0;
-double      Bestiole::MAX_VITESSE = 0.0;
+double      Bestiole::AFF_SIZE = -1.0;
+int         Bestiole::MAX_AGE = -1.0;
+double      Bestiole::MAX_VITESSE = -1.0;
+bool        Bestiole::configInitialized = false;
 
 Bestiole::Bestiole( void )
 {
@@ -31,13 +33,14 @@ Bestiole::Bestiole( void )
    cumulX = cumulY = 0.;
    orientation = randomBetween(0.0,1.0)*2.*M_PI;
    vitesse = randomBetween(0.0,1.0)*MAX_VITESSE;
+   vIni = vitesse;
    camouflage = 0.0;
    resistance = 1.0;
 
-   // Initialisation des parametres statiques depuis le fichier de config
-   if( MAX_AGE == 0 || MAX_VITESSE == 0.0 )
-   {
+   // Initialisation unique des paramètres statiques
+   if (!configInitialized) {
       initFromConfig();
+      configInitialized = true;
    }
 
    
@@ -58,6 +61,8 @@ Bestiole::Bestiole( const Bestiole & b ) : EspeceBestiole(b)
    comportement = b.comportement->clone();
    orientation = b.orientation;
    vitesse = b.vitesse;
+   vIni = b.vIni;
+
 
 
    camouflage = b.camouflage;
@@ -86,7 +91,7 @@ Bestiole::~Bestiole( void )
 
    listeAccessoire.clear();
    Comportement* test=comportement->clone();
-   if(test!=comportement) // Perso Multiple == not singletant
+   if(test!=comportement) // Perso Multiple ou Peureux == non singleton
    {
       delete test;
       delete comportement;
@@ -97,6 +102,7 @@ Bestiole::~Bestiole( void )
 
 // Initialisation des parametres statiques depuis le fichier de config (valeurs par defaut si absentes)
 void Bestiole::initFromConfig() {
+    AFF_SIZE = Config::getInstance().getDouble("AFF_SIZE", 8.0);
     MAX_AGE = Config::getInstance().getInt("MAX_AGE", 1000);
     MAX_VITESSE = Config::getInstance().getDouble("MAX_VITESSE", 5.0);
 }
@@ -275,3 +281,6 @@ void Bestiole::addAccessoire(IAccessoire* accessoire) {
    accessoire->setParameters(this);
    
 }
+
+
+

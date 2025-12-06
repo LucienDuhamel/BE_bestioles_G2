@@ -11,17 +11,15 @@ class ComportementGregaire : public Comportement
 {
 
 private :
-    // Couleur RGB récupérée depuis le fichier de configuration
+    static ComportementGregaire* singletonGregaire;
     static T couleur_cfg[3];
+    static bool configInitialized;
     
 private:
     ComportementGregaire() {}
     ComportementGregaire(const ComportementGregaire&) = delete;
     ComportementGregaire& operator=(const ComportementGregaire&) = delete;
-    
-    // Couleur de la bestiole au comportement grégaire
     void initFromConfig();
-    static ComportementGregaire* singletonGregaire;
 
 public:
     static ComportementGregaire* getInstance();

@@ -18,9 +18,8 @@ class EspeceBestiole
 {
 
 protected :
-   static double     AFF_SIZE;
-   static double     LIMITE_VUE;
-   static int              next;
+   static int        next;
+   static bool       configInitialized;
 
 public :
    static double     CLONAGE_PROP;
@@ -63,6 +62,8 @@ public :
 
    double getOrientation() const { return orientation; };
    void setOrientation(double newOrientation) { orientation = newOrientation; }
+
+   virtual double getAffSize() const = 0 ;
 
 };
 

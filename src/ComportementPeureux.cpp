@@ -7,32 +7,28 @@
 
 T ComportementPeureux::couleur_cfg[3] = {0, 0, 0};
 
-ComportementPeureux* ComportementPeureux::singletonPeureux = nullptr;
-int ComportementPeureux::BESTIOLE_SCARED_NUMBER = 0;
-int ComportementPeureux::REMAINING_SCARED_STEPS = 0;
-double ComportementPeureux::SPEED_COEF = 0.0;
+int ComportementPeureux::BESTIOLE_SCARED_NUMBER = -1;
+int ComportementPeureux::REMAINING_SCARED_STEPS = -1;
+double ComportementPeureux::SPEED_COEF = -1.0;
+bool ComportementPeureux::configInitialized = false;
 
-ComportementPeureux*   ComportementPeureux::getInstance()  
-{
-    if (singletonPeureux == nullptr){
-        singletonPeureux = new ComportementPeureux();
 
-        if((couleur_cfg[0]==0 && couleur_cfg[1]==0 && couleur_cfg[2]==0)
-            || BESTIOLE_SCARED_NUMBER==0 
-            || REMAINING_SCARED_STEPS==0
-            || SPEED_COEF == 0.0) {
-            singletonPeureux->initFromConfig();
+ComportementPeureux::ComportementPeureux()
+{   
+    nbStep = 0;
+    isScared = false;
+
+    if(!configInitialized) {
+            initFromConfig();
+            configInitialized = true;
         }
-
-        // Couleur vert clair
-
-    }
-
-    return  singletonPeureux;
 }
+
+ComportementPeureux::~ComportementPeureux() {}
+
+
 Comportement* ComportementPeureux::clone() const {
-    // Just return the singleton
-    return getInstance();
+    return new ComportementPeureux();
 }
 
 void ComportementPeureux::initFromConfig() {
@@ -41,12 +37,15 @@ void ComportementPeureux::initFromConfig() {
     couleur_cfg[1] = Config::getInstance().getDouble("PEU_COULEUR_G", 177);
     couleur_cfg[2] = Config::getInstance().getDouble("PEU_COULEUR_B", 76);
 
+    std::cout<<"les couleurs sont : "<<(int)couleur_cfg[0]<<" "<<(int)couleur_cfg[1]<<" "<<(int)couleur_cfg[2]<<std::endl;
+
     BESTIOLE_SCARED_NUMBER = Config::getInstance().getInt("BESTIOLE_SCARED_NUMBER", 3);
     REMAINING_SCARED_STEPS = Config::getInstance().getInt("REMAINING_SCARED_STEPS", 2);
     SPEED_COEF = Config::getInstance().getDouble("SPEED_COEF", 5);
 }
 
 T * ComportementPeureux::getCouleur()  const  {
+    std::cout<<"les couleurs sont bien : "<<(int)couleur_cfg[0]<<" "<<(int)couleur_cfg[1]<<" "<<(int)couleur_cfg[2]<<std::endl;
     return couleur_cfg;
 }
 
@@ -57,6 +56,7 @@ void ComportementPeureux::reagit(
 )
 {
     const auto& bestiolesVisibles = bestiole.detecteBestioles(listeBestioles);
+    double vIni = bestiole.getVitesseIni();
 
     // Si assez d'individus pour être effrayé
     if (static_cast<int>(bestiolesVisibles.size()) >= BESTIOLE_SCARED_NUMBER)
@@ -79,7 +79,6 @@ void ComportementPeureux::reagit(
         if (!isScared)
         {
             isScared = true;
-            vIni = bestiole.getVitesse();   // Sauvegarde de la vitesse d'origine
             bestiole.setVitesse(vIni * SPEED_COEF);
         }
 
@@ -100,14 +99,5 @@ void ComportementPeureux::reagit(
             }
         }
     }
-
-    std::cout << "Bestiole (" << bestiole.getId() << ") : "
-              << (isScared ? "Effrayée" : "Calme") 
-              << ", Vitesse = " << bestiole.getVitesse() 
-              << ", Étapes restantes effrayée = " << nbStep 
-              << "Vitesse initiale = " << vIni
-              << std::endl;
-
-
 }
 
