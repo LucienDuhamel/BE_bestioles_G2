@@ -3,6 +3,7 @@
 
 #include "Comportement.h"
 #include "Bestiole.h"
+#include "utils.h"
 
 #include <iostream>
 #include <vector>
@@ -22,18 +23,25 @@ private :
     mutable int nbStep = 0;
     mutable double vIni = 0.0;
 
+
+
 private:
     ComportementPeureux() {}
     ComportementPeureux(const ComportementPeureux&) = delete;
     ComportementPeureux& operator=(const ComportementPeureux&) = delete;
+
+    T* couleur;
 
     static ComportementPeureux* singletonPeureux;
 
 public:
     static ComportementPeureux* getInstance();
 
+    T* getCouleur() const override;
 
-    void bouge(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) const override;
+    void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) const override;
+
+    std::string getName() const override { return "Comportement Peureux"; }
 
 };
 

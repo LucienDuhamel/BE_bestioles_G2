@@ -14,12 +14,17 @@ private:
     ComportementGregaire(const ComportementGregaire&) = delete;
     ComportementGregaire& operator=(const ComportementGregaire&) = delete;
 
+    T* couleur;
+
     static ComportementGregaire* singletonGregaire;
 
 public:
     static ComportementGregaire* getInstance();
 
-    void bouge(Bestiole& bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const override;
+    void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) const override;
+
+    T * getCouleur() const override;
+
 
     std::string getName() const override { return "Comportement Gregaire"; }
 };

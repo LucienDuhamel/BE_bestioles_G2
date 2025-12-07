@@ -133,7 +133,7 @@ void Bestiole::action( Milieu & monMilieu )
       return;
    }
    age++;
-   comportement->bouge(*this, monMilieu.getListeEspeceBestioles() );
+   comportement->reagit(*this, monMilieu.getListeEspeceBestioles() );
    bouge( monMilieu.getWidth(), monMilieu.getHeight() );
 
 }
@@ -173,13 +173,13 @@ EspeceBestiole* Bestiole::clone() const
 }
 
 
-const std::vector<EspeceBestiole*>& Bestiole::detecteBestioles( const std::vector<EspeceBestiole*>& listeBestioles)
-{  
+std::vector<EspeceBestiole*> Bestiole::detecteBestioles(const Bestiole& me, const std::vector<EspeceBestiole*>& listeBestioles)  const
+{
    std::vector<EspeceBestiole*> listeBestiolesDetectees;
 
    for (EspeceBestiole* other : listeBestioles) 
    {
-      if (other != nullptr && other != this && jeTeVois(*other))
+      if (other != nullptr && other != &me && me.jeTeVois(*other))
       {
          listeBestiolesDetectees.push_back(other);
       }

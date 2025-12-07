@@ -1,5 +1,6 @@
 #include "Bestiole.h"
 #include "ComportementPeureux.h"
+
 #include <iostream>
 #include <vector>
 
@@ -10,14 +11,29 @@ ComportementPeureux* ComportementPeureux::singletonPeureux = nullptr;
 
 ComportementPeureux*   ComportementPeureux::getInstance()
 {
-    if (singletonPeureux == nullptr)
+    if (singletonPeureux == nullptr){
         singletonPeureux = new ComportementPeureux();
+        singletonPeureux->couleur = new T[ 3 ];
+
+        // Couleur vert clair
+        singletonPeureux->couleur[ 0 ] = 34;
+        singletonPeureux->couleur[ 1 ] = 177;
+        singletonPeureux->couleur[ 2 ] = 76;
+
+    }
 
     return  singletonPeureux;
 }
 
+T * ComportementPeureux::getCouleur()  const  {
+    return couleur;
+}
 
-void ComportementPeureux::bouge(Bestiole& bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const 
+
+void ComportementPeureux::reagit(
+    Bestiole& bestiole,
+    const std::vector<EspeceBestiole*>& listeBestioles
+) const
 {
     // Liste des bestioles visibles
     const auto& bestiolesVisibles = bestiole.detecteBestioles(listeBestioles);
@@ -26,8 +42,8 @@ void ComportementPeureux::bouge(Bestiole& bestiole, std::vector<EspeceBestiole*>
     if (bestiolesVisibles.size() > BESTIOLE_SCARED_NUMBER)
     {
         // Calcul du barycentre des positions
-        double bx = 0.0, by = 0.0;
-        for (Bestiole* b : bestiolesVisibles)
+        int bx = 0.0, by = 0.0;
+        for (EspeceBestiole* b : bestiolesVisibles)
         {
             bx += b->getx();
             by += b->gety();
@@ -37,7 +53,7 @@ void ComportementPeureux::bouge(Bestiole& bestiole, std::vector<EspeceBestiole*>
         by /= bestiolesVisibles.size();
 
         // Fuite : orientation opposée au barycentre
-        bestiole.setOrientation(
+        bestiole.setorientation(
             calcOrientation(bestiole.getx(), bestiole.gety(), bx, by) + M_PI
         );
 
@@ -66,5 +82,4 @@ void ComportementPeureux::bouge(Bestiole& bestiole, std::vector<EspeceBestiole*>
             }
         }
     }
-    
 }

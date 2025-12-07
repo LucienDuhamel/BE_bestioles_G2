@@ -23,7 +23,7 @@ public:
     static ComportementPrevoyant* getInstance();
 
 
-    void bouge(Bestiole& bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const override;
+    void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&   listeBestioles ) const override;
 
     std::string getName() const override { return "Comportement Prevoyant"; }
 

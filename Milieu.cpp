@@ -40,11 +40,7 @@ Milieu::~Milieu( void )
     }
     listeEspeceBestioles.clear();
 
-    // Supprime tous les comportements
-    for (auto* c : ListComportements) {
-        delete c;
-    }
-    ListComportements.clear();
+   
 
     // Supprime la factory si elle a été créée dynamiquement
     delete bestioleFactory;

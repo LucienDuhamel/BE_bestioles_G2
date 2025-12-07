@@ -15,7 +15,7 @@ ComportementPrevoyant*   ComportementPrevoyant::getInstance()
 }
 
 
-void ComportementPrevoyant::bouge(Bestiole& bestiole, std::vector<EspeceBestiole*>   listeBestioles ) const 
+void ComportementPrevoyant::reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>& listeBestioles) const
 {
     
 }

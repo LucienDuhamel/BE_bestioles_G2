@@ -52,6 +52,8 @@ public :
    virtual Comportement* getComportement() const = 0;
    virtual double getVitesse() const = 0;
    virtual double getorientation() const = 0;
+   virtual void setorientation(double ori) = 0;
+   virtual void setVitesse(double vit) = 0;
 
 };
 

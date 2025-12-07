@@ -53,9 +53,16 @@ public :                                           // Forme canonique :
 
    EspeceBestiole* clone() const override;
 
+   void setcouleur(T* newCouleur) { couleur = newCouleur; }
+
+   std::vector<EspeceBestiole*> detecteBestioles(const Bestiole& me, const std::vector<EspeceBestiole*>& listeBestioles) const;
+
    Comportement* getComportement() const override { return comportement; }
    double getorientation() const override { return orientation; }
    double getVitesse() const override { return vitesse; }
+
+   void setorientation(double ori) override { orientation = ori; }
+   void setVitesse(double vit) override { vitesse = vit; }
 
 
 
