@@ -25,7 +25,7 @@ Clone et Compilation
 Dans le répertoire où vous souhaitez clonez ce projet, copiez collez dans un terminal : 
 
 ```bash
-https://github.com/LucienDuhamel/BE_bestioles_G2
+git clone https://github.com/LucienDuhamel/BE_bestioles_G2
 ```
 
 Depuis le répertoire `BE_bestioles` fraichement cloné :
