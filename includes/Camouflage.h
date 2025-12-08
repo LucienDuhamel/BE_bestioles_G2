@@ -21,6 +21,8 @@ public:
     void setCamouflage(Bestiole* b) const;
     Camouflage* clone() const override;
     void initFromConfig();
+
+    std::string getLabel() const override { return "Camouflage"; }
 };
 
 #endif

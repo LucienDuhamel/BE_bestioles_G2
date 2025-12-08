@@ -21,6 +21,7 @@ public:
     void setResistanceCarapace(Bestiole* b) const;
     Carapace* clone() const override;
     void initFromConfig();
+    std::string getLabel() const override { return "Carapace"; }
 };
 
 #endif

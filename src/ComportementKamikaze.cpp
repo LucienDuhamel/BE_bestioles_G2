@@ -9,7 +9,7 @@ ComportementKamikaze* ComportementKamikaze::singletonKamikaze = nullptr;
 T ComportementKamikaze::couleur_cfg[3] = {0, 0, 0};
 bool ComportementKamikaze::configInitialized = false;
 
-ComportementKamikaze*   ComportementKamikaze::getInstance()  
+ComportementKamikaze* ComportementKamikaze::getInstance()  
 {
     if (singletonKamikaze == nullptr){
         singletonKamikaze = new ComportementKamikaze();
@@ -23,13 +23,14 @@ ComportementKamikaze*   ComportementKamikaze::getInstance()
 
     return  singletonKamikaze;
 }
+
 Comportement* ComportementKamikaze::clone() const {
     // Just return the singleton
     return getInstance();
 }
 
 void ComportementKamikaze::initFromConfig() {
-    // par défaut : rouge
+    // par defaut : rouge
     couleur_cfg[0] = Config::getInstance().getInt("KAM_COULEUR_R", 200);
     couleur_cfg[1] = Config::getInstance().getDouble("KAM_COULEUR_G", 0);
     couleur_cfg[2] = Config::getInstance().getDouble("KAM_COULEUR_B", 0);
