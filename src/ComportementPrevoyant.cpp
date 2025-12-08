@@ -1,16 +1,19 @@
 #include "Bestiole.h"
 #include "ComportementPrevoyant.h"
+#include "utils.h" 
+
 #include <iostream>
 #include <vector>
-#include <cmath>
+#include <cmath> // Nécessaire pour cos, sin, sqrt, atan2
 
+// Initialisation des statiques (Version Main)
 T ComportementPrevoyant::couleur_cfg[3] = {0, 0, 0};
 double ComportementPrevoyant::T_PREDICT = 0.0;
 double ComportementPrevoyant::DIST_MIN_COLLISION = 0.0;
 bool ComportementPrevoyant::configInitialized = false;
 ComportementPrevoyant* ComportementPrevoyant::singletonPrevoyant = nullptr;
 
-ComportementPrevoyant*   ComportementPrevoyant::getInstance()  
+ComportementPrevoyant* ComportementPrevoyant::getInstance()  
 {
     if (singletonPrevoyant == nullptr){
         singletonPrevoyant = new ComportementPrevoyant();
@@ -19,20 +22,18 @@ ComportementPrevoyant*   ComportementPrevoyant::getInstance()
             singletonPrevoyant->initFromConfig();
             configInitialized = true;
         }
-
-        // Couleur bleu clair
-
     }
 
     return  singletonPrevoyant;
 }
+
 Comportement* ComportementPrevoyant::clone() const {
     // Just return the singleton
     return getInstance();
 }
 
 void ComportementPrevoyant::initFromConfig() {
-    // par défaut : vert clair
+    // par defaut : bleu/violet clair
     couleur_cfg[0] = Config::getInstance().getInt("PRE_COULEUR_R", 30);
     couleur_cfg[1] = Config::getInstance().getDouble("PRE_COULEUR_G", 144);
     couleur_cfg[2] = Config::getInstance().getDouble("PRE_COULEUR_B", 255);
@@ -45,7 +46,6 @@ T * ComportementPrevoyant::getCouleur()  const {
     return couleur_cfg;
 }
 
-
 void ComportementPrevoyant::reagit(
     Bestiole& bestiole,
     const std::vector<EspeceBestiole*>& listeBestioles
@@ -55,12 +55,13 @@ void ComportementPrevoyant::reagit(
     if (visibles.empty())
         return;
 
-    double bx = bestiole.getX();
-    double by = bestiole.getY();
+    // Récupération des données avec les accesseurs standardisés (Main)
+    double bx = static_cast<double>(bestiole.getX());
+    double by = static_cast<double>(bestiole.getY());
     double btheta = bestiole.getOrientation();
     double bv = bestiole.getVitesse();
 
-    // Position future correcte
+    // Position future estimée
     double nbx = bx + bv * std::cos(btheta);
     double nby = by + bv * std::sin(btheta);
 
@@ -72,10 +73,10 @@ void ComportementPrevoyant::reagit(
         if (!other || other == &bestiole)
             continue;
 
-        double ox = other->getX();
-        double oy = other->getY();
+        double ox = static_cast<double>(other->getX());
+        double oy = static_cast<double>(other->getY());
 
-        // Collision immédiate
+        // Cas 1 : Collision immédiate
         if (bestiole.isInCollisionWith(*other))
         {
             double dx = bx - ox;
@@ -89,13 +90,14 @@ void ComportementPrevoyant::reagit(
             continue;
         }
 
-        // Position future de l'autre
+        // Cas 2 : Anticipation (Position future de l'autre)
         double otheta = other->getOrientation();
         double ov = other->getVitesse();
 
         double nox = ox + ov * std::cos(otheta);
         double noy = oy + ov * std::sin(otheta);
 
+        // Utilisation de la fonction utilitaire (définie dans utils.h)
         if (isInHitBox(nox, noy, other->getAffSize(),
                        nbx, nby, bestiole.getAffSize()))
         {
@@ -113,14 +115,8 @@ void ComportementPrevoyant::reagit(
     if (avoidX == 0.0 && avoidY == 0.0)
         return;
 
-    // Nouvelle orientation = fuite
+    // Calcul de la nouvelle orientation de fuite
     double newAngle = std::atan2(avoidY, avoidX);
 
     bestiole.setOrientation(newAngle);
 }
-
-
-
-
-
-

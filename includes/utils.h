@@ -9,14 +9,12 @@
 #include <fstream>
 #include <string>
 #include <unordered_map>
-#include <iostream>
 #include <sstream>
 #include <random>
 
 using namespace std;
 
-#include <random>
-
+// Déclaration des fonctions utilitaires
 double randomBetween(double a, double b);
 
 std::unordered_map<std::string, std::string> loadJSONConfig(const std::string& filename);
@@ -32,18 +30,18 @@ double calcDistance(T x1, T y1, T x2, T y2)
 template <typename B, typename C>
 double calcDistance(const B& b, const C& c)
 {
+    // Utilisation des getters avec Majuscules (Standard Main)
     return calcDistance(b.getX(), b.getY(), c.getX(), c.getY());
 }
-
 
 template<typename T, typename U>
 double calcOrientation(T x1 , T y1, U x2, U y2) {
     double dx = static_cast<double>(x2) - static_cast<double>(x1);  // cible - bestiole
     double dy = static_cast<double>(y2) - static_cast<double>(y1);
 
-    return std::atan2(-dy, dx); // lorsque l'axe des y est vers le bas
+    // atan2 gère tous les quadrants et la division par zéro
+    return std::atan2(-dy, dx); 
 }
-
 
 template <typename B, typename C>
 double calcOrientation(const B& b, const C& c)
@@ -55,7 +53,7 @@ template <typename T>
 double calcMoyenne(std::vector<T> const& values)
 {
     if (values.empty()) {
-        return 0.0; // or throw an exception if preferred
+        return 0.0; 
     }
 
     double sum = 0.0;
@@ -63,9 +61,9 @@ double calcMoyenne(std::vector<T> const& values)
         sum += static_cast<double>(value);
     }
     return sum / static_cast<double>(values.size());
-};
+}
 
-
+// Nouvelle fonction de collision (Main)
 template<typename X1, typename Y1, typename S1,
          typename X2, typename Y2, typename S2>
 bool isInHitBox(X1 x1, Y1 y1, S1 size1,
@@ -76,7 +74,7 @@ bool isInHitBox(X1 x1, Y1 y1, S1 size1,
     double dist2 = dx*dx + dy*dy;
 
     // Rayon = moitié de la taille affichée
-    // On suppose que toutes les bestioles ont une une hitbox circulaire
+    // On suppose que toutes les bestioles ont une hitbox circulaire
     double r1 = static_cast<double>(size1) * 0.5;
     double r2 = static_cast<double>(size2) * 0.5;
 
@@ -84,8 +82,6 @@ bool isInHitBox(X1 x1, Y1 y1, S1 size1,
 
     return dist2 < (minDist * minDist);
 }
-
-
 
 template<typename B1, typename B2>
 bool isInHitBox(const B1& b1, const B2& b2)
@@ -95,10 +91,5 @@ bool isInHitBox(const B1& b1, const B2& b2)
         b2.getX(), b2.getY(), b2.getAffSize()
     );
 }
-
-
-
-
-
 
 #endif

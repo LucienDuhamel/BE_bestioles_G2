@@ -1,10 +1,11 @@
+#include "BestioleFactory.h"
 #include "Bestiole.h"
 #include "Comportement.h"
 #include "utils.h"
 #include <vector>
-#include "BestioleFactory.h"
 #include <cassert>
 
+// Includes spécifiques aux accessoires (Version Main)
 #include "Yeux.h"
 #include "Oreilles.h"
 #include "Carapace.h"
@@ -13,7 +14,7 @@
 #include "config.h"
 #include <cstdlib>
 
-// Static member initialization
+// Initialisation des membres statiques (Version Main)
 double BestioleFactory::PROBA_YEUX = 0.5;
 double BestioleFactory::PROBA_OREILLES = 0.5;
 double BestioleFactory::PROBA_CARAPACE = 0.25;
@@ -34,6 +35,7 @@ void BestioleFactory::initFromConfig() const {
 
 BestioleFactory::~BestioleFactory()
 {
+    // Nettoyage de la liste (nom variable version Main)
     listeComportements.clear();
     proportionsAccumilatives.clear();
 }
@@ -41,11 +43,12 @@ BestioleFactory::~BestioleFactory()
 BestioleFactory::BestioleFactory(std::vector<Comportement*> Comportements, std::vector<double> Proportions)
 {
     assert(!Comportements.empty());
+    // Assertion souple du main (accepte potentiellement une proportion finale implicite)
     assert(Comportements.size() == Proportions.size() || Comportements.size()+1 == Proportions.size());
     
     double accum=0.0;
     for (double x : Proportions ) accum+=x;
-    assert( accum==1.0);
+    assert( accum >= 0.99 && accum <= 1.01 ); // Petite tolérance aux flottants
 
     listeComportements.clear();
     for (auto& c : Comportements)
@@ -59,7 +62,7 @@ BestioleFactory::BestioleFactory(std::vector<Comportement*> Comportements, std::
 
 Bestiole* BestioleFactory::creerEspeceBestiole() const
 {
-    // Ensure config is loaded on first call
+    // Chargement config au premier appel
     initFromConfig();
     
     Bestiole* bestiole = new Bestiole();
@@ -67,9 +70,10 @@ Bestiole* BestioleFactory::creerEspeceBestiole() const
     int i=0;
     while( i<(int)proportionsAccumilatives.size()-1 && typeProb>=proportionsAccumilatives[i] ) i++ ;
     
+    // CRUCIAL : Utilisation de clone() pour que chaque bestiole ait son propre état mental
     bestiole->setComportement(listeComportements[i]->clone());
         
-    // Capteurs - probabilities are configurable via static members
+    // Ajout aléatoire des capteurs (Logique Main)
     if (randomBetween(0.0, 1.0) < PROBA_YEUX) {
         bestiole->addCapteur(new Yeux());
     }
@@ -78,7 +82,7 @@ Bestiole* BestioleFactory::creerEspeceBestiole() const
         bestiole->addCapteur(new Oreilles());
     }
 
-    // Accessoires - probabilities are configurable via static members
+    // Ajout aléatoire des accessoires (Logique Main)
     if (randomBetween(0.0, 1.0) < PROBA_CARAPACE) {
         bestiole->addAccessoire(new Carapace());
     }
@@ -94,5 +98,4 @@ Bestiole* BestioleFactory::creerEspeceBestiole() const
     bestiole->setVitesseIni(bestiole->getVitesse());
 
     return bestiole;
-
 }

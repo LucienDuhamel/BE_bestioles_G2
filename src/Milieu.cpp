@@ -5,6 +5,8 @@
 #include "ComportementPersoMultiples.h"
 #include "ComportementPrevoyant.h"
 #include "BestioleFactory.h"
+#include "IAccessoire.h"
+#include "Bestiole.h"
 #include "utils.h"
 #include <cstdlib>
 #include <ctime>
@@ -54,7 +56,7 @@ Milieu::~Milieu( void )
     }
     listeEspeceBestioles.clear();
 
-    // Supprime tous les comportements
+    // Supprime tous les comportements (Version Main : indispensable pour éviter les fuites)
     for (auto* c : listeComportements) {
         delete c;
     }
@@ -122,7 +124,7 @@ void Milieu::step( void )
 
 }
 
-void Milieu::removeMember(  EspeceBestiole*  b )
+void Milieu::removeMember(  EspeceBestiole* b )
 {
    for ( std::vector<EspeceBestiole*>::iterator it = listeEspeceBestioles.begin() ; it != listeEspeceBestioles.end() ; ++it )
    {
@@ -136,16 +138,34 @@ void Milieu::removeMember(  EspeceBestiole*  b )
    }
    std::cout<<" SUPPRESSION IMPOSSIBLE : EspeceBestiole n'est pas dans la list "<<std::endl;
 }
+
+// Dans code_v1_2/src/Milieu.cpp
+
 void Milieu::removeDeds()
 {
    for ( std::vector<EspeceBestiole*>::iterator it = listeEspeceBestioles.begin() ; it != listeEspeceBestioles.end() ; ++it )
    {
       if((*it)->idDed())
       {
+         // --- DÉBUT MODIFICATION ---
+         Bestiole* b = dynamic_cast<Bestiole*>(*it);
+         if (b) {
+             StatMortalite stat;
+             // On suppose que vous avez ajouté un getter public getAge() dans Bestiole
+             stat.ageAuDeces = b->getAge(); 
+             
+             // Récupération des accessoires
+             for (auto acc : b->getListeAccessoire()) {
+                 stat.accessoires.push_back(acc->getLabel());
+             }
+             
+             registreDeces.push_back(stat);
+         }
+         // --- FIN MODIFICATION ---
+
          delete *it;
          listeEspeceBestioles.erase(it--);
       }
-
    }
 }
 

@@ -1,8 +1,11 @@
 #include "EspeceBestiole.h"
 #include "Milieu.h"
 #include "utils.h"
+#include "config.h" // Ajout explicite pour être sûr
+#include <cmath>
+#include <cstring>  // Pour memcpy
 
-
+// Initialisation statique (Version Main)
 int        EspeceBestiole::next = 0;
 double     EspeceBestiole::CLONAGE_PROP = 0.0;
 bool       EspeceBestiole::configInitialized = false;
@@ -16,17 +19,16 @@ EspeceBestiole::EspeceBestiole()
     x = 0;
     y = 0;
 
-      // Initialisation unique des paramètres statiques
-      if (!configInitialized) {
-         this->initFromConfig();
-         configInitialized = true;
-      }
+    // Initialisation unique des paramètres statiques via Config
+    if (!configInitialized) {
+       this->initFromConfig();
+       configInitialized = true;
+    }
 
-   couleur = new T[ 3 ];
-   couleur[ 0 ] = randomBetween(0.0,230. );
-   couleur[ 1 ] = randomBetween(0.0,230. );
-   couleur[ 2 ] = randomBetween(0.0,230. );
-
+    couleur = new T[ 3 ];
+    couleur[ 0 ] = static_cast<int>(randomBetween(0.0, 230.));
+    couleur[ 1 ] = static_cast<int>(randomBetween(0.0, 230.));
+    couleur[ 2 ] = static_cast<int>(randomBetween(0.0, 230.));
 }
 
 EspeceBestiole::EspeceBestiole(const EspeceBestiole& other)
@@ -45,17 +47,15 @@ EspeceBestiole::EspeceBestiole(const EspeceBestiole& other)
 
 EspeceBestiole::~EspeceBestiole( void )
 {
-
    delete[] couleur;
-
    cout << "dest EspeceBestiole" << endl;
-
 }
 
-
 void EspeceBestiole::initFromConfig() {
-   // Initialisation des parametres statiques depuis le fichier de config (valeurs par defaut si absentes)
-   next = Config::getInstance().getInt("NEXT", 0.0);
+   // Initialisation des parametres statiques depuis le fichier de config
+   // On utilise une valeur par défaut si la config échoue
+   // (Note: next n'est généralement pas dans la config, mais c'est la logique du main)
+   next = Config::getInstance().getInt("NEXT", 0); 
    CLONAGE_PROP = Config::getInstance().getDouble("CLONAGE_PROP", 0.001);
 }
 
@@ -72,9 +72,9 @@ void EspeceBestiole::action( Milieu & monMilieu )
    bouge( monMilieu.getWidth(), monMilieu.getHeight());
 }
 
+// La méthode bouge est désormais centralisée ici (Version Main)
 void EspeceBestiole::bouge( int xLim, int yLim )
 {
-
    double         nx, ny;
    double         dx = cos( orientation )*vitesse;
    double         dy = -sin( orientation )*vitesse;
@@ -103,30 +103,21 @@ void EspeceBestiole::bouge( int xLim, int yLim )
       y = static_cast<int>( ny );
       cumulY += ny - y;
    }
-
 }
 
 bool EspeceBestiole::isInCollisionWith( const EspeceBestiole & b ) const
 {
+    // Délègue à la fonction utilitaire (Version Main)
     return isInHitBox(*this, b);
 }
 
-
 void EspeceBestiole::initCoords( int xLim, int yLim )
 {
-
    x = rand() % xLim;
    y = rand() % yLim;
-
 }
-
-
 
 bool operator==( const EspeceBestiole & b1, const EspeceBestiole & b2 )
 {
-
    return ( b1.identite == b2.identite );
-
 }
-
-

@@ -1,10 +1,9 @@
-#ifndef _BestioleFactory_
-#define _BestioleFactory_
+#ifndef _BestioleFactory_H_
+#define _BestioleFactory_H_
 
-#include "config.h"
-#include "EspeceBestiole.h"
-#include "Comportement.h"
 #include "EspeceBestioleFactory.h"
+#include "Bestiole.h" // <--- AJOUT OBLIGATOIRE pour le type covariant
+#include "Comportement.h"
 #include <vector>
 
 class BestioleFactory : public EspeceBestioleFactory
@@ -12,8 +11,8 @@ class BestioleFactory : public EspeceBestioleFactory
 private:
     std::vector<Comportement*> listeComportements;
     std::vector<double> proportionsAccumilatives;
-    
-    // Probabilités statiques récupérées depuis le fichier de configuration
+
+    // Paramètres de configuration (correspondance avec le .cpp)
     static double PROBA_YEUX;
     static double PROBA_OREILLES;
     static double PROBA_CARAPACE;
@@ -22,12 +21,13 @@ private:
     static bool configInitialized;
     
     void initFromConfig() const;
-public :
-    ~BestioleFactory();
+
+public:
     BestioleFactory(std::vector<Comportement*> Comportements, std::vector<double> Proportions);
+    virtual ~BestioleFactory();
+    
+    // Le compilateur acceptera Bestiole* car il connait l'héritage grâce à l'include
     Bestiole* creerEspeceBestiole() const override;
-
 };
-
 
 #endif

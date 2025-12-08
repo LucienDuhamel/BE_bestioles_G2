@@ -23,6 +23,7 @@ public:
     void setVitesseNageoires(Bestiole* b) const;
     Nageoires* clone() const override;
     void initFromConfig();
+    std::string getLabel() const override { return "Nageoires"; }
 };
 
 #endif
