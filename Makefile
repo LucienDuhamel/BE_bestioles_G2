@@ -5,6 +5,10 @@ CXX = g++
 SRC_DIR = src
 INC_DIR = includes
 
+# --- AJOUT : Détection de Gnuplot ---
+# La commande 'shell which' renvoie le chemin si trouvé, sinon vide.
+HAS_GNUPLOT := $(shell which gnuplot 2> /dev/null)
+
 # Options de compilation
 CXXFLAGS = -Wall -Wextra -std=c++17 -I $(INC_DIR) -fsanitize=address,undefined -g
 
@@ -16,7 +20,20 @@ OBJ = $(SRC:.cpp=.o)
 TARGET = main
 
 # Règle principale
-all: $(TARGET)
+# --- MODIFICATION : On ajoute 'check_deps' avant de construire $(TARGET) ---
+all: check_deps $(TARGET)
+
+# --- AJOUT : Règle de vérification ---
+check_deps:
+ifndef HAS_GNUPLOT
+	@echo "========================================================================"
+	@echo "⚠️  ATTENTION : Gnuplot n'est pas détecté."
+	@echo "   La simulation se lancera sans graphiques."
+	@echo "   Pour les activer : sudo apt install gnuplot-x11"
+	@echo "========================================================================"
+else
+	@echo "✅ Gnuplot détecté. Graphiques activés."
+endif
 
 # Edition de liens
 $(TARGET): $(OBJ)
@@ -29,4 +46,3 @@ $(SRC_DIR)/%.o: $(SRC_DIR)/%.cpp
 # Nettoyage
 clean:
 	rm -f $(SRC_DIR)/*.o $(TARGET)
-
