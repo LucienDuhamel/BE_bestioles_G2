@@ -6,6 +6,7 @@ SRC_DIR = src
 INC_DIR = includes
 
 # Options de compilation
+# Note : CImg a besoin de -lX11 et -lpthread sur Linux pour l'affichage
 CXXFLAGS = -Wall -Wextra -std=c++17 -I $(INC_DIR) -fsanitize=address,undefined -g
 
 # Fichiers sources et objets
@@ -29,4 +30,3 @@ $(SRC_DIR)/%.o: $(SRC_DIR)/%.cpp
 # Nettoyage
 clean:
 	rm -f $(SRC_DIR)/*.o $(TARGET)
-
