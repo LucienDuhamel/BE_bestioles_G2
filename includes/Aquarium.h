@@ -4,15 +4,14 @@
 
 #include <iostream>
 #include <CImg.h>
-#include <cstdio>
 
 using namespace std;
 using namespace cimg_library;
 
-
-//class Milieu;
+// Intégration de la configuration (Main) et de votre Simulation (Votre branche)
+#include "config.h"
 #include "Milieu.h"
-#include "Simulation.h"
+#include "Simulation.h" 
 
 
 class Aquarium : public CImgDisplay
@@ -20,14 +19,22 @@ class Aquarium : public CImgDisplay
 
 private :
    Milieu       * flotte;
-
-   Simulation  * simulation;
+   
+   // Votre module de simulation pour la récupération de données
+   Simulation   * simulation; 
 
    int            delay;
+
+   // Paramètres de configuration du Main
+   static int NB_BESTIOLES_INIT;
+   static bool configInitialized;
 
 public :
    Aquarium( int width, int height, int _delay );
    ~Aquarium( void );
+
+   // Méthode d'initialisation du Main
+   void initFromConfig();
 
    Milieu & getMilieu( void ) { return *flotte; }
 

@@ -1,41 +1,59 @@
 #include "Bestiole.h"
 #include "ComportementGregaire.h"
+#include "utils.h"
 
 #include <iostream>
 #include <vector>
 
 ComportementGregaire* ComportementGregaire::singletonGregaire = nullptr;
+T ComportementGregaire::couleur_cfg[3] = {0, 0, 0};
+bool ComportementGregaire::configInitialized = false;
 
-ComportementGregaire*  ComportementGregaire::getInstance()
+ComportementGregaire* ComportementGregaire::getInstance()  
 {
     if (singletonGregaire == nullptr){
         singletonGregaire = new ComportementGregaire();
-        singletonGregaire->couleur = new T[ 3 ];
         
-        // Couleur orange
-        singletonGregaire->couleur[ 0 ] = 255;
-        singletonGregaire->couleur[ 1 ] = 128;
-        singletonGregaire->couleur[ 2 ] = 0;
+        if(configInitialized == false) {
+            singletonGregaire->initFromConfig();
+            configInitialized = true;
+        }
 
     }
 
     return  singletonGregaire;
 }
-T * ComportementGregaire::getCouleur() const {
-    return couleur;
-}
-void ComportementGregaire::reagit( Bestiole& bestiole, const std::vector<EspeceBestiole*>& listeBestioles) const
-{
-    const auto& liste = bestiole.detecteBestioles(listeBestioles);
 
-    if (liste.empty()) return;   // éviter division par zéro
+Comportement* ComportementGregaire::clone() const {
+    // Just return the singleton
+    return getInstance();
+}
+
+// Initialisation des parametres statiques depuis le fichier de config (valeurs par defaut si absentes)
+void ComportementGregaire::initFromConfig() {
+    // par defaut : orange
+    couleur_cfg[0] = Config::getInstance().getInt("GREG_COULEUR_R", 255);
+    couleur_cfg[1] = Config::getInstance().getDouble("GREG_COULEUR_G", 128);
+    couleur_cfg[2] = Config::getInstance().getDouble("GREG_COULEUR_B", 0);
+}
+
+T * ComportementGregaire::getCouleur() const {
+    return couleur_cfg;
+}
+
+void ComportementGregaire::reagit( Bestiole& bestiole, const std::vector<EspeceBestiole*>& listeBestioles)
+{
+    // Utilisation des méthodes avec majuscules (validées dans EspeceBestiole.h)
+    const auto& bestiolesVisibles = bestiole.detecteBestioles(listeBestioles);
+
+    if (bestiolesVisibles.empty()) return;
 
     double mOrientation = 0.0;
 
-    for (EspeceBestiole* b : liste) {
-        mOrientation += b->getorientation();
+    for (EspeceBestiole* b : bestiolesVisibles) {
+        mOrientation += b->getOrientation();
     }
 
-    mOrientation /= liste.size();
-    bestiole.setorientation(mOrientation);
+    mOrientation /= bestiolesVisibles.size();
+    bestiole.setOrientation(mOrientation);
 }

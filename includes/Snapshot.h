@@ -1,21 +1,18 @@
 #ifndef SNAPSHOT_H
 #define SNAPSHOT_H
 
-#include "Bestiole.h"
+#include <string>
+#include "EspeceBestiole.h" // Indispensable pour connaître le type EspeceBestiole
 
-class Snapshot {
-public:
-    int identite;        // identifiant unique de la bestiole
-    double x, y;         // position
-    double orientation;  // direction
-    double vitesse;      // vitesse
-    double taille;       // taille pour affichage
+struct Snapshot {
+    int identite;
+    int x;
+    int y;
+    double orientation;
+    double vitesse;
     std::string comportement;
 
-    // Constructeur : crée un snapshot à partir d'une Bestiole
     Snapshot(EspeceBestiole* b);
-
-    ~Snapshot() = default;
 };
 
-#endif // SNAPSHOT_H
+#endif

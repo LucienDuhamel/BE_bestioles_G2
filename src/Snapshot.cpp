@@ -1,11 +1,20 @@
 #include "Snapshot.h"
+#include "Comportement.h" // Nécessaire pour appeler getName()
 
 // Constructeur : copie les valeurs de la Bestiole
 Snapshot::Snapshot(EspeceBestiole* b) {
-    identite    = b->getidentite();
-    x           = b->getx();
-    y           = b->gety();
-    orientation = b->getorientation();
+    // Utilisation des getters standardisés (Majuscules)
+    identite    = b->getId();
+    x           = b->getX();
+    y           = b->getY();
+    orientation = b->getOrientation();
     vitesse     = b->getVitesse();
-    comportement = b->getComportement()->getName();
+    
+    // Vérification de sécurité : si c'est une EspeceBestiole de base (pas Bestiole),
+    // getComportement() peut renvoyer nullptr.
+    if (b->getComportement() != nullptr) {
+        comportement = b->getComportement()->getName();
+    } else {
+        comportement = "Inconnu";
+    }
 }

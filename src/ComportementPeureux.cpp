@@ -1,67 +1,78 @@
 #include "Bestiole.h"
 #include "ComportementPeureux.h"
+#include "utils.h"
 
 #include <iostream>
 #include <vector>
 
+// Initialisation des statiques (Version Main)
+T ComportementPeureux::couleur_cfg[3] = {0, 0, 0};
+int ComportementPeureux::BESTIOLE_SCARED_NUMBER = -1;
+int ComportementPeureux::REMAINING_SCARED_STEPS = -1;
+double ComportementPeureux::SPEED_COEF = -1.0;
+bool ComportementPeureux::configInitialized = false;
 
-ComportementPeureux* ComportementPeureux::singletonPeureux = nullptr;
+// Constructeur (Pas de Singleton ici, chaque bestiole a son instance)
+ComportementPeureux::ComportementPeureux()
+{   
+    nbStep = 0;
+    isScared = false;
 
+    if(!configInitialized) {
+            initFromConfig();
+            configInitialized = true;
+        }
+}
 
+ComportementPeureux::~ComportementPeureux() {}
 
-ComportementPeureux*   ComportementPeureux::getInstance()
-{
-    if (singletonPeureux == nullptr){
-        singletonPeureux = new ComportementPeureux();
-        singletonPeureux->couleur = new T[ 3 ];
+// Clone obligatoire pour la Factory
+Comportement* ComportementPeureux::clone() const {
+    return new ComportementPeureux();
+}
 
-        // Couleur vert clair
-        singletonPeureux->couleur[ 0 ] = 34;
-        singletonPeureux->couleur[ 1 ] = 177;
-        singletonPeureux->couleur[ 2 ] = 76;
+void ComportementPeureux::initFromConfig() {
+    // par defaut : vert clair
+    couleur_cfg[0] = Config::getInstance().getInt("PEU_COULEUR_R", 34);
+    couleur_cfg[1] = Config::getInstance().getDouble("PEU_COULEUR_G", 177);
+    couleur_cfg[2] = Config::getInstance().getDouble("PEU_COULEUR_B", 76);
 
-    }
-
-    return  singletonPeureux;
+    BESTIOLE_SCARED_NUMBER = Config::getInstance().getInt("BESTIOLE_SCARED_NUMBER", 3);
+    REMAINING_SCARED_STEPS = Config::getInstance().getInt("REMAINING_SCARED_STEPS", 2);
+    SPEED_COEF = Config::getInstance().getDouble("SPEED_COEF", 5);
 }
 
 T * ComportementPeureux::getCouleur()  const  {
-    return couleur;
+    return couleur_cfg;
 }
 
-
-void ComportementPeureux::reagit(
-    Bestiole& bestiole,
-    const std::vector<EspeceBestiole*>& listeBestioles
-) const
+void ComportementPeureux::reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>& listeBestioles)
 {
-    // Liste des bestioles visibles
     const auto& bestiolesVisibles = bestiole.detecteBestioles(listeBestioles);
+    
+    // On récupère la vitesse de base stockée dans la bestiole (ajout du Main)
+    double vIni = bestiole.getVitesseIni();
 
     // Si assez d'individus pour être effrayé
-    if (bestiolesVisibles.size() > BESTIOLE_SCARED_NUMBER)
+    if (static_cast<int>(bestiolesVisibles.size()) >= BESTIOLE_SCARED_NUMBER)
     {
         // Calcul du barycentre des positions
-        int bx = 0.0, by = 0.0;
-        for (EspeceBestiole* b : bestiolesVisibles)
-        {
-            bx += b->getx();
-            by += b->gety();
+        double bx = 0.0, by = 0.0;
+        for (EspeceBestiole* b : bestiolesVisibles) {
+            bx += static_cast<double>(b->getX());
+            by += static_cast<double>(b->getY());
         }
-
-        bx /= bestiolesVisibles.size();
-        by /= bestiolesVisibles.size();
+        bx /= static_cast<double>(bestiolesVisibles.size());
+        by /= static_cast<double>(bestiolesVisibles.size());
 
         // Fuite : orientation opposée au barycentre
-        bestiole.setorientation(
-            calcOrientation(bestiole.getx(), bestiole.gety(), bx, by) + M_PI
-        );
+        // Utilisation de utils.h et des accesseurs avec Majuscules
+        bestiole.setOrientation(calcOrientation(bestiole.getX(), bestiole.getY(), bx, by) + M_PI);
 
         // Activation du mode "effrayé"
         if (!isScared)
         {
             isScared = true;
-            vIni = bestiole.getVitesse();   // Sauvegarde de la vitesse d'origine
             bestiole.setVitesse(vIni * SPEED_COEF);
         }
 
@@ -69,7 +80,7 @@ void ComportementPeureux::reagit(
     }
     else
     {
-        // Encore effrayé ?
+        // Encore effrayée ?
         if (nbStep > 0)
         {
             nbStep--;

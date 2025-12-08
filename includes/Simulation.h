@@ -14,12 +14,20 @@ struct Stat{
     int nbPrevoyants;
 };
 
+struct ArchiveDeces {
+    int temps;                       // Le "moment" de la mort (currentTime)
+    int ageAuDeces;
+    std::vector<std::string> accessoires;
+};
+
 class Simulation {
 private:
     Milieu& milieu;                           // référence au Milieu
     int currentTime;                          // numéro du pas de simulation
     std::vector<EtatPopulation> historique;  // tous les états capturés
     std::vector<Stat> statistics;          // statistiques de la simulation
+
+    std::vector<ArchiveDeces> historiqueDeces; // NOUVEAU : La mémoire des morts
 
 public: 
     // Constructeur : associe la simulation à un Milieu
@@ -42,6 +50,8 @@ public:
 
     // Accès aux statistiques
     const std::vector<Stat>& getStatistics() const { return statistics; }
+
+    void afficherBilanFinal() const;
 };
 
 #endif // SIMULATION_H
