@@ -38,9 +38,13 @@ void Config::load(const std::string& filename)
             continue;
 
         // Recherche de la clé et de la valeur
+        // Supporte soit 'key: value' soit 'key = value'
         size_t pos = line.find(':');
-        if (pos == std::string::npos)
-            continue;
+        if (pos == std::string::npos) {
+            pos = line.find('=');
+            if (pos == std::string::npos)
+                continue;
+        }
 
         std::string key = line.substr(0, pos);
         std::string value = line.substr(pos + 1);
@@ -51,6 +55,20 @@ void Config::load(const std::string& filename)
         if (!key.empty())
             data[key] = value;
     }
+}
+
+bool Config::getBool(const std::string& key, bool defaultValue) const
+{
+    auto it = data.find(key);
+    if (it == data.end())
+        return defaultValue;
+    std::cout << "Config::getBool: key=" << key << ", value=" << it->second << std::endl;
+    std::string val = it->second;
+    if (val == "true" || val == "1")
+        return true;
+    if (val == "false" || val == "0")
+        return false;
+    return defaultValue;
 }
 
 

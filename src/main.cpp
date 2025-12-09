@@ -22,11 +22,6 @@ int main()
 
    Aquarium       ecosysteme( WIDTH, HEIGHT, DELAY );
    
-   
-
-
-
-
 
    ecosysteme.run();
    return 0;

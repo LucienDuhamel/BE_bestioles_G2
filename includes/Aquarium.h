@@ -27,6 +27,9 @@ private :
 
    // Paramètres de configuration du Main
    static int NB_BESTIOLES_INIT;
+   static int GRAPHIC_WIDTH;
+   static int GRAPHIC_HEIGHT;
+   static bool ACTIVATED_ANALYSE;
    static bool configInitialized;
 
 public :

@@ -6,8 +6,14 @@
 int Aquarium::NB_BESTIOLES_INIT = 0;
 bool Aquarium::configInitialized = false;
 
+// Dimensions de l'écran (pour centrer la fenêtre)
+bool Aquarium::ACTIVATED_ANALYSE = false;
+int Aquarium::GRAPHIC_WIDTH = -1;
+int Aquarium::GRAPHIC_HEIGHT = -1;
+
 Aquarium::Aquarium( int width, int height, int _delay ) : CImgDisplay(), delay( _delay )
 {
+
    int         screenWidth = 1280; //screen_width();
    int         screenHeight = 1024; //screen_height();
 
@@ -16,22 +22,28 @@ Aquarium::Aquarium( int width, int height, int _delay ) : CImgDisplay(), delay( 
    flotte = new Milieu( width, height );
    assign( *flotte, "Simulation d'ecosysteme" );
 
-   // Initialisation de VOTRE simulation (Version HEAD)
-   simulation = new Simulation( *flotte );
-
-   move( static_cast<int>((screenWidth-width)/2), static_cast<int>((screenHeight-height)/2) );
-
    // Chargement de la config (Version Main)
    if (!configInitialized) {
        initFromConfig();
        configInitialized = true;
    }
+   
+   // Initialisation de VOTRE simulation (Version HEAD)
+   if (ACTIVATED_ANALYSE) {
+       simulation = new Simulation( *flotte );
+   }
+
+   move( static_cast<int>((screenWidth-width)/2), static_cast<int>((screenHeight-height)/2) );
+
    flotte->initConfig(NB_BESTIOLES_INIT);
 }
 
 // Initialisation des parametres statiques depuis le fichier de config
 void Aquarium::initFromConfig() {
     NB_BESTIOLES_INIT = Config::getInstance().getInt("NB_BESTIOLES_INIT", 20);
+    ACTIVATED_ANALYSE = Config::getInstance().getBool("ACTIVATED_ANALYSE", false);
+    GRAPHIC_WIDTH = Config::getInstance().getInt("GRAPHIC_WIDTH", 900);
+    GRAPHIC_HEIGHT = Config::getInstance().getInt("GRAPHIC_HEIGHT", 600);
 }
 
 Aquarium::~Aquarium( void )
@@ -45,8 +57,8 @@ void plotPopulation(const std::vector<Stat>& stats) {
     if (stats.empty()) return;
 
     // Dimensions du graphique
-    const int w = 900;  // Un peu plus large
-    const int h = 600;
+    const int GRAPHIC_WIDTH = 900;  // Un peu plus large
+    const int GRAPHIC_HEIGHT = 600;
     
     // Marges (Gauche plus large pour les nombres > 100)
     const int margin_left = 60; 
@@ -55,7 +67,7 @@ void plotPopulation(const std::vector<Stat>& stats) {
     const int margin_right = 30;
 
     // Création de l'image (Fond blanc)
-    cimg_library::CImg<unsigned char> graph(w, h, 1, 3, 255);
+    cimg_library::CImg<unsigned char> graph(GRAPHIC_WIDTH, GRAPHIC_HEIGHT, 1, 3, 255);
     
     // Couleurs
     const unsigned char bleu[] = {0, 0, 255};
@@ -81,10 +93,10 @@ void plotPopulation(const std::vector<Stat>& stats) {
 
     // 2. Fonctions de conversion (Valeur -> Pixel)
     auto getX = [&](int time) { 
-        return margin_left + (int)((long long)time * (w - margin_left - margin_right) / maxTime); 
+        return margin_left + (int)((long long)time * (GRAPHIC_WIDTH - margin_left - margin_right) / maxTime); 
     };
     auto getY = [&](int nb) { 
-        return h - margin_bottom - (int)((long long)nb * (h - margin_bottom - margin_top) / maxPop); 
+        return GRAPHIC_HEIGHT - margin_bottom - (int)((long long)nb * (GRAPHIC_HEIGHT - margin_bottom - margin_top) / maxPop); 
     };
 
     // 3. Dessin de la Grille et des Axes (Amélioré)
@@ -99,7 +111,7 @@ void plotPopulation(const std::vector<Stat>& stats) {
     for (int v = 0; v <= maxPop; v += stepY) {
         int y = getY(v);
         // Ligne de grille horizontale
-        graph.draw_line(margin_left, y, w - margin_right, y, gris_clair);
+        graph.draw_line(margin_left, y, GRAPHIC_WIDTH - margin_right, y, gris_clair);
         // Tiret sur l'axe
         graph.draw_line(margin_left - 5, y, margin_left, y, noir);
         // Texte de valeur
@@ -113,19 +125,19 @@ void plotPopulation(const std::vector<Stat>& stats) {
     for (int t = 0; t <= maxTime; t += stepX) {
         int x = getX(t);
         // Ligne de grille verticale
-        graph.draw_line(x, margin_top, x, h - margin_bottom, gris_clair);
+        graph.draw_line(x, margin_top, x, GRAPHIC_HEIGHT - margin_bottom, gris_clair);
         // Tiret sur l'axe
-        graph.draw_line(x, h - margin_bottom, x, h - margin_bottom + 5, noir);
+        graph.draw_line(x, GRAPHIC_HEIGHT - margin_bottom, x, GRAPHIC_HEIGHT - margin_bottom + 5, noir);
         // Texte de valeur
-        graph.draw_text(x - 10, h - margin_bottom + 10, std::to_string(t).c_str(), noir, 0, 1, 13);
+        graph.draw_text(x - 10, GRAPHIC_HEIGHT - margin_bottom + 10, std::to_string(t).c_str(), noir, 0, 1, 13);
     }
 
     // Dessiner les axes principaux par-dessus la grille
-    graph.draw_line(margin_left, h - margin_bottom, w - margin_right, h - margin_bottom, noir); // Axe X
-    graph.draw_line(margin_left, margin_top, margin_left, h - margin_bottom, noir);             // Axe Y
+    graph.draw_line(margin_left, GRAPHIC_HEIGHT - margin_bottom, GRAPHIC_WIDTH - margin_right, GRAPHIC_HEIGHT - margin_bottom, noir); // Axe X
+    graph.draw_line(margin_left, margin_top, margin_left, GRAPHIC_HEIGHT - margin_bottom, noir);             // Axe Y
 
     // Titres des axes
-    graph.draw_text(w / 2, h - 20, "Temps (steps)", noir, 0, 1, 16);
+    graph.draw_text(GRAPHIC_WIDTH / 2, GRAPHIC_HEIGHT - 20, "Temps (steps)", noir, 0, 1, 16);
     // Pour l'axe Y vertical, CImg ne gère pas toujours bien la rotation de texte simple, 
     // on le met donc au sommet de l'axe Y.
     graph.draw_text(margin_left + 10, margin_top - 10, "Population", noir, 0, 1, 16);
@@ -150,7 +162,7 @@ void plotPopulation(const std::vector<Stat>& stats) {
     }
 
     // 5. Légende (Box semi-transparente simulée par un rectangle blanc encadré)
-    int lx = w - 160; 
+    int lx = GRAPHIC_WIDTH - 160; 
     int ly = margin_top + 10;
     
     // Fond de légende
@@ -221,26 +233,29 @@ void Aquarium::run(void)
         // Boucle de simulation si pas en pause
         if(Nopose){
             flotte->step();
-            simulation->step(); // J'ai inséré VOTRE étape d'enregistrement ici
+            if (ACTIVATED_ANALYSE)
+                simulation->step(); // J'ai inséré VOTRE étape d'enregistrement ici
             display(*flotte);
         }
     }
 
     // Affichage des statistiques à la fin (Version HEAD)
-    std::cout << "\n=== Population finale par type ===\n";
-    const auto& stats = simulation->getStatistics();
+    if (ACTIVATED_ANALYSE){
+        std::cout << "\n=== Population finale par type ===\n";
+        const auto& stats = simulation->getStatistics();
 
-    if (!stats.empty()) 
-    {
-        const Stat& last = stats.back();
-        std::cout << "Temps " << last.time << " : \n";
-        std::cout << "  Gregaires : " << last.nbGreguaires << "\n";
-        std::cout << "  Peureuses : " << last.nbPeureuses << "\n";
-        std::cout << "  Kamikazes : " << last.nbKamikazes << "\n";
-        std::cout << "  PersoMultiples : " << last.nbPersoMultiples << "\n";
-        std::cout << "  Prevoyants : " << last.nbPrevoyants << "\n";
-        std::cout << "  Total     : " << (last.nbGreguaires + last.nbPeureuses + last.nbKamikazes + last.nbPersoMultiples + last.nbPrevoyants) << "\n";
+        if (!stats.empty()) 
+        {
+            const Stat& last = stats.back();
+            std::cout << "Temps " << last.time << " : \n";
+            std::cout << "  Gregaires : " << last.nbGreguaires << "\n";
+            std::cout << "  Peureuses : " << last.nbPeureuses << "\n";
+            std::cout << "  Kamikazes : " << last.nbKamikazes << "\n";
+            std::cout << "  PersoMultiples : " << last.nbPersoMultiples << "\n";
+            std::cout << "  Prevoyants : " << last.nbPrevoyants << "\n";
+            std::cout << "  Total     : " << (last.nbGreguaires + last.nbPeureuses + last.nbKamikazes + last.nbPersoMultiples + last.nbPrevoyants) << "\n";
+        }
+        simulation -> afficherBilanFinal();
+        plotPopulation(simulation->getStatistics());
     }
-    simulation -> afficherBilanFinal(); // <--- AJOUTER CECI
-    plotPopulation(simulation->getStatistics());
 }
