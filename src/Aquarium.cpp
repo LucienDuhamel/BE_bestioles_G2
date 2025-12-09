@@ -40,39 +40,140 @@ Aquarium::~Aquarium( void )
    delete simulation; // Ne pas oublier de supprimer votre simulation !
    cout << "dest Aquarium" << endl;
 }
-
-// Fonction utilitaire pour le graphique (Version HEAD)
+// Fonction utilitaire pour le graphique (Version Améliorée avec Grille et Graduations)
 void plotPopulation(const std::vector<Stat>& stats) {
     if (stats.empty()) return;
 
-    FILE* gp = popen("gnuplot -persistent", "w");
-    if (!gp) {
-        std::cerr << "Erreur : impossible d'ouvrir gnuplot\n";
-        return;
-    }
+    // Dimensions du graphique
+    const int w = 900;  // Un peu plus large
+    const int h = 600;
+    
+    // Marges (Gauche plus large pour les nombres > 100)
+    const int margin_left = 60; 
+    const int margin_bottom = 50;
+    const int margin_top = 30;
+    const int margin_right = 30;
 
-    fprintf(gp, "set title 'Evolution de la population par comportement'\n");
-    fprintf(gp, "set xlabel 'Temps'\n");
-    fprintf(gp, "set ylabel 'Nombre de bestioles'\n");
-    fprintf(gp, "set grid\n");
+    // Création de l'image (Fond blanc)
+    cimg_library::CImg<unsigned char> graph(w, h, 1, 3, 255);
+    
+    // Couleurs
+    const unsigned char bleu[] = {0, 0, 255};
+    const unsigned char rouge[] = {255, 0, 0};
+    const unsigned char vert[] = {0, 200, 0};
+    const unsigned char orange[] = {255, 165, 0};
+    const unsigned char violet[] = {128, 0, 128};
+    const unsigned char noir[] = {0, 0, 0};
+    const unsigned char gris_clair[] = {220, 220, 220}; // Pour la grille
 
-    // Préparer les données
-    fprintf(gp, "$data << EOD\n");
+    // 1. Calcul des Maximums
+    int maxTime = stats.back().time;
+    if (maxTime == 0) maxTime = 1;
+
+    int maxPop = 0;
     for (const auto& s : stats) {
-        fprintf(gp, "%d %d %d %d %d %d\n", s.time, s.nbGreguaires, s.nbPeureuses, s.nbKamikazes, s.nbPersoMultiples, s.nbPrevoyants);
+        int total = s.nbGreguaires + s.nbPeureuses + s.nbKamikazes + s.nbPersoMultiples + s.nbPrevoyants;
+        if (total > maxPop) maxPop = total;
     }
-    fprintf(gp, "EOD\n");
+    // Marge de sécurité de 10% en haut
+    maxPop = (int)(maxPop * 1.1); 
+    if (maxPop == 0) maxPop = 10;
 
-    // Tracer toutes les colonnes correctement
-    fprintf(gp,
-        "plot $data using 1:2 with lines title 'Gregaires' lw 2 lc rgb 'blue', "
-        "$data using 1:3 with lines title 'Peureuses' lw 2 lc rgb 'red', "
-        "$data using 1:4 with lines title 'Kamikazes' lw 2 lc rgb 'green', "
-        "$data using 1:5 with lines title 'PersoMultiples' lw 2 lc rgb 'orange', "
-        "$data using 1:6 with lines title 'Prevoyants' lw 2 lc rgb 'purple'\n"
-    );
+    // 2. Fonctions de conversion (Valeur -> Pixel)
+    auto getX = [&](int time) { 
+        return margin_left + (int)((long long)time * (w - margin_left - margin_right) / maxTime); 
+    };
+    auto getY = [&](int nb) { 
+        return h - margin_bottom - (int)((long long)nb * (h - margin_bottom - margin_top) / maxPop); 
+    };
 
-    fflush(gp);
+    // 3. Dessin de la Grille et des Axes (Amélioré)
+    
+    // --- Axe Y (Population) ---
+    // On veut environ 10 graduations
+    int stepY = maxPop / 10; 
+    if (stepY < 1) stepY = 1;
+    
+    // Arrondir le step à une valeur "propre" (5, 10, 50, etc.) si possible, 
+    // mais ici un step linéaire simple suffit pour commencer.
+    for (int v = 0; v <= maxPop; v += stepY) {
+        int y = getY(v);
+        // Ligne de grille horizontale
+        graph.draw_line(margin_left, y, w - margin_right, y, gris_clair);
+        // Tiret sur l'axe
+        graph.draw_line(margin_left - 5, y, margin_left, y, noir);
+        // Texte de valeur
+        graph.draw_text(5, y - 5, std::to_string(v).c_str(), noir, 0, 1, 13);
+    }
+
+    // --- Axe X (Temps) ---
+    int stepX = maxTime / 10;
+    if (stepX < 1) stepX = 1;
+
+    for (int t = 0; t <= maxTime; t += stepX) {
+        int x = getX(t);
+        // Ligne de grille verticale
+        graph.draw_line(x, margin_top, x, h - margin_bottom, gris_clair);
+        // Tiret sur l'axe
+        graph.draw_line(x, h - margin_bottom, x, h - margin_bottom + 5, noir);
+        // Texte de valeur
+        graph.draw_text(x - 10, h - margin_bottom + 10, std::to_string(t).c_str(), noir, 0, 1, 13);
+    }
+
+    // Dessiner les axes principaux par-dessus la grille
+    graph.draw_line(margin_left, h - margin_bottom, w - margin_right, h - margin_bottom, noir); // Axe X
+    graph.draw_line(margin_left, margin_top, margin_left, h - margin_bottom, noir);             // Axe Y
+
+    // Titres des axes
+    graph.draw_text(w / 2, h - 20, "Temps (steps)", noir, 0, 1, 16);
+    // Pour l'axe Y vertical, CImg ne gère pas toujours bien la rotation de texte simple, 
+    // on le met donc au sommet de l'axe Y.
+    graph.draw_text(margin_left + 10, margin_top - 10, "Population", noir, 0, 1, 16);
+
+
+    // 4. Tracer les courbes
+    for (size_t i = 1; i < stats.size(); ++i) {
+        int x0 = getX(stats[i-1].time);
+        int x1 = getX(stats[i].time);
+
+        // On dessine avec une épaisseur de trait simulée (en décalant de 1px) pour plus de visibilité
+        auto draw_thick = [&](int y0, int y1, const unsigned char* col) {
+            graph.draw_line(x0, y0, x1, y1, col);
+            graph.draw_line(x0, y0+1, x1, y1+1, col); // Effet gras
+        };
+
+        draw_thick(getY(stats[i-1].nbGreguaires), getY(stats[i].nbGreguaires), bleu);
+        draw_thick(getY(stats[i-1].nbPeureuses), getY(stats[i].nbPeureuses), rouge);
+        draw_thick(getY(stats[i-1].nbKamikazes), getY(stats[i].nbKamikazes), vert);
+        draw_thick(getY(stats[i-1].nbPersoMultiples), getY(stats[i].nbPersoMultiples), orange);
+        draw_thick(getY(stats[i-1].nbPrevoyants), getY(stats[i].nbPrevoyants), violet);
+    }
+
+    // 5. Légende (Box semi-transparente simulée par un rectangle blanc encadré)
+    int lx = w - 160; 
+    int ly = margin_top + 10;
+    
+    // Fond de légende
+    graph.draw_rectangle(lx - 10, ly - 10, lx + 130, ly + 95, gris_clair, 0.8f);
+    graph.draw_rectangle(lx - 10, ly - 10, lx + 130, ly + 95, noir, 1, ~0U); // Contour
+
+    auto draw_legend_item = [&](const char* label, const unsigned char* col, int& y) {
+        graph.draw_rectangle(lx, y, lx+15, y+10, col);
+        graph.draw_text(lx + 25, y-2, label, noir, 0, 1, 13);
+        y += 18;
+    };
+
+    draw_legend_item("Gregaires", bleu, ly);
+    draw_legend_item("Peureuses", rouge, ly);
+    draw_legend_item("Kamikazes", vert, ly);
+    draw_legend_item("PersoMultiples", orange, ly);
+    draw_legend_item("Prevoyants", violet, ly);
+
+    // Affichage
+    cimg_library::CImgDisplay disp(graph, "Statistiques de Population");
+    while (!disp.is_closed()) {
+        disp.wait();
+    }
 }
 
 void Aquarium::run(void)
