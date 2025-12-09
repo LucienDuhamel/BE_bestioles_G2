@@ -25,7 +25,6 @@ ComportementGregaire* ComportementGregaire::getInstance()
 }
 
 Comportement* ComportementGregaire::clone() const {
-    // Just return the singleton
     return getInstance();
 }
 
@@ -43,7 +42,6 @@ T * ComportementGregaire::getCouleur() const {
 
 void ComportementGregaire::reagit( Bestiole& bestiole, const std::vector<EspeceBestiole*>& listeBestioles)
 {
-    // Utilisation des méthodes avec majuscules (validées dans EspeceBestiole.h)
     const auto& bestiolesVisibles = bestiole.detecteBestioles(listeBestioles);
 
     if (bestiolesVisibles.empty()) return;
@@ -55,5 +53,6 @@ void ComportementGregaire::reagit( Bestiole& bestiole, const std::vector<EspeceB
     }
 
     mOrientation /= bestiolesVisibles.size();
+    // Une bestiole grégaire ajuste son orientation pour se synchroniser avec la moyenne des orientations des bestioles détectées
     bestiole.setOrientation(mOrientation);
 }

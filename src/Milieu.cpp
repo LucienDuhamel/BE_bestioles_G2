@@ -56,7 +56,7 @@ Milieu::~Milieu( void )
     }
     listeEspeceBestioles.clear();
 
-    // Supprime tous les comportements (Version Main : indispensable pour éviter les fuites)
+    // Supprime tous les comportements
     for (auto* c : listeComportements) {
         delete c;
     }
@@ -104,7 +104,6 @@ void Milieu::step( void )
 
    // clonage spontanement
 
-   
    for ( int i= listeEspeceBestioles.size()-1; i >=0 ; i-- )
       if(randomBetween(0.0,1.0) <= listeEspeceBestioles[i]->CLONAGE_PROP)
          //listeEspeceBestioles.push_back(listeEspeceBestioles[i]->clone());
@@ -120,7 +119,7 @@ void Milieu::step( void )
       (*it)->action( *this );
       (*it)->draw( *this );
 
-   } // for
+   } 
 
 }
 
@@ -138,8 +137,6 @@ void Milieu::removeMember(  EspeceBestiole* b )
    }
    std::cout<<" SUPPRESSION IMPOSSIBLE : EspeceBestiole n'est pas dans la list "<<std::endl;
 }
-
-// Dans code_v1_2/src/Milieu.cpp
 
 void Milieu::removeDeds()
 {

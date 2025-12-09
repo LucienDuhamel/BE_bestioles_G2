@@ -4,8 +4,6 @@
 #include "utils.h"
 #include <vector>
 #include <cassert>
-
-// Includes spécifiques aux accessoires (Version Main)
 #include "Yeux.h"
 #include "Oreilles.h"
 #include "Carapace.h"
@@ -14,7 +12,7 @@
 #include "config.h"
 #include <cstdlib>
 
-// Initialisation des membres statiques (Version Main)
+// Initialisation des membres statiques
 double BestioleFactory::PROBA_YEUX = 0.5;
 double BestioleFactory::PROBA_OREILLES = 0.5;
 double BestioleFactory::PROBA_CARAPACE = 0.25;
@@ -35,7 +33,7 @@ void BestioleFactory::initFromConfig() const {
 
 BestioleFactory::~BestioleFactory()
 {
-    // Nettoyage de la liste (nom variable version Main)
+
     listeComportements.clear();
     proportionsAccumilatives.clear();
 }
@@ -43,12 +41,11 @@ BestioleFactory::~BestioleFactory()
 BestioleFactory::BestioleFactory(std::vector<Comportement*> Comportements, std::vector<double> Proportions)
 {
     assert(!Comportements.empty());
-    // Assertion souple du main (accepte potentiellement une proportion finale implicite)
     assert(Comportements.size() == Proportions.size() || Comportements.size()+1 == Proportions.size());
     
     double accum=0.0;
     for (double x : Proportions ) accum+=x;
-    assert( accum >= 0.99 && accum <= 1.01 ); // Petite tolérance aux flottants
+    assert( accum >= 0.99 && accum <= 1.01 ); 
 
     listeComportements.clear();
     for (auto& c : Comportements)
@@ -69,11 +66,10 @@ Bestiole* BestioleFactory::creerEspeceBestiole() const
     double typeProb = randomBetween(0.0,1.0);
     int i=0;
     while( i<(int)proportionsAccumilatives.size()-1 && typeProb>=proportionsAccumilatives[i] ) i++ ;
-    
-    // CRUCIAL : Utilisation de clone() pour que chaque bestiole ait son propre état mental
+  
     bestiole->setComportement(listeComportements[i]->clone());
         
-    // Ajout aléatoire des capteurs (Logique Main)
+    // Ajout aléatoire des capteurs 
     if (randomBetween(0.0, 1.0) < PROBA_YEUX) {
         bestiole->addCapteur(new Yeux());
     }
@@ -82,7 +78,7 @@ Bestiole* BestioleFactory::creerEspeceBestiole() const
         bestiole->addCapteur(new Oreilles());
     }
 
-    // Ajout aléatoire des accessoires (Logique Main)
+    // Ajout aléatoire des accessoires
     if (randomBetween(0.0, 1.0) < PROBA_CARAPACE) {
         bestiole->addAccessoire(new Carapace());
     }

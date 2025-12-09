@@ -57,7 +57,7 @@ public :
    const std::vector<EspeceBestiole*> detecteBestioles(const std::vector<EspeceBestiole*>& listeBestioles) override;
    EspeceBestiole* clone() const override;
 
-   // --- Méthodes du Main (Gestion des accessoires) ---
+   // --- (Gestion des accessoires) ---
    double getCamouflage() const override { return camouflage; }
    double getResistance();
    const std::vector<ICapteur*>& getListeCapteur() const;
@@ -72,7 +72,7 @@ public :
    double setVitesseIni(double v) { vIni = v; return vIni; }
    double getVitesseIni() const { return vIni; }
 
-   // --- Vos Méthodes réintégrées (Pour l'analyse de données) ---
+   // --- Analyse de données ---
    Comportement* getComportement() const override { return comportement; }
    double getOrientation() const override { return orientation; }
    double getVitesse() const override { return vitesse; }

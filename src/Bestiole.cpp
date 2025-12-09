@@ -64,7 +64,7 @@ Bestiole::Bestiole( const Bestiole & b ) : EspeceBestiole(b)
    camouflage = b.camouflage;
    resistance = b.resistance;
 
-   // Clone les capteurs et accessoires avec une deep copy (Crucial !)
+   // Clone les capteurs et accessoires avec une deep copy 
    for ( const auto & capteur : b.listeCapteur ) {
       if ( capteur ) listeCapteur.push_back( capteur->clone() );
    }

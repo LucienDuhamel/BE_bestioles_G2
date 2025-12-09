@@ -6,7 +6,6 @@
 #include <vector>
 #include <errno.h>
 
-// Initialisation des statiques (Version Main)
 double ComportementPersoMultiples::MAX_PROBA_CHANGEMENT_COMPORTEMENT = 0.0;
 bool ComportementPersoMultiples::configInitialized = false;
 

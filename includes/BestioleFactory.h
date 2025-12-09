@@ -2,7 +2,7 @@
 #define _BestioleFactory_H_
 
 #include "EspeceBestioleFactory.h"
-#include "Bestiole.h" // <--- AJOUT OBLIGATOIRE pour le type covariant
+#include "Bestiole.h" 
 #include "Comportement.h"
 #include <vector>
 
@@ -12,7 +12,7 @@ private:
     std::vector<Comportement*> listeComportements;
     std::vector<double> proportionsAccumilatives;
 
-    // Paramètres de configuration (correspondance avec le .cpp)
+    // Paramètres de configuration
     static double PROBA_YEUX;
     static double PROBA_OREILLES;
     static double PROBA_CARAPACE;
@@ -26,7 +26,6 @@ public:
     BestioleFactory(std::vector<Comportement*> Comportements, std::vector<double> Proportions);
     virtual ~BestioleFactory();
     
-    // Le compilateur acceptera Bestiole* car il connait l'héritage grâce à l'include
     Bestiole* creerEspeceBestiole() const override;
 };
 

@@ -1,6 +1,6 @@
 #include "Simulation.h"
-#include "Bestiole.h"      // <--- OBLIGATOIRE pour dynamic_cast et l'accès aux méthodes de Bestiole
-#include "Comportement.h"  // <--- OBLIGATOIRE pour utiliser getName()
+#include "Bestiole.h"      
+#include "Comportement.h"  
 #include <stdexcept>
 #include <iostream>
 #include <map>
@@ -49,8 +49,7 @@ void Simulation::step() {
     // Sauvegarde des stats du tour
     statistics.push_back({ currentTime, nbG, nbP, nbK, nbPM, nbPr });
 
-    // 4. Capture de l'état visuel/global (si nécessaire pour replays)
-    // Attention : stocker une copie complète du Milieu à chaque pas est très lourd en mémoire !
+    // 4. Capture de l'état visuel/global
     EtatPopulation etat(currentTime, milieu);
     historique.push_back(etat);
 
@@ -90,7 +89,7 @@ void Simulation::afficherBilanFinal() const {
     }
 
     int finSimulation = currentTime;
-    int pasDeTemps = 100; // Taille de la fenêtre d'analyse
+    int pasDeTemps = 100; 
 
     // On parcourt le temps par bonds de 100
     for (int t = 0; t < finSimulation; t += pasDeTemps) {

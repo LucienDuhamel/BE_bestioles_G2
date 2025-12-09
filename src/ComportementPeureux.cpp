@@ -5,7 +5,6 @@
 #include <iostream>
 #include <vector>
 
-// Initialisation des statiques (Version Main)
 T ComportementPeureux::couleur_cfg[3] = {0, 0, 0};
 int ComportementPeureux::BESTIOLE_SCARED_NUMBER = -1;
 int ComportementPeureux::REMAINING_SCARED_STEPS = -1;

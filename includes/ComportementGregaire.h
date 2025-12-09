@@ -12,7 +12,7 @@ class ComportementGregaire : public Comportement
 {
 
 private :
-    // Gestion du Singleton et de la Config (Architecture Main)
+    // Gestion du Singleton et de la Config
     static ComportementGregaire* singletonGregaire;
     static T couleur_cfg[3];
     static bool configInitialized;
@@ -28,14 +28,13 @@ private:
 public:
     static ComportementGregaire* getInstance();
 
-    // Méthodes requises par l'architecture Main
     Comportement* clone() const override;
     T * getCouleur() const override;
-    
-    // Attention : pas de const ici pour matcher la classe mère du Main
+
+    // Méthode qui implémente le comportement grégaire
     void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) override;
     
-    // Votre ajout pour l'analyse
+    // Méthode pour obtenir le nom du comportement
     std::string getName() const override { return "Comportement Gregaire"; }
 };
 

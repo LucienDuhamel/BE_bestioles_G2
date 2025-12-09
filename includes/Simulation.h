@@ -22,12 +22,13 @@ struct ArchiveDeces {
 
 class Simulation {
 private:
+
     Milieu& milieu;                           // référence au Milieu
     int currentTime;                          // numéro du pas de simulation
     std::vector<EtatPopulation> historique;  // tous les états capturés
     std::vector<Stat> statistics;          // statistiques de la simulation
 
-    std::vector<ArchiveDeces> historiqueDeces; // NOUVEAU : La mémoire des morts
+    std::vector<ArchiveDeces> historiqueDeces; // la mémoire des morts
 
 public: 
     // Constructeur : associe la simulation à un Milieu

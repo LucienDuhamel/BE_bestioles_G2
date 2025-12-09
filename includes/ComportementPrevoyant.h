@@ -8,12 +8,12 @@
 
 #include <iostream>
 #include <vector>
-#include <string> // Nécessaire pour getName()
+#include <string> 
 
 class ComportementPrevoyant : public Comportement
 {
 private:
-    // Configuration et Singleton (Architecture Main)
+    // Configuration et Singleton 
     static ComportementPrevoyant* singletonPrevoyant;
     static T couleur_cfg[3];
     static double T_PREDICT;
@@ -29,15 +29,13 @@ private:
 
 public:
     static ComportementPrevoyant* getInstance();
-
-    // Méthodes de l'architecture Main
     Comportement* clone() const override;
     T * getCouleur() const override;
     
-    // Signature non-const pour compatibilité
+    // Méthode qui implémente le comportement prévoyant
     void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) override;
 
-    // Votre ajout pour l'analyse
+    // Méthode qui retourne le nom du comportement
     std::string getName() const override { return "Comportement Prevoyant"; }
 
 };

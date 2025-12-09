@@ -30,7 +30,6 @@ double calcDistance(T x1, T y1, T x2, T y2)
 template <typename B, typename C>
 double calcDistance(const B& b, const C& c)
 {
-    // Utilisation des getters avec Majuscules (Standard Main)
     return calcDistance(b.getX(), b.getY(), c.getX(), c.getY());
 }
 
@@ -63,7 +62,6 @@ double calcMoyenne(std::vector<T> const& values)
     return sum / static_cast<double>(values.size());
 }
 
-// Nouvelle fonction de collision (Main)
 template<typename X1, typename Y1, typename S1,
          typename X2, typename Y2, typename S2>
 bool isInHitBox(X1 x1, Y1 y1, S1 size1,

@@ -8,7 +8,6 @@
 using namespace std;
 using namespace cimg_library;
 
-// Intégration de la configuration (Main) et de votre Simulation (Votre branche)
 #include "config.h"
 #include "Milieu.h"
 #include "Simulation.h" 
@@ -19,8 +18,6 @@ class Aquarium : public CImgDisplay
 
 private :
    Milieu       * flotte;
-   
-   // Votre module de simulation pour la récupération de données
    Simulation   * simulation; 
 
    int            delay;
@@ -36,7 +33,6 @@ public :
    Aquarium( int width, int height, int _delay );
    ~Aquarium( void );
 
-   // Méthode d'initialisation du Main
    void initFromConfig();
 
    Milieu & getMilieu( void ) { return *flotte; }

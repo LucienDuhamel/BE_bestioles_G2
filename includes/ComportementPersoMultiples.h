@@ -7,20 +7,20 @@
 
 #include <iostream>
 #include <vector>
-#include <string> // Nécessaire pour getName()
+#include <string>
 
 class ComportementPersoMultiples : public Comportement
 {
 
 private: 
-    // Configuration (Main)
+    // Configuration
     static double     MAX_PROBA_CHANGEMENT_COMPORTEMENT;
     static bool       configInitialized;
 
 private:
     std::vector<Comportement*> comportementsDisponibles;
 
-    // État interne (Main) : Chaque bestiole a son propre index
+    // État interne : Chaque bestiole a son propre index et une probabilité de changement de comportement
     int ComportementApparentIndex;
     double probaChangementComportement;
 
@@ -31,12 +31,13 @@ public:
     ComportementPersoMultiples(std::vector<Comportement*> listeComportements);
     ~ComportementPersoMultiples();
 
-    // Méthodes de l'architecture Main
     T * getCouleur() const override;
+
+    // Méthode qui implémente le comportement avec changements aléatoires
     void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) override;
     Comportement* clone() const override;
 
-    // Votre ajout pour l'analyse
+    // Méthode pour obtenir le nom du comportement
     std::string getName() const override { return "Comportement Perso Multiples"; }
 };
 

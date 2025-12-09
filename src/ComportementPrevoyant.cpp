@@ -6,7 +6,7 @@
 #include <vector>
 #include <cmath> // Nécessaire pour cos, sin, sqrt, atan2
 
-// Initialisation des statiques (Version Main)
+
 T ComportementPrevoyant::couleur_cfg[3] = {0, 0, 0};
 double ComportementPrevoyant::T_PREDICT = 0.0;
 double ComportementPrevoyant::DIST_MIN_COLLISION = 0.0;
@@ -55,7 +55,6 @@ void ComportementPrevoyant::reagit(
     if (visibles.empty())
         return;
 
-    // Récupération des données avec les accesseurs standardisés (Main)
     double bx = static_cast<double>(bestiole.getX());
     double by = static_cast<double>(bestiole.getY());
     double btheta = bestiole.getOrientation();

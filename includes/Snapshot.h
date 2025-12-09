@@ -2,9 +2,12 @@
 #define SNAPSHOT_H
 
 #include <string>
-#include "EspeceBestiole.h" // Indispensable pour connaître le type EspeceBestiole
+#include "EspeceBestiole.h" 
 
 struct Snapshot {
+    /**
+     * Constructeur : capture l'état d'une bestiole donnée
+     */
     int identite;
     int x;
     int y;

@@ -1,11 +1,10 @@
 #include "EspeceBestiole.h"
 #include "Milieu.h"
 #include "utils.h"
-#include "config.h" // Ajout explicite pour être sûr
+#include "config.h"
 #include <cmath>
-#include <cstring>  // Pour memcpy
+#include <cstring>
 
-// Initialisation statique (Version Main)
 int        EspeceBestiole::next = 0;
 double     EspeceBestiole::CLONAGE_PROP = 0.0;
 bool       EspeceBestiole::configInitialized = false;
@@ -54,7 +53,6 @@ EspeceBestiole::~EspeceBestiole( void )
 void EspeceBestiole::initFromConfig() {
    // Initialisation des parametres statiques depuis le fichier de config
    // On utilise une valeur par défaut si la config échoue
-   // (Note: next n'est généralement pas dans la config, mais c'est la logique du main)
    next = Config::getInstance().getInt("NEXT", 0); 
    CLONAGE_PROP = Config::getInstance().getDouble("CLONAGE_PROP", 0.001);
 }
@@ -72,7 +70,6 @@ void EspeceBestiole::action( Milieu & monMilieu )
    bouge( monMilieu.getWidth(), monMilieu.getHeight());
 }
 
-// La méthode bouge est désormais centralisée ici (Version Main)
 void EspeceBestiole::bouge( int xLim, int yLim )
 {
    double         nx, ny;
@@ -107,7 +104,6 @@ void EspeceBestiole::bouge( int xLim, int yLim )
 
 bool EspeceBestiole::isInCollisionWith( const EspeceBestiole & b ) const
 {
-    // Délègue à la fonction utilitaire (Version Main)
     return isInHitBox(*this, b);
 }
 

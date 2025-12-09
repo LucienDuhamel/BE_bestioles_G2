@@ -23,7 +23,7 @@ class Milieu : public UImg
 private :
    static const T          white[];
    
-   // Paramètres de configuration (Architecture Main)
+   // Paramètres de configuration du milieu
    static double           PROP_GREGAIRE;
    static double           PROP_KAMIKAZE;
    static double           PROP_PEUREUX;
@@ -36,8 +36,7 @@ private :
    std::vector<EspeceBestiole*>   listeEspeceBestioles;
    std::vector<Comportement*>     listeComportements;
    EspeceBestioleFactory* bestioleFactory;
-
-   std::vector<StatMortalite> registreDeces; // NOUVEAU : Liste des morts du tour
+   std::vector<StatMortalite> registreDeces;
 
 
 public :

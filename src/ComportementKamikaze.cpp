@@ -25,7 +25,6 @@ ComportementKamikaze* ComportementKamikaze::getInstance()
 }
 
 Comportement* ComportementKamikaze::clone() const {
-    // Just return the singleton
     return getInstance();
 }
 
