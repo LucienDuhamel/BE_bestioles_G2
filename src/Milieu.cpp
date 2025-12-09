@@ -147,11 +147,9 @@ void Milieu::removeDeds()
    {
       if((*it)->idDed())
       {
-         // --- DÉBUT MODIFICATION ---
          Bestiole* b = dynamic_cast<Bestiole*>(*it);
          if (b) {
              StatMortalite stat;
-             // On suppose que vous avez ajouté un getter public getAge() dans Bestiole
              stat.ageAuDeces = b->getAge(); 
              
              // Récupération des accessoires
@@ -161,7 +159,6 @@ void Milieu::removeDeds()
              
              registreDeces.push_back(stat);
          }
-         // --- FIN MODIFICATION ---
 
          delete *it;
          listeEspeceBestioles.erase(it--);
