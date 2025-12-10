@@ -6,16 +6,11 @@
 #include "EspeceBestiole.h"
 #include "EspeceBestioleFactory.h"
 #include "Comportement.h"
+#include "Snapshot.h"
 #include <iostream>
 #include <vector>
 
 using namespace std;
-
-// Structure simple pour stocker les données d'un défunt
-struct StatMortalite {
-    int ageAuDeces;
-    std::vector<std::string> accessoires;
-};
 
 class Milieu : public UImg
 {
@@ -36,7 +31,7 @@ private :
    std::vector<EspeceBestiole*>   listeEspeceBestioles;
    std::vector<Comportement*>     listeComportements;
    EspeceBestioleFactory* bestioleFactory;
-   std::vector<StatMortalite> registreDeces;
+   std::vector<Snapshot> registreDeces;
 
 
 public :
@@ -61,8 +56,8 @@ public :
    void kill_all();
    void detecteCollisions();
 
-   std::vector<StatMortalite> getAndClearRegistreDeces() {
-        std::vector<StatMortalite> res = registreDeces;
+   std::vector<Snapshot> getAndClearRegistreDeces() {
+        std::vector<Snapshot> res = registreDeces;
         registreDeces.clear();
         return res;
     }

@@ -144,19 +144,8 @@ void Milieu::removeDeds()
    {
       if((*it)->idDed())
       {
-         Bestiole* b = dynamic_cast<Bestiole*>(*it);
-         if (b) {
-             StatMortalite stat;
-             stat.ageAuDeces = b->getAge(); 
-             
-             // Récupération des accessoires
-             for (auto acc : b->getListeAccessoire()) {
-                 stat.accessoires.push_back(acc->getLabel());
-             }
-             
-             registreDeces.push_back(stat);
-         }
-
+         Snapshot mort(*it);
+         registreDeces.push_back(mort);
          delete *it;
          listeEspeceBestioles.erase(it--);
       }

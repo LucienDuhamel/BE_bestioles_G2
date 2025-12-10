@@ -1,6 +1,7 @@
 #include "Simulation.h"
 #include "Bestiole.h"      
-#include "Comportement.h"  
+#include "Comportement.h" 
+#include "Etat_Population.h" 
 #include <stdexcept>
 #include <iostream>
 #include <map>
@@ -10,50 +11,36 @@ Simulation::Simulation(Milieu& m)
 
 void Simulation::step() {
     // 1. Faire évoluer le Milieu
-    milieu.step();
-
-    // Compteurs pour les comportements
-    int nbG = 0, nbP = 0, nbK = 0, nbPM = 0, nbPr = 0;
+    // milieu.step(); 
 
     // 2. Gestion des décès
-    // On récupère les morts du tour (Milieu doit nous les donner et vider sa liste interne)
-    std::vector<StatMortalite> mortsRecents = milieu.getAndClearRegistreDeces();
-
-    // Archivage pour le bilan final
-    for (const auto& mort : mortsRecents) {
-        ArchiveDeces archive;
-        archive.temps = currentTime;
-        archive.ageAuDeces = mort.ageAuDeces;
-        archive.accessoires = mort.accessoires; 
-        
-        historiqueDeces.push_back(archive);
+    std::vector<Snapshot> mortsRecents = milieu.getAndClearRegistreDeces();
+    
+    for (const auto& snap : mortsRecents) {
+        historiqueDeces.push_back({ currentTime, snap });
     }
 
-    // 3. Recensement de la population vivante
-    const auto& bestioles = milieu.getListeEspeceBestioles();
-    for (const auto* e : bestioles) {
-        const Bestiole* b = dynamic_cast<const Bestiole*>(e);
-        if (!b) continue;
+    // 3. D'abord, on capture l'état complet
+    EtatPopulation etat(currentTime, milieu);
+    historique.push_back(etat); 
 
-        if (b->getComportement()) {
-            std::string nom = b->getComportement()->getName();
+    int nbG = 0, nbP = 0, nbK = 0, nbPM = 0, nbPr = 0;
 
-            if (nom == "Comportement Gregaire") nbG++;
-            else if (nom == "Comportement Peureux") nbP++;
-            else if (nom == "Comportement Kamikaze") nbK++;
-            else if (nom == "Comportement Perso Multiples") nbPM++;
-            else if (nom == "Comportement Prevoyant") nbPr++;
-        }
+    // On itère sur les snapshots
+    for (const auto& snap : etat.snapshots) {
+        // L'info est déjà stockée sous forme de string dans le Snapshot
+        const std::string& nom = snap.comportement; 
+
+        if (nom == "Comportement Gregaire") nbG++;
+        else if (nom == "Comportement Peureux") nbP++;
+        else if (nom == "Comportement Kamikaze") nbK++;
+        else if (nom == "Comportement Perso Multiples") nbPM++;
+        else if (nom == "Comportement Prevoyant") nbPr++;
     }
 
     // Sauvegarde des stats du tour
     statistics.push_back({ currentTime, nbG, nbP, nbK, nbPM, nbPr });
 
-    // 4. Capture de l'état visuel/global
-    EtatPopulation etat(currentTime, milieu);
-    historique.push_back(etat);
-
-    // 5. Incrémenter le temps
     currentTime++;
 }
 
@@ -98,20 +85,26 @@ void Simulation::afficherBilanFinal() const {
         // Variables pour les stats de cette tranche
         long sommeAge = 0;
         int nbMorts = 0;
-        std::map<std::string, std::pair<long, int>> statsAcc; // Nom -> {SommeAge, Nombre}
+        std::map<std::string, std::pair<long, int>> statsAcc; 
 
         // On cherche dans l'historique les morts survenus dans [t, t_fin[
-        for (const auto& mort : historiqueDeces) {
-            if (mort.temps >= t && mort.temps < t_fin) {
-                sommeAge += mort.ageAuDeces;
+        for (const auto& archive : historiqueDeces) {
+            if (archive.temps >= t && archive.temps < t_fin) {
+                
+                // On récupère les infos depuis le Snapshot stocké dans 'data'
+                int age = archive.data.age; 
+                const std::vector<std::string>& listeAccessoires = archive.data.accessoires;
+
+                sommeAge += age;
                 nbMorts++;
 
-                if (mort.accessoires.empty()) {
-                    statsAcc["Aucun"].first += mort.ageAuDeces;
+                if (listeAccessoires.empty()) {
+                    statsAcc["Aucun"].first += age;
                     statsAcc["Aucun"].second++;
                 }
-                for (const auto& acc : mort.accessoires) {
-                    statsAcc[acc].first += mort.ageAuDeces;
+                
+                for (const auto& acc : listeAccessoires) {
+                    statsAcc[acc].first += age;
                     statsAcc[acc].second++;
                 }
             }

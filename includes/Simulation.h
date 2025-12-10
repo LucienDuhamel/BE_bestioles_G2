@@ -14,10 +14,9 @@ struct Stat{
     int nbPrevoyants;
 };
 
-struct ArchiveDeces {
-    int temps;                       // Le "moment" de la mort (currentTime)
-    int ageAuDeces;
-    std::vector<std::string> accessoires;
+struct DecesArchive {
+    int temps;
+    Snapshot data; 
 };
 
 class Simulation {
@@ -28,7 +27,7 @@ private:
     std::vector<EtatPopulation> historique;  // tous les états capturés
     std::vector<Stat> statistics;          // statistiques de la simulation
 
-    std::vector<ArchiveDeces> historiqueDeces; // la mémoire des morts
+    std::vector<DecesArchive> historiqueDeces; // la mémoire des morts
 
 public: 
     // Constructeur : associe la simulation à un Milieu
