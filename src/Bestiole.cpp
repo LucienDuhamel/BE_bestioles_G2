@@ -57,7 +57,7 @@ Bestiole::Bestiole( const Bestiole & b ) : EspeceBestiole(b)
    cumulX = cumulY = 0.;
    
    // Clone le comportement (Deep copy)
-   comportement = b.comportement->clone();
+   setComportement(b.comportement->clone());
    
    orientation = b.orientation;
    vitesse = b.vitesse;
@@ -67,10 +67,11 @@ Bestiole::Bestiole( const Bestiole & b ) : EspeceBestiole(b)
    resistance = b.resistance;
 
    // Clone les capteurs et accessoires avec une deep copy 
-   for ( const auto & capteur : b.listeCapteur ) {
-      if ( capteur ) listeCapteur.push_back( capteur->clone() );
-   }
-   for ( const auto & accessoire : b.listeAccessoire ) {
+   for ( const auto & capteur : b.listeCapteur ) 
+      addCapteur( capteur->clone() );
+
+   for ( const auto & accessoire : b.listeAccessoire )
+   {
       if ( accessoire ) listeAccessoire.push_back( accessoire->clone() );
    }
 }
