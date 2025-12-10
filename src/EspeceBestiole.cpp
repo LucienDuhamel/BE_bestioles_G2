@@ -47,7 +47,8 @@ EspeceBestiole::EspeceBestiole(const EspeceBestiole& other)
 EspeceBestiole::~EspeceBestiole( void )
 {
    delete[] couleur;
-   cout << "dest EspeceBestiole" << endl;
+   // Pour le débogage
+   // cout << "dest EspeceBestiole" << endl;
 }
 
 void EspeceBestiole::initFromConfig() {

@@ -15,15 +15,10 @@ class Comportement
 {
 
 public :
-   
    virtual ~Comportement( )= default;
-
-   virtual T * getCouleur() const = 0;
-
-   virtual void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) = 0;
-
    virtual Comportement* clone() const = 0;
-
+   virtual void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) = 0;
+   virtual T * getCouleur() const = 0;
    virtual std::string getName() const = 0;
 };
 

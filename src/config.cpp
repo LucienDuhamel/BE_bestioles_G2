@@ -62,7 +62,8 @@ bool Config::getBool(const std::string& key, bool defaultValue) const
     auto it = data.find(key);
     if (it == data.end())
         return defaultValue;
-    std::cout << "Config::getBool: key=" << key << ", value=" << it->second << std::endl;
+    // Pour le débogage
+    // std::cout << "Config::getBool: key=" << key << ", value=" << it->second << std::endl;
     std::string val = it->second;
     if (val == "true" || val == "1")
         return true;
@@ -77,7 +78,8 @@ int Config::getInt(const std::string& key, int defaultValue) const
     auto it = data.find(key);
     if (it == data.end())
         return defaultValue;
-    std::cout << "Config::getInt: key=" << key << ", value=" << it->second << std::endl;
+    // Pour le débogage
+    // std::cout << "Config::getInt: key=" << key << ", value=" << it->second << std::endl;
     return std::stoi(it->second);
 }
 
@@ -86,7 +88,8 @@ double Config::getDouble(const std::string& key, double defaultValue) const
     auto it = data.find(key);
     if (it == data.end())
         return defaultValue;
-    std::cout << "Config::getDouble: key=" << key << ", value=" << it->second << std::endl;
+    // Pour le débogage
+    // std::cout << "Config::getDouble: key=" << key << ", value=" << it->second << std::endl;
     
     std::string value = it->second;
     
@@ -120,6 +123,7 @@ std::string Config::getString(const std::string& key, const std::string& default
     auto it = data.find(key);
     if (it == data.end())
         return defaultValue;
-    std::cout << "Config::getString: key=" << key << ", value=" << it->second << std::endl;
+    // Pour le débogage
+    // std::cout << "Config::getString: key=" << key << ", value=" << it->second << std::endl;
     return it->second;
 }

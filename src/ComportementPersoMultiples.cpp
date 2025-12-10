@@ -16,9 +16,8 @@ ComportementPersoMultiples::ComportementPersoMultiples(std::vector<Comportement*
         comportementsDisponibles.push_back(std::move(c));
 
     // On choisit une première personnalité au hasard
-    ComportementApparentIndex = rand() % comportementsDisponibles.size() ;
+    comportementApparentIndex = rand() % comportementsDisponibles.size() ;
     
-    // Initialisation de la config si nécessaire
     if(!configInitialized)
     {
         initFromConfig();
@@ -40,11 +39,25 @@ Comportement* ComportementPersoMultiples::clone() const
     return new ComportementPersoMultiples(comportementsDisponibles);
 }
 
-T * ComportementPersoMultiples::getCouleur()  const {
-    // La couleur est celle de la personnalité active
-    return comportementsDisponibles[ComportementApparentIndex]->getCouleur();
-} 
 
+/**
+ * @brief Comportement personnalisé multi-types : change de comportement aléatoirement.
+ * 
+ * Cette bestiole adopte aléatoirement un des comportements qui lui sont associés
+ * créant ainsi un profil imprévisible.
+ * 
+ * @param bestiole La bestiole qui adopte ce comportement
+ * @param listeBestioles Liste de toutes les bestioles du milieu
+ * 
+ * @details
+ * - Chaque étape, avec probabilité MAX_PROBA_CHANGEMENT_COMPORTEMENT :
+ *   - Bascule vers un autre type de comportement (sélection aléatoire)
+ *   - Mets à jour la couleur affichée pour refléter le comportement courant
+ * - Délègue l'action au comportement actif qui exécute sa logique propre
+ * 
+ * @note Chaque bestiole PersoMultiples a ses propres clones de comportements,
+ *       évitant les collisions d'état entre individus.
+ */
 void ComportementPersoMultiples::reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles )
 {   
     if (comportementsDisponibles.empty()) {
@@ -55,25 +68,29 @@ void ComportementPersoMultiples::reagit(Bestiole& bestiole, const std::vector<Es
     // Test probabiliste pour changer de personnalité
     if (randomBetween(0.0, 1.0) < probaChangementComportement) {
         
-        // Changement d'index (on évite de retomber sur le même avec le modulo size-1)
         int saut = rand() % (comportementsDisponibles.size()-1);
-        if (saut == 0) saut = 1; // Sécurité pour s'assurer qu'on change vraiment
+        if (saut == 0) saut = 1;
         
-        ComportementApparentIndex = (ComportementApparentIndex + saut) % comportementsDisponibles.size();
+        comportementApparentIndex = (comportementApparentIndex + saut) % comportementsDisponibles.size();
         
         // Si la bestiole change de comportement, on réinitialise sa vitesse 
-        // (utile si elle passe de "Peureux" qui court vite à "Grégaire" qui est calme)
+        // (utile si elle passe de "Peureux" à un autre comportement notamment)
         bestiole.setVitesse(bestiole.getVitesseIni());
         
-        // On met à jour la couleur pour refléter le changement
-        bestiole.setCouleur(comportementsDisponibles[ComportementApparentIndex]->getCouleur());
+
+        bestiole.setCouleur(comportementsDisponibles[comportementApparentIndex]->getCouleur());
     }
 
-    // On délègue l'action au comportement actif
-    comportementsDisponibles[ComportementApparentIndex]->reagit(bestiole, listeBestioles);
+
+    comportementsDisponibles[comportementApparentIndex]->reagit(bestiole, listeBestioles);
 }
 
-// Initialisation des paramètres statiques depuis le fichier de config
+
+T * ComportementPersoMultiples::getCouleur()  const {
+    return comportementsDisponibles[comportementApparentIndex]->getCouleur();
+} 
+
+
 void ComportementPersoMultiples::initFromConfig() {
     MAX_PROBA_CHANGEMENT_COMPORTEMENT = Config::getInstance().getDouble("MAX_PROBA_CHANGEMENT_COMPORTEMENT", 0.05);
 }

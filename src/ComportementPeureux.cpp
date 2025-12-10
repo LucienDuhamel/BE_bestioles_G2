@@ -5,13 +5,13 @@
 #include <iostream>
 #include <vector>
 
-T ComportementPeureux::couleur_cfg[3] = {0, 0, 0};
+T ComportementPeureux::COULEUR_CFG[3] = {0, 0, 0};
 int ComportementPeureux::BESTIOLE_SCARED_NUMBER = -1;
 int ComportementPeureux::REMAINING_SCARED_STEPS = -1;
 double ComportementPeureux::SPEED_COEF = -1.0;
 bool ComportementPeureux::configInitialized = false;
 
-// Constructeur (Pas de Singleton ici, chaque bestiole a son instance)
+
 ComportementPeureux::ComportementPeureux()
 {   
     nbStep = 0;
@@ -25,37 +25,43 @@ ComportementPeureux::ComportementPeureux()
 
 ComportementPeureux::~ComportementPeureux() {}
 
-// Clone obligatoire pour la Factory
+
 Comportement* ComportementPeureux::clone() const {
     return new ComportementPeureux();
 }
 
-void ComportementPeureux::initFromConfig() {
-    // par defaut : vert clair
-    couleur_cfg[0] = Config::getInstance().getInt("PEU_COULEUR_R", 34);
-    couleur_cfg[1] = Config::getInstance().getDouble("PEU_COULEUR_G", 177);
-    couleur_cfg[2] = Config::getInstance().getDouble("PEU_COULEUR_B", 76);
 
-    BESTIOLE_SCARED_NUMBER = Config::getInstance().getInt("BESTIOLE_SCARED_NUMBER", 3);
-    REMAINING_SCARED_STEPS = Config::getInstance().getInt("REMAINING_SCARED_STEPS", 2);
-    SPEED_COEF = Config::getInstance().getDouble("SPEED_COEF", 5);
-}
-
-T * ComportementPeureux::getCouleur()  const  {
-    return couleur_cfg;
-}
-
+/**
+ * @brief Comportement peureux : fuit en sens inverse du barycentre des menaces.
+ * 
+ * Si au moins N (paramètre de la config) bestioles sont détectées, la bestiole entre en mode panique :
+ * elle fuit dans la direction opposée au barycentre du groupe, avec une vitesse accrue.
+ * Le mode panique dure un nombre d'étapes configuré.
+ * 
+ * @param bestiole La bestiole qui adopte ce comportement
+ * @param listeBestioles Liste de toutes les bestioles du milieu
+ * 
+ * @details
+ * - Détecte les bestioles visibles
+ * - Si nb_détectées >= BESTIOLE_SCARED_NUMBER : entrée en mode panique
+ *   - Calcule le barycentre des positions
+ *   - Oriente dans la direction opposée
+ *   - Multiplie la vitesse par SPEED_COEF
+ *   - Reste apeurée pendant REMAINING_SCARED_STEPS étapes
+ * - Si nb_détectées < seuil : décrémente le compteur et restaure la vitesse normale
+ * 
+ * @note État par-instance : chaque bestiole peur a son propre temps de panique
+ */
 void ComportementPeureux::reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>& listeBestioles)
 {
     const auto& bestiolesVisibles = bestiole.detecteBestioles(listeBestioles);
     
-    // On récupère la vitesse de base stockée dans la bestiole (ajout du Main)
     double vIni = bestiole.getVitesseIni();
 
     // Si assez d'individus pour être effrayé
     if (static_cast<int>(bestiolesVisibles.size()) >= BESTIOLE_SCARED_NUMBER)
     {
-        // Calcul du barycentre des positions
+        // Calcul du barycentre des positions des bestioles visibles
         double bx = 0.0, by = 0.0;
         for (EspeceBestiole* b : bestiolesVisibles) {
             bx += static_cast<double>(b->getX());
@@ -65,7 +71,6 @@ void ComportementPeureux::reagit(Bestiole& bestiole, const std::vector<EspeceBes
         by /= static_cast<double>(bestiolesVisibles.size());
 
         // Fuite : orientation opposée au barycentre
-        // Utilisation de utils.h et des accesseurs avec Majuscules
         bestiole.setOrientation(calcOrientation(bestiole.getX(), bestiole.getY(), bx, by) + M_PI);
 
         // Activation du mode "effrayé"
@@ -79,7 +84,7 @@ void ComportementPeureux::reagit(Bestiole& bestiole, const std::vector<EspeceBes
     }
     else
     {
-        // Encore effrayée ?
+        // Si la bestiole est encore effrayée :
         if (nbStep > 0)
         {
             nbStep--;
@@ -92,4 +97,21 @@ void ComportementPeureux::reagit(Bestiole& bestiole, const std::vector<EspeceBes
             }
         }
     }
+}
+
+
+T * ComportementPeureux::getCouleur()  const  {
+    return COULEUR_CFG;
+}
+
+
+void ComportementPeureux::initFromConfig() {
+    // par defaut : vert clair
+    COULEUR_CFG[0] = Config::getInstance().getInt("PEU_COULEUR_R", 34);
+    COULEUR_CFG[1] = Config::getInstance().getDouble("PEU_COULEUR_G", 177);
+    COULEUR_CFG[2] = Config::getInstance().getDouble("PEU_COULEUR_B", 76);
+
+    BESTIOLE_SCARED_NUMBER = Config::getInstance().getInt("BESTIOLE_SCARED_NUMBER", 3);
+    REMAINING_SCARED_STEPS = Config::getInstance().getInt("REMAINING_SCARED_STEPS", 2);
+    SPEED_COEF = Config::getInstance().getDouble("SPEED_COEF", 5);
 }

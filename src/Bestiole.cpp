@@ -21,8 +21,9 @@ double      Bestiole::MAX_VITESSE = -1.0;
 bool        Bestiole::configInitialized = false;
 
 Bestiole::Bestiole( void )
-{
-   cout << "const Bestiole (" << identite << ") par defaut" << endl;
+{  
+   // Pour le débogage
+   // cout << "const Bestiole (" << identite << ") par defaut" << endl;
 
    // Utilisation de la configuration globale
    if (!configInitialized) {
@@ -45,8 +46,9 @@ Bestiole::Bestiole( void )
 }
 
 Bestiole::Bestiole( const Bestiole & b ) : EspeceBestiole(b)
-{
-   cout << "const Bestiole (" << identite << ") par copie : from "<< b.identite << endl;
+{  
+   // Pour le débogage
+   // cout << " (" << identite << ") par copie : from "<< b.identite << endl;
 
    age_Lim = b.age_Lim;
    age = b.age;
@@ -93,7 +95,8 @@ Bestiole::~Bestiole( void )
       delete test;
       delete comportement;
    }
-   cout << "dest Bestiole" << endl;
+   // Pour le débogage
+   // cout << "dest Bestiole" << endl;
 }
 
 // Initialisation des parametres statiques depuis le fichier de config
@@ -210,16 +213,17 @@ void Bestiole::draw( UImg & support )
 }
 
 bool Bestiole::idDed() const
-{
-   if(age>=age_Lim)
-   {
-      cout<< "(" << identite << ") age limit reached " ;
-   }
+{  
+   // Debug info
+   // if(age>=age_Lim)
+   // {
+   //    cout<< "(" << identite << ") age limit reached " ;
+   // }
    
-   if (Killed)
-   {
-      cout<< "(" << identite << ")  killed           " ;
-   }
+   // if (Killed)
+   // {
+   //    cout<< "(" << identite << ")  killed           " ;
+   // }
    return age>=age_Lim || Killed ;
 }
 

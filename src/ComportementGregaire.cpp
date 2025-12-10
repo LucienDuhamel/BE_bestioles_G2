@@ -6,7 +6,7 @@
 #include <vector>
 
 ComportementGregaire* ComportementGregaire::singletonGregaire = nullptr;
-T ComportementGregaire::couleur_cfg[3] = {0, 0, 0};
+T ComportementGregaire::COULEUR_CFG[3] = {0, 0, 0};
 bool ComportementGregaire::configInitialized = false;
 
 ComportementGregaire* ComportementGregaire::getInstance()  
@@ -28,18 +28,21 @@ Comportement* ComportementGregaire::clone() const {
     return getInstance();
 }
 
-// Initialisation des parametres statiques depuis le fichier de config (valeurs par defaut si absentes)
-void ComportementGregaire::initFromConfig() {
-    // par defaut : orange
-    couleur_cfg[0] = Config::getInstance().getInt("GREG_COULEUR_R", 255);
-    couleur_cfg[1] = Config::getInstance().getDouble("GREG_COULEUR_G", 128);
-    couleur_cfg[2] = Config::getInstance().getDouble("GREG_COULEUR_B", 0);
-}
 
-T * ComportementGregaire::getCouleur() const {
-    return couleur_cfg;
-}
-
+/**
+ * @brief Comportement grégaire : oriente la bestiole vers la direction moyenne des especesBestioles détectées.
+ * 
+ * La bestiole calcule l'orientation moyenne de tous les especesBestioles visibles
+ * et adopte cette direction pour rester cohérente avec le groupe.
+ * 
+ * @param bestiole La bestiole qui adopte ce comportement
+ * @param listeBestioles Liste de toutes les bestioles du milieu
+ * 
+ * @details
+ * - Détecte les bestioles visibles selon les capteurs de la bestiole
+ * - Calcule la moyenne des orientations des visibles
+ * - Oriente la bestiole vers cette direction moyenne
+ */
 void ComportementGregaire::reagit( Bestiole& bestiole, const std::vector<EspeceBestiole*>& listeBestioles)
 {
     const auto& bestiolesVisibles = bestiole.detecteBestioles(listeBestioles);
@@ -53,6 +56,18 @@ void ComportementGregaire::reagit( Bestiole& bestiole, const std::vector<EspeceB
     }
 
     mOrientation /= bestiolesVisibles.size();
-    // Une bestiole grégaire ajuste son orientation pour se synchroniser avec la moyenne des orientations des bestioles détectées
     bestiole.setOrientation(mOrientation);
+}
+
+
+
+T * ComportementGregaire::getCouleur() const {
+    return COULEUR_CFG;
+}
+
+void ComportementGregaire::initFromConfig() {
+    // par defaut : orange
+    COULEUR_CFG[0] = Config::getInstance().getInt("GREG_COULEUR_R", 255);
+    COULEUR_CFG[1] = Config::getInstance().getDouble("GREG_COULEUR_G", 128);
+    COULEUR_CFG[2] = Config::getInstance().getDouble("GREG_COULEUR_B", 0);
 }

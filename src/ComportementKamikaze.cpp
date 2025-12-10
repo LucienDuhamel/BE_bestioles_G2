@@ -6,7 +6,7 @@
 #include <vector>
 
 ComportementKamikaze* ComportementKamikaze::singletonKamikaze = nullptr;
-T ComportementKamikaze::couleur_cfg[3] = {0, 0, 0};
+T ComportementKamikaze::COULEUR_CFG[3] = {0, 0, 0};
 bool ComportementKamikaze::configInitialized = false;
 
 ComportementKamikaze* ComportementKamikaze::getInstance()  
@@ -28,17 +28,22 @@ Comportement* ComportementKamikaze::clone() const {
     return getInstance();
 }
 
-void ComportementKamikaze::initFromConfig() {
-    // par defaut : rouge
-    couleur_cfg[0] = Config::getInstance().getInt("KAM_COULEUR_R", 200);
-    couleur_cfg[1] = Config::getInstance().getDouble("KAM_COULEUR_G", 0);
-    couleur_cfg[2] = Config::getInstance().getDouble("KAM_COULEUR_B", 0);
-}
 
-T * ComportementKamikaze::getCouleur()  const {
-    return couleur_cfg;
-}
-
+/**
+ * @brief Comportement kamikaze : oriente la bestiole vers l'especeBestiole la plus proche.
+ * 
+ * La bestiole fonce droit sur l'especeBestiole la plus proche détecté.
+ * 
+ * @param bestiole La bestiole qui adopte ce comportement
+ * @param listeBestioles Liste de toutes les bestioles du milieu
+ * 
+ * @details
+ * - Détecte les bestioles visibles selon les capteurs
+ * - Identifie la bestiole la plus proche (distance euclidienne)
+ * - Oriente directement vers la cible (pas d'anticipation)
+ * 
+ * @note Aucun changement de vitesse, uniquement l'orientation.
+ */
 void ComportementKamikaze::reagit( Bestiole& bestiole, const std::vector<EspeceBestiole*>& listeBestioles)
 {
     const auto& bestiolesVisibles = bestiole.detecteBestioles(listeBestioles);
@@ -60,6 +65,16 @@ void ComportementKamikaze::reagit( Bestiole& bestiole, const std::vector<EspeceB
         }
     }
 
-    // Ajuster l'orientation vers la cible
     bestiole.setOrientation(calcOrientation(bestiole, *cible));
+}
+
+T * ComportementKamikaze::getCouleur()  const {
+    return COULEUR_CFG;
+}
+
+void ComportementKamikaze::initFromConfig() {
+    // par defaut : rouge
+    COULEUR_CFG[0] = Config::getInstance().getInt("KAM_COULEUR_R", 200);
+    COULEUR_CFG[1] = Config::getInstance().getDouble("KAM_COULEUR_G", 0);
+    COULEUR_CFG[2] = Config::getInstance().getDouble("KAM_COULEUR_B", 0);
 }

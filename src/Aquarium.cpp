@@ -17,8 +17,6 @@ Aquarium::Aquarium( int width, int height, int _delay ) : CImgDisplay(), delay( 
    int         screenWidth = 1280; //screen_width();
    int         screenHeight = 1024; //screen_height();
 
-   cout << "const Aquarium" << endl;
-
    flotte = new Milieu( width, height );
    assign( *flotte, "Simulation d'ecosysteme" );
 
@@ -50,7 +48,8 @@ Aquarium::~Aquarium( void )
 {
    delete flotte;
    delete simulation;
-   cout << "dest Aquarium" << endl;
+   // Pour le débogage
+   //    cout << "dest Aquarium" << endl;
 }
 
 // Fonction utilitaire pour le graphique
@@ -182,8 +181,9 @@ void plotPopulation(const std::vector<Stat>& stats) {
 }
 
 void Aquarium::run(void)
-{
-    cout << "running Aquarium" << endl;
+{   
+    // Pour le débogage
+    // cout << "running Aquarium" << endl;
     bool Nopose = true;
 
     while (!is_closed())

@@ -4,12 +4,10 @@
 
 #include <iostream>
 #include <vector>
-#include <cmath> // Nécessaire pour cos, sin, sqrt, atan2
+#include <cmath>
 
 
-T ComportementPrevoyant::couleur_cfg[3] = {0, 0, 0};
-double ComportementPrevoyant::T_PREDICT = 0.0;
-double ComportementPrevoyant::DIST_MIN_COLLISION = 0.0;
+T ComportementPrevoyant::COULEUR_CFG[3] = {0, 0, 0};
 bool ComportementPrevoyant::configInitialized = false;
 ComportementPrevoyant* ComportementPrevoyant::singletonPrevoyant = nullptr;
 
@@ -28,31 +26,38 @@ ComportementPrevoyant* ComportementPrevoyant::getInstance()
 }
 
 Comportement* ComportementPrevoyant::clone() const {
-    // Just return the singleton
     return getInstance();
 }
 
-void ComportementPrevoyant::initFromConfig() {
-    // par defaut : bleu/violet clair
-    couleur_cfg[0] = Config::getInstance().getInt("PRE_COULEUR_R", 30);
-    couleur_cfg[1] = Config::getInstance().getDouble("PRE_COULEUR_G", 144);
-    couleur_cfg[2] = Config::getInstance().getDouble("PRE_COULEUR_B", 255);
 
-    T_PREDICT = Config::getInstance().getDouble("T_PREDICT", 15.0);
-    DIST_MIN_COLLISION = Config::getInstance().getDouble("DIST_MIN_COLLISION", 30.0);
-}
 
-T * ComportementPrevoyant::getCouleur()  const {
-    return couleur_cfg;
-}
-
+/**
+ * @brief Comportement prévoyant : anticipe les collisions et fuit proactivement.
+ * 
+ * La bestiole prédit la position future des menaces visibles en fonction
+ * de leur trajectoire courante, et se détourne d'avance pour les éviter.
+ * 
+ * @param bestiole La bestiole qui adopte ce comportement
+ * @param listeBestioles Liste de toutes les bestioles du milieu
+ * 
+ * @details
+ * - Détecte les bestioles visibles
+ * - Pour chaque visible :
+ *   - Cas 1 (collision immédiate) : fuit perpendiculairement
+ *   - Cas 2 (collision future) : prédit la position future de l'autre
+ *     en extrapolant sa trajectoire (position + vitesse * direction)
+ * - Accumule les vecteurs de fuite
+ * - S'oriente dans la direction d'évitement globale
+ * 
+ * @note Utilise des zones de collision (hit boxes) pour anticiper les chocs.
+ */
 void ComportementPrevoyant::reagit(
     Bestiole& bestiole,
     const std::vector<EspeceBestiole*>& listeBestioles
 )
 {
-    const auto& visibles = bestiole.detecteBestioles(listeBestioles);
-    if (visibles.empty())
+    const auto& bestiolesVisibles = bestiole.detecteBestioles(listeBestioles);
+    if (bestiolesVisibles.empty())
         return;
 
     double bx = static_cast<double>(bestiole.getX());
@@ -67,7 +72,7 @@ void ComportementPrevoyant::reagit(
     double avoidX = 0.0;
     double avoidY = 0.0;
 
-    for (EspeceBestiole* other : visibles)
+    for (EspeceBestiole* other : bestiolesVisibles)
     {
         if (!other || other == &bestiole)
             continue;
@@ -96,7 +101,6 @@ void ComportementPrevoyant::reagit(
         double nox = ox + ov * std::cos(otheta);
         double noy = oy + ov * std::sin(otheta);
 
-        // Utilisation de la fonction utilitaire (définie dans utils.h)
         if (isInHitBox(nox, noy, other->getAffSize(),
                        nbx, nby, bestiole.getAffSize()))
         {
@@ -118,4 +122,17 @@ void ComportementPrevoyant::reagit(
     double newAngle = std::atan2(avoidY, avoidX);
 
     bestiole.setOrientation(newAngle);
+}
+
+
+T * ComportementPrevoyant::getCouleur()  const {
+    return COULEUR_CFG;
+}
+
+
+void ComportementPrevoyant::initFromConfig() {
+    // par defaut : bleu clair
+    COULEUR_CFG[0] = Config::getInstance().getInt("PRE_COULEUR_R", 30);
+    COULEUR_CFG[1] = Config::getInstance().getDouble("PRE_COULEUR_G", 144);
+    COULEUR_CFG[2] = Config::getInstance().getDouble("PRE_COULEUR_B", 255);
 }

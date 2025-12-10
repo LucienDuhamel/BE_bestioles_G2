@@ -14,7 +14,7 @@ class ComportementGregaire : public Comportement
 private :
     // Gestion du Singleton et de la Config
     static ComportementGregaire* singletonGregaire;
-    static T couleur_cfg[3];
+    static T COULEUR_CFG[3];
     static bool configInitialized;
     
 private:
@@ -22,19 +22,16 @@ private:
     ComportementGregaire(const ComportementGregaire&) = delete;
     ComportementGregaire& operator=(const ComportementGregaire&) = delete;
     
-    // Méthode interne pour charger la config
+private:
     void initFromConfig();
 
 public:
     static ComportementGregaire* getInstance();
-
     Comportement* clone() const override;
-    T * getCouleur() const override;
 
-    // Méthode qui implémente le comportement grégaire
     void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) override;
     
-    // Méthode pour obtenir le nom du comportement
+    T * getCouleur() const override;
     std::string getName() const override { return "Comportement Gregaire"; }
 };
 

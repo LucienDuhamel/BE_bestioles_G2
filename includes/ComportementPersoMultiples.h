@@ -13,31 +13,30 @@ class ComportementPersoMultiples : public Comportement
 {
 
 private: 
-    // Configuration
+    // Paramètres statiques récupérés depuis le fichier de configuration
     static double     MAX_PROBA_CHANGEMENT_COMPORTEMENT;
     static bool       configInitialized;
 
 private:
+    // État propre à chaque instance
     std::vector<Comportement*> comportementsDisponibles;
-
-    // État interne : Chaque bestiole a son propre index et une probabilité de changement de comportement
-    int ComportementApparentIndex;
+    int comportementApparentIndex;
     double probaChangementComportement;
 
+private:  
     void initFromConfig();
 
 public:
-    // Constructeur public (Pas de Singleton ici car le comportement a un état interne)
+    // Constructeur public (Pas de getInstance car chaque bestiole a son propre comportement perso multiples)
     ComportementPersoMultiples(std::vector<Comportement*> listeComportements);
     ~ComportementPersoMultiples();
 
-    T * getCouleur() const override;
-
-    // Méthode qui implémente le comportement avec changements aléatoires
-    void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) override;
     Comportement* clone() const override;
 
-    // Méthode pour obtenir le nom du comportement
+    // Méthode qui implémente le comportement à personnalités multiples
+    void reagit(Bestiole& bestiole, const std::vector<EspeceBestiole*>&  listeBestioles ) override;
+
+    T * getCouleur() const override;
     std::string getName() const override { return "Comportement Perso Multiples"; }
 };
 

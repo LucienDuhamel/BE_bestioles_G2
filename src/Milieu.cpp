@@ -41,7 +41,6 @@ Milieu::Milieu( int _width, int _height ) : UImg( _width, _height, 1, 3 ),
    }
    std::vector<double> proportions = {PROP_GREGAIRE, PROP_KAMIKAZE, PROP_PEUREUX, PROP_PREVOYANT, PROP_MULTIPLES};
    bestioleFactory = new BestioleFactory(listeComportements, proportions);
-   cout << "const Milieu" << endl;
 
    std::srand( time(NULL) );
 
@@ -64,7 +63,8 @@ Milieu::~Milieu( void )
 
     // Supprime la factory si elle a été créée dynamiquement
     delete bestioleFactory;
-   cout << "dest Milieu" << endl;
+   // Pour le débogage
+   // cout << "dest Milieu" << endl;
 
 }
 
