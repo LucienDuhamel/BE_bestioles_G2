@@ -56,6 +56,13 @@ Commandes utiles
 - `r` : réinitialiser la simulation
 - `k` : tuer toutes les bestioles
 
+
+> [!WARNING]  
+> Dans le cas où la fenêtre d'analyse ne propose pas de se fermer sur votre ordinateur, suivez les instructions suivantes :
+> 1. Faites un <kbd>Ctrl</kbd> + <kbd>Esc</kbd>
+> 2. Allez dans le terminal qui exécute le code
+> 3. Appuyez sur <kbd>Ctrl</kbd> + <kbd>V</kbd>
+
 Configuration
 -------------
 Le fichier `config.txt` contient la plupart des paramètres modifiant le comportement des bestioles et du milieu.
