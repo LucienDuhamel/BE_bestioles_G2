@@ -28,6 +28,11 @@ Milieu::Milieu( int _width, int _height ) : UImg( _width, _height, 1, 3 ),
                                             width(_width), height(_height)
 {
 
+   if(!configInitialized) {
+      this->initFromConfig();
+      configInitialized = true;
+   }
+
    // Attention l'ordre d'ajout des comportements détermine leur indice dans la factory
    listeComportements.push_back(ComportementGregaire::getInstance());
    listeComportements.push_back(ComportementKamikaze::getInstance());
@@ -35,10 +40,6 @@ Milieu::Milieu( int _width, int _height ) : UImg( _width, _height, 1, 3 ),
    listeComportements.push_back(ComportementPrevoyant::getInstance());
    listeComportements.push_back(new ComportementPersoMultiples(listeComportements));
    
-   if(!configInitialized) {
-      this->initFromConfig();
-      configInitialized = true;
-   }
    std::vector<double> proportions = {PROP_GREGAIRE, PROP_KAMIKAZE, PROP_PEUREUX, PROP_PREVOYANT, PROP_MULTIPLES};
    bestioleFactory = new BestioleFactory(listeComportements, proportions);
 
@@ -72,7 +73,7 @@ Milieu::~Milieu( void )
 void Milieu::initConfig(int nbEspeces)
 {  
    kill_all();
-   for ( int i = 0; i <= nbEspeces; ++i )
+   for ( int i = 0; i < nbEspeces; ++i )
       addMember();
 }
 

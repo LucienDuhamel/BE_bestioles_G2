@@ -26,15 +26,16 @@ void Camouflage::draw(UImg& support, Bestiole* b)
     int cy = b->getY();
 
     // Utilise des constante que se rapproche de aff_size
-    const int halfW = 8; // approx AFF_SIZE
-    const int halfH = 3; // approx AFF_SIZE/3
+    int aff = static_cast<int>( std::round(b->getAffSize()) );
+    const int halfW = std::max(1, static_cast<int>(std::round(0.9 * aff)));
+    const int halfH = std::max(1, static_cast<int>(std::round(aff / 3.0)));
 
     // Dessine les rayures parrallèlement au corp de la bestiole
     double theta = b->getOrientation();
     double px = std::cos(theta + M_PI/2.0);
     double py = -std::sin(theta + M_PI/2.0);
 
-    int stripes = 3;
+    int stripes = std::min(6, std::max(1, aff / 6));
     for (int i = -stripes; i <= stripes; ++i) {
         double t = (double)i / (double)(stripes + 1);
         double ax = std::cos(theta) * (t * halfW);

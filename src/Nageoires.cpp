@@ -21,9 +21,10 @@ void Nageoires::draw(UImg& support, Bestiole* b)
 {
     // Dessine un points violet sur la queue de la bestiole
     T couleurViolet[3] = {160, 32, 240}; // Violet
-    int cx = b->getX() - static_cast<int>( std::cos(b->getOrientation()) * 12 );
-    int cy = b->getY() - static_cast<int>( -std::sin(b->getOrientation()) * 12 );
-    support.draw_circle(cx, cy, 3, couleurViolet);
+    int aff = static_cast<int>( std::round(b->getAffSize()) );
+    int cx = b->getX() - static_cast<int>( std::cos(b->getOrientation()) * (0.8 * aff) );
+    int cy = b->getY() - static_cast<int>( -std::sin(b->getOrientation()) * (0.8 * aff) );
+    support.draw_circle(cx, cy, std::max(1, static_cast<int>(std::round(0.2 * aff))), couleurViolet);
 }
 void Nageoires::setParameters(Bestiole* b) const
 {

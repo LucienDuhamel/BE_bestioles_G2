@@ -25,20 +25,18 @@ Yeux::Yeux()
 
 void Yeux::draw(UImg& support, Bestiole* b)
 {
-    // dessine deux points cyan 
-    T couleurYeux[3] = {0, 255, 255}; 
+    T couleurYeux[3] = {0, 255, 255};
     double theta = b->getOrientation();
     int x = b->getX();
     int y = b->getY();
+    int aff = static_cast<int>( std::round(b->getAffSize()) );
 
-    // Dessine deux points bleu sur les côtés de la tête de la bestiole
-    const double side = 3.0;    // offset latéral
-    const double forward = 9.5; // offset frontal
-    const int rayon = 1.75;        // rayon du point
+    const double side = 0.25 * aff;
+    const double forward = 0.8 * aff;
+    const int rayon = std::max(1, static_cast<int>(std::round(0.12 * aff)));
 
     int lx = x + static_cast<int>( std::cos(theta + M_PI/2.0) * side + std::cos(theta) * forward );
     int ly = y + static_cast<int>( -std::sin(theta + M_PI/2.0) * side + -std::sin(theta) * forward );
-
     int rx = x + static_cast<int>( std::cos(theta - M_PI/2.0) * side + std::cos(theta) * forward );
     int ry = y + static_cast<int>( -std::sin(theta - M_PI/2.0) * side + -std::sin(theta) * forward );
 

@@ -29,17 +29,23 @@ void Oreilles::draw(UImg& support, Bestiole* b)
     double theta = b->getOrientation();
     int x = b->getX();
     int y = b->getY();
+    int aff = static_cast<int>( std::round(b->getAffSize()) );
 
-    // definition position oreilles
-    const double side = 5.0;    // offset lateral
-    const double forward = 3.0; // offset frontal 
-    const int rayon = 1.75;        // rayon des points
+    // definition position oreilles (proportionnelles à AFF_SIZE)
+    const double side = 0.50 * aff;      // offset lateral
+    const double forward = 0.45 * aff;   // offset frontal 
+    const int rayon = std::max(1, static_cast<int>(std::round(0.1 * aff)));  // rayon des points
 
-    int lx = x + static_cast<int>( std::cos(theta + M_PI/2.0) * side + std::cos(theta) * forward );
-    int ly = y + static_cast<int>( -std::sin(theta + M_PI/2.0) * side + -std::sin(theta) * forward );
+    double cosTheta = std::cos(theta);
+    double sinTheta = std::sin(theta);
+    double cosSide = std::cos(theta + M_PI/2.0);
+    double sinSide = std::sin(theta + M_PI/2.0);
 
-    int rx = x + static_cast<int>( std::cos(theta - M_PI/2.0) * side + std::cos(theta) * forward );
-    int ry = y + static_cast<int>( -std::sin(theta - M_PI/2.0) * side + -std::sin(theta) * forward );
+    int lx = x + static_cast<int>( cosSide * side + cosTheta * forward );
+    int ly = y + static_cast<int>( -sinSide * side - sinTheta * forward );
+
+    int rx = x + static_cast<int>( -cosSide * side + cosTheta * forward );
+    int ry = y + static_cast<int>( sinSide * side - sinTheta * forward );
 
     support.draw_circle(lx, ly, rayon, couleurOreilles);
     support.draw_circle(rx, ry, rayon, couleurOreilles);

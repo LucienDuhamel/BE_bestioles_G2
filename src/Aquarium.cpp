@@ -14,17 +14,17 @@ int Aquarium::GRAPHIC_HEIGHT = -1;
 Aquarium::Aquarium( int width, int height, int _delay ) : CImgDisplay(), delay( _delay )
 {
 
+    // Chargement de la config
+   if (!configInitialized) {
+       initFromConfig();
+       configInitialized = true;
+   }
+   
    int         screenWidth = 1280; //screen_width();
    int         screenHeight = 1024; //screen_height();
 
    flotte = new Milieu( width, height );
    assign( *flotte, "Simulation d'ecosysteme" );
-
-   // Chargement de la config
-   if (!configInitialized) {
-       initFromConfig();
-       configInitialized = true;
-   }
    
    // Initialisation de la simulation
    if (ACTIVATED_ANALYSE) {

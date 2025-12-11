@@ -5,24 +5,25 @@
 #include <cmath>
 #include <cstring>
 
-int        EspeceBestiole::next = 0;
+int        EspeceBestiole::next = -1;
 double     EspeceBestiole::CLONAGE_PROP = 0.0;
 bool       EspeceBestiole::configInitialized = false;
 
 EspeceBestiole::EspeceBestiole()
-{
+{  
+
+   // Initialisation unique des paramètres statiques via Config
+    if (!configInitialized) {
+       this->initFromConfig();
+       configInitialized = true;
+    }
+    
     // Nouvel identifiant
     identite = ++next;
 
     // Copier les coordonnées
     x = 0;
     y = 0;
-
-    // Initialisation unique des paramètres statiques via Config
-    if (!configInitialized) {
-       this->initFromConfig();
-       configInitialized = true;
-    }
 
     couleur = new T[ 3 ];
     couleur[ 0 ] = static_cast<int>(randomBetween(0.0, 230.));

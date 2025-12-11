@@ -4,6 +4,8 @@ config_kamikaze.txt
 config_persomul.txt
 config_peureuse.txt
 config_prevoyante.txt
+
+*.puml
 ###########################
 
 

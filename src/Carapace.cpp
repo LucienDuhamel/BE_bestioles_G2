@@ -20,14 +20,15 @@ Carapace::Carapace()
 
 void Carapace::draw(UImg& support, Bestiole* b)
 {
-    // Dessine une carapace bleu clair autour de la bestiole
-    T couleurGold[3] = {173,216,230}; // bleu clair
+    T couleurGold[3] = {173,216,230};
     int cx = b->getX();
     int cy = b->getY();
-    int rayon = 14; 
+    int aff = static_cast<int>( std::round(b->getAffSize()) );
+    int rayon = std::max(1, static_cast<int>(std::round(0.9 * aff)));
     float opacity = 0.25f;
     support.draw_circle(cx, cy, rayon, couleurGold, opacity);
 }
+
 void Carapace::setParameters(Bestiole* b) const
 {
     setVitesseCarapace(b);

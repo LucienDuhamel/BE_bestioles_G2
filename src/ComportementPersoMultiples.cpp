@@ -10,19 +10,19 @@ double ComportementPersoMultiples::MAX_PROBA_CHANGEMENT_COMPORTEMENT = 0.0;
 bool ComportementPersoMultiples::configInitialized = false;
 
 ComportementPersoMultiples::ComportementPersoMultiples(std::vector<Comportement*> listeComportements)
-{
+{   
+    if(!configInitialized)
+    {
+        initFromConfig();
+        configInitialized = true;
+    }
+    
     // On copie la liste des comportements possibles
     for (auto& c : listeComportements)
         comportementsDisponibles.push_back(std::move(c));
 
     // On choisit une première personnalité au hasard
     comportementApparentIndex = rand() % comportementsDisponibles.size() ;
-    
-    if(!configInitialized)
-    {
-        initFromConfig();
-        configInitialized = true;
-    }
     
     // Chaque bestiole a sa propre instabilité mentale (probabilité de changer)
     probaChangementComportement = static_cast<double>( randomBetween(0.0, MAX_PROBA_CHANGEMENT_COMPORTEMENT) );
